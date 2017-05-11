@@ -45,7 +45,7 @@ object StopDetectionJob {
 
     log.info("Parse Input File to StopPoint class instances")
     val data = sc.textFile(src)
-    val parsedData = data.map(s => DetectedPoint(s.split(','))).cache()
+    val parsedData = data.map(s => DetectedPoint(s.split(';'))).cache()
 
     log.debug("Filter Moves to obtain stops only")
 
@@ -53,7 +53,7 @@ object StopDetectionJob {
       parsedData)
 
     // TODO: remove, this print is just for debugging
-    detectedStops.foreach(detectedPoint => println(detectedPoint.toString()))
+   // detectedStops.foreach(detectedPoint => println(detectedPoint.toString(), )))
 
     log.debug("Cluster Points")
     val dbScanModel = DBSCAN.train(
@@ -64,9 +64,22 @@ object StopDetectionJob {
 
     val clusteredData = dbScanModel.labeledPoints.map(p => s"${p.x},${p.y},${p.cluster}")
 
-    // TODO: remove, this print is just for debugging
-    clusteredData.foreach(clusteredPoint=> println(clusteredPoint.toString()))
-    
+    var textFileName = "dbscan_output"
+   // clusteredData.coalesce(1, true).saveAsTextFile(textFileName);
+
+   /* FileSystem fs = anyUtilClass.getHadoopFileSystem();
+    FileUtil.copyMerge(
+      fs, new Path(textFileName),
+      fs, new Path(textFileNameDestiny),
+      true, fs.getConf(), null);
+*/
+  /*  var canonicalFilename = "resources/dbscan_res"
+    val file = new File(canonicalFilename)
+    val bw = new BufferedWriter(new FileWriter(file))
+  */
+    clusteredData.foreach(clusteredPoint => println(clusteredPoint.toString()))
+
+    // bw.close()
     log.info("Stopping Spark Context...")
     sc.stop()
 

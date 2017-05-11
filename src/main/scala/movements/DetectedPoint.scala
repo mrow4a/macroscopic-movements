@@ -18,10 +18,11 @@
 package movements
 
 case class DetectedPoint(val vector: Array[String]) {
-  def id = vector(0).toInt
+  def dayOfWeek = vector(0).toInt
   def timestamp = vector(1)
-  def long = vector(2).toDouble
-  def lat = vector(3).toDouble
+  def id = vector(2).toInt
+  def long = vector(3).toDouble
+  def lat = vector(4).toDouble
 
   def distanceSquared(other: DetectedPoint): Double = {
     10
