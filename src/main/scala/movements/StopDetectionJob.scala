@@ -21,9 +21,14 @@ import org.apache.spark.mllib.clustering.dbscan.DBSCAN
 import org.apache.spark.{SparkConf, SparkContext}
 import org.slf4j.LoggerFactory
 
+import scala.collection.mutable.ArrayBuffer
+import scala.io.Source._
+
 object StopDetectionJob {
 
   val log = LoggerFactory.getLogger(StopDetectionJob.getClass)
+
+
 
   def main(args: Array[String]) {
     if (args.length < 3) {
@@ -52,8 +57,7 @@ object StopDetectionJob {
     val detectedStops = StopDetection.filter(
       parsedData)
 
-    // TODO: remove, this print is just for debugging
-   // detectedStops.foreach(detectedPoint => println(detectedPoint.toString(), )))
+    // detectedStops.foreach(detectedPoint => println(detectedPoint.toString()))
 
     log.debug("Cluster Points")
     val dbScanModel = DBSCAN.train(
@@ -62,27 +66,26 @@ object StopDetectionJob {
       minPoints,
       maxPointsPerPartition)
 
+    var filePath = "resources/Locker/dbscan_spark_res"
     val clusteredData = dbScanModel.labeledPoints.map(p => s"${p.x},${p.y},${p.cluster}")
 
-    var textFileName = "dbscan_output"
-   // clusteredData.coalesce(1, true).saveAsTextFile(textFileName);
+    clusteredData.coalesce(1).saveAsTextFile(filePath)
 
-   /* FileSystem fs = anyUtilClass.getHadoopFileSystem();
-    FileUtil.copyMerge(
-      fs, new Path(textFileName),
-      fs, new Path(textFileNameDestiny),
-      true, fs.getConf(), null);
-*/
-  /*  var canonicalFilename = "resources/dbscan_res"
-    val file = new File(canonicalFilename)
-    val bw = new BufferedWriter(new FileWriter(file))
-  */
-    clusteredData.foreach(clusteredPoint => println(clusteredPoint.toString()))
+   // clusteredData.foreach(clusteredPoint => println(clusteredPoint.toString()))
+   // groupByClusters(filePath)
 
-    // bw.close()
     log.info("Stopping Spark Context...")
     sc.stop()
 
+  }
+
+  // TODO: group by cluster ID, currently all files displays the same result in QGIS
+  def groupByClusters(filePath : String): Unit = {
+    println("Starting grouping")
+    val clusters = new ArrayBuffer[String]()
+    val lines = fromFile(filePath + "/part-00000").getLines
+    lines.foreach(line => clusters.insert(line.last, line))
+    println(lines mkString)
   }
 
 
