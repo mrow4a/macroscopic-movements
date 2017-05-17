@@ -17,18 +17,41 @@
 
 package movements
 
-case class DetectedPoint(val vector: Array[String]) {
+case class DetectedPoint(val vector: Array[String]){
   def dayOfWeek = vector(0).toInt
+  def secondsOfDay = getSecondsSinceMidnight(vector(1))
   def timestamp = vector(1)
-  def id = vector(2).toInt
+  def id = vector(2).toString
   def long = vector(3).toDouble
   def lat = vector(4).toDouble
 
-  def distanceSquared(other: DetectedPoint): Double = {
-    10
+  def getSecondsSinceMidnight(timestamp: String) : Int = {
+    val splitTimestamp = timestamp.split(':')
+    (splitTimestamp(0).toInt * 3600 + splitTimestamp(1).toInt * 60 + splitTimestamp(2).toInt)
   }
 
   override def toString(): String = {
-    id.toString + " " + timestamp.toString + " " + lat.toString + " " + long.toString
+    id + " " + dayOfWeek +  " " +timestamp + " " + lat + " " + long
+  }
+}
+
+object BehaviourType extends Enumeration {
+  type Type = Value
+
+  val Stop = Value(0)
+  val PossibleStop = Value(1)
+  val PossibleTravel = Value(2)
+  val Travel = Value(3)
+}
+
+case class StopCandidatePoint(val dP: DetectedPoint,
+                               val mI: Double = 0,
+                               val bT: BehaviourType.Type = BehaviourType.Travel){
+  def detectedPoint = dP
+  def mobilityIndex = mI
+  def behaviourType = bT
+
+  override def toString(): String = {
+    detectedPoint + " " + mobilityIndex +  " " + behaviourType
   }
 }

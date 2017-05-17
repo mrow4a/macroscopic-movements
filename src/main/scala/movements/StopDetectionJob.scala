@@ -20,6 +20,8 @@ package movements
 import org.apache.spark.mllib.clustering.dbscan.DBSCAN
 import org.apache.spark.{SparkConf, SparkContext}
 import org.slf4j.LoggerFactory
+import java.io.FileOutputStream
+import java.io.PrintStream
 
 object StopDetectionJob {
 
@@ -31,6 +33,8 @@ object StopDetectionJob {
         "<src file> <max points per partition> <eps> <min points per partition>")
       System.exit(1)
     }
+
+    // System.setOut(new PrintStream(new FileOutputStream("/tmp/dbscan_output.txt")))
 
     log.info("Parse arguments of the function")
     val (src, maxPointsPerPartition, eps, minPoints) =
@@ -47,39 +51,25 @@ object StopDetectionJob {
     val data = sc.textFile(src)
     val parsedData = data.map(s => DetectedPoint(s.split(';'))).cache()
 
-    log.debug("Filter Moves to obtain stops only")
+    log.info("Filter Moves to obtain stops only")
 
-    val detectedStops = StopDetection.filter(
-      parsedData)
+    val detectedStops = StopDetection.filter(parsedData)
 
     // TODO: remove, this print is just for debugging
-   // detectedStops.foreach(detectedPoint => println(detectedPoint.toString(), )))
+    detectedStops.foreach(detectedPoint => println(detectedPoint.toString()))
 
-    log.debug("Cluster Points")
-    val dbScanModel = DBSCAN.train(
-      detectedStops,
-      eps,
-      minPoints,
-      maxPointsPerPartition)
+//    log.info("Cluster Points")
+//    val dbScanModel = DBSCAN.train(
+//      detectedStops,
+//      eps,
+//      minPoints,
+//      maxPointsPerPartition)
+//
+//    val clusteredData = dbScanModel.labeledPoints.map(p => s"${p.x},${p.y},${p.cluster}")
+//
+//    log.info("Print Points")
+//    clusteredData.foreach(clusteredPoint => println(clusteredPoint.toString()))
 
-    val clusteredData = dbScanModel.labeledPoints.map(p => s"${p.x},${p.y},${p.cluster}")
-
-    var textFileName = "dbscan_output"
-   // clusteredData.coalesce(1, true).saveAsTextFile(textFileName);
-
-   /* FileSystem fs = anyUtilClass.getHadoopFileSystem();
-    FileUtil.copyMerge(
-      fs, new Path(textFileName),
-      fs, new Path(textFileNameDestiny),
-      true, fs.getConf(), null);
-*/
-  /*  var canonicalFilename = "resources/dbscan_res"
-    val file = new File(canonicalFilename)
-    val bw = new BufferedWriter(new FileWriter(file))
-  */
-    clusteredData.foreach(clusteredPoint => println(clusteredPoint.toString()))
-
-    // bw.close()
     log.info("Stopping Spark Context...")
     sc.stop()
 
