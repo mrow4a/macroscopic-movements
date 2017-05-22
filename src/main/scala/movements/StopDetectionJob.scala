@@ -20,6 +20,8 @@ package movements
 import org.apache.spark.mllib.clustering.dbscan.DBSCAN
 import org.apache.spark.{SparkConf, SparkContext}
 import org.slf4j.LoggerFactory
+import java.io.FileOutputStream
+import java.io.PrintStream
 
 import scala.collection.mutable.ArrayBuffer
 import scala.io.Source._
@@ -37,6 +39,8 @@ object StopDetectionJob {
       System.exit(1)
     }
 
+    // System.setOut(new PrintStream(new FileOutputStream("/tmp/dbscan_output.txt")))
+
     log.info("Parse arguments of the function")
     val (src, maxPointsPerPartition, eps, minPoints) =
       (args(0), args(1).toInt, args(2).toFloat, args(3).toInt)
@@ -52,10 +56,9 @@ object StopDetectionJob {
     val data = sc.textFile(src)
     val parsedData = data.map(s => DetectedPoint(s.split(';'))).cache()
 
-    log.debug("Filter Moves to obtain stops only")
+    log.info("Filter Moves to obtain stops only")
 
-    val detectedStops = StopDetection.filter(
-      parsedData)
+    val detectedStops = StopDetection.filter(parsedData)
 
     // detectedStops.foreach(detectedPoint => println(detectedPoint.toString()))
 
