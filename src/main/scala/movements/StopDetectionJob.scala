@@ -23,9 +23,14 @@ import org.slf4j.LoggerFactory
 import java.io.FileOutputStream
 import java.io.PrintStream
 
+import scala.collection.mutable.ArrayBuffer
+import scala.io.Source._
+
 object StopDetectionJob {
 
   val log = LoggerFactory.getLogger(StopDetectionJob.getClass)
+
+
 
   def main(args: Array[String]) {
     if (args.length < 3) {
@@ -55,24 +60,35 @@ object StopDetectionJob {
 
     val detectedStops = StopDetection.filter(parsedData)
 
-    // TODO: remove, this print is just for debugging
-    detectedStops.foreach(detectedPoint => println(detectedPoint.toString()))
+    // detectedStops.foreach(detectedPoint => println(detectedPoint.toString()))
 
-//    log.info("Cluster Points")
-//    val dbScanModel = DBSCAN.train(
-//      detectedStops,
-//      eps,
-//      minPoints,
-//      maxPointsPerPartition)
-//
-//    val clusteredData = dbScanModel.labeledPoints.map(p => s"${p.x},${p.y},${p.cluster}")
-//
-//    log.info("Print Points")
-//    clusteredData.foreach(clusteredPoint => println(clusteredPoint.toString()))
+    log.debug("Cluster Points")
+    val dbScanModel = DBSCAN.train(
+      detectedStops,
+      eps,
+      minPoints,
+      maxPointsPerPartition)
+
+    var filePath = "resources/Locker/dbscan_spark_res"
+    val clusteredData = dbScanModel.labeledPoints.map(p => s"${p.x},${p.y},${p.cluster}")
+
+    clusteredData.coalesce(1).saveAsTextFile(filePath)
+
+   // clusteredData.foreach(clusteredPoint => println(clusteredPoint.toString()))
+   // groupByClusters(filePath)
 
     log.info("Stopping Spark Context...")
     sc.stop()
 
+  }
+
+  // TODO: group by cluster ID, currently all files displays the same result in QGIS
+  def groupByClusters(filePath : String): Unit = {
+    println("Starting grouping")
+    val clusters = new ArrayBuffer[String]()
+    val lines = fromFile(filePath + "/part-00000").getLines
+    lines.foreach(line => clusters.insert(line.last, line))
+    println(lines mkString)
   }
 
 
