@@ -17,23 +17,7 @@
 
 package movements
 
-case class DetectedPoint(val vector: Array[String]){
-  def dayOfWeek = vector(0).toInt
-  def secondsOfDay = getSecondsSinceMidnight(vector(1))
-  def timestamp = vector(1)
-  def id = vector(2).toString
-  def long = vector(3).toDouble
-  def lat = vector(4).toDouble
-
-  def getSecondsSinceMidnight(timestamp: String) : Int = {
-    val splitTimestamp = timestamp.split(':')
-    (splitTimestamp(0).toInt * 3600 + splitTimestamp(1).toInt * 60 + splitTimestamp(2).toInt)
-  }
-
-  override def toString(): String = {
-    id + " " + dayOfWeek +  " " +timestamp + " " + lat + " " + long
-  }
-}
+import org.apache.spark.mllib.clustering.dbscan.DetectedPoint
 
 object BehaviourType extends Enumeration {
   type Type = Value

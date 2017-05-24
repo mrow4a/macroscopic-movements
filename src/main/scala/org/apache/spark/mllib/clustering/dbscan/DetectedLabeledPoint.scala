@@ -16,12 +16,11 @@
  */
 package org.apache.spark.mllib.clustering.dbscan
 
-import org.apache.spark.mllib.linalg.Vector
 
 /**
  * Companion constants for labeled points
  */
-object DBSCANLabeledPoint {
+object DetectedLabeledPoint {
 
   val Unknown = 0
 
@@ -32,12 +31,12 @@ object DBSCANLabeledPoint {
 
 }
 
-class DBSCANLabeledPoint(vector: Vector) extends DBSCANPoint(vector) {
+class DetectedLabeledPoint(vector: Vector[String]) extends DetectedPoint(vector) {
 
-  def this(point: DBSCANPoint) = this(point.vector)
+  def this(point: DetectedPoint) = this(point.vector)
 
-  var flag = DBSCANLabeledPoint.Flag.NotFlagged
-  var cluster = DBSCANLabeledPoint.Unknown
+  var flag = DetectedLabeledPoint.Flag.NotFlagged
+  var cluster = DetectedLabeledPoint.Unknown
   var visited = false
 
   override def toString(): String = {
