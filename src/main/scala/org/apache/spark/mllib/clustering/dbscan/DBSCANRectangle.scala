@@ -31,7 +31,7 @@ case class DBSCANRectangle(x: Double, y: Double, x2: Double, y2: Double) {
   /**
    * Returns whether point is contained by this box
    */
-  def contains(point: DBSCANPoint): Boolean = {
+  def contains(point: DetectedPoint): Boolean = {
     x <= point.x && point.x <= x2 && y <= point.y && point.y <= y2
   }
 
@@ -46,7 +46,7 @@ case class DBSCANRectangle(x: Double, y: Double, x2: Double, y2: Double) {
    * Returns a whether the rectangle contains the point, and the point
    * is not in the rectangle's border
    */
-  def almostContains(point: DBSCANPoint): Boolean = {
+  def almostContains(point: DetectedPoint): Boolean = {
     x < point.x && point.x < x2 && y < point.y && point.y < y2
   }
 

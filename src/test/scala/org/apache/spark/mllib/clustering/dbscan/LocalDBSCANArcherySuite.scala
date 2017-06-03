@@ -18,11 +18,9 @@ package org.apache.spark.mllib.clustering.dbscan
 
 import java.net.URI
 
-import scala.io.Source
+import org.scalatest.{FunSuite, Matchers}
 
-import org.scalatest.FunSuite
-import org.scalatest.Matchers
-import org.apache.spark.mllib.linalg.Vectors
+import scala.io.Source
 
 class LocalDBSCANArcherySuite extends FunSuite with Matchers {
 
@@ -30,13 +28,13 @@ class LocalDBSCANArcherySuite extends FunSuite with Matchers {
 
   test("should cluster") {
 
-    val labeled: Map[DBSCANPoint, Double] =
+    val labeled: Map[DetectedPoint, Double] =
       new LocalDBSCANArchery(eps = 0.3F, minPoints = 10)
         .fit(getRawData(dataFile))
         .map(l => (l, l.cluster.toDouble))
         .toMap
 
-    val expected: Map[DBSCANPoint, Double] = getExpectedData(dataFile).toMap
+    val expected: Map[DetectedPoint, Double] = getExpectedData(dataFile).toMap
 
     labeled.foreach {
       case (key, value) => {
@@ -52,24 +50,25 @@ class LocalDBSCANArcherySuite extends FunSuite with Matchers {
 
   }
 
-  def getExpectedData(file: String): Iterator[(DBSCANPoint, Double)] = {
+  def getExpectedData(file: String): Iterator[(DetectedPoint, Double)] = {
     Source
       .fromFile(getFile(file))
       .getLines()
       .map(s => {
-        val vector = Vectors.dense(s.split(',').map(_.toDouble))
-        val point = DBSCANPoint(vector)
-        (point, vector(2))
+        val vector = s.split(',').toVector
+        val point = DetectedPoint(vector)
+        (point, vector(2).toDouble)
       })
   }
 
-  def getRawData(file: String): Iterable[DBSCANPoint] = {
+  def getRawData(file: String): Iterable[DetectedPoint] = {
 
     Source
       .fromFile(getFile(file))
       .getLines()
-      .map(s => DBSCANPoint(Vectors.dense(s.split(',').map(_.toDouble))))
+      .map(s => DetectedPoint(s.split(',').toVector))
       .toIterable
+
   }
 
   def getFile(filename: String): URI = {

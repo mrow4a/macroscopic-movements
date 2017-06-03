@@ -17,20 +17,13 @@
 
 package movements
 
-import org.apache.spark.mllib.clustering.dbscan.DBSCAN
+import org.apache.spark.mllib.clustering.dbscan.{DBSCAN, DetectedPoint}
 import org.apache.spark.{SparkConf, SparkContext}
 import org.slf4j.LoggerFactory
-import java.io.FileOutputStream
-import java.io.PrintStream
-
-import scala.collection.mutable.ArrayBuffer
-import scala.io.Source._
 
 object StopDetectionJob {
 
   val log = LoggerFactory.getLogger(StopDetectionJob.getClass)
-
-
 
   def main(args: Array[String]) {
     if (args.length < 3) {
@@ -49,47 +42,46 @@ object StopDetectionJob {
     val conf = new SparkConf()
     conf.setAppName(s"DBSCAN(eps=$eps, min=$minPoints, max=$maxPointsPerPartition)")
     conf.set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
-    conf.setMaster("local[2]").set("spark.executor.memory","1g")
+    conf.setMaster("local[2]").set("spark.executor.memory", "1g")
     val sc = new SparkContext(conf)
 
     log.info("Parse Input File to StopPoint class instances")
     val data = sc.textFile(src)
-    val parsedData = data.map(s => DetectedPoint(s.split(';'))).cache()
+
+    // TODO fix conversion problem below
+  /*  val df = new DecimalFormat()
+    val symbols = new DecimalFormatSymbols()
+    symbols.setDecimalSeparator(',')
+    symbols.setGroupingSeparator(' ')
+    df.setDecimalFormatSymbols(symbols)
+    df.parse(p)
+*/
+    val parsedData = data.map(s => DetectedPoint(s.split(';').toVector)).cache() // Vectors.dense(s.split(';').map(try _.toDouble))
 
     log.info("Filter Moves to obtain stops only")
 
     val detectedStops = StopDetection.filter(parsedData)
 
-    // detectedStops.foreach(detectedPoint => println(detectedPoint.toString()))
+    detectedStops.foreach(detectedPoint => println(detectedPoint.toString()))
 
     log.debug("Cluster Points")
+    // TODO: pass vector, internal conversion to the point
     val dbScanModel = DBSCAN.train(
-      detectedStops,
-      eps,
-      minPoints,
-      maxPointsPerPartition)
+       detectedStops,
+       eps,
+       minPoints,
+       maxPointsPerPartition)
 
-    var filePath = "resources/Locker/dbscan_spark_res"
-    val clusteredData = dbScanModel.labeledPoints.map(p => s"${p.x},${p.y},${p.cluster}")
+     var filePath = "resources/Locker/dbscan_spark_res"
+     val clusteredData = dbScanModel.labeledPoints.map(p => s"${p.id},${p.x},${p.y},${p.cluster}")
 
-    clusteredData.coalesce(1).saveAsTextFile(filePath)
+     clusteredData.coalesce(1).saveAsTextFile(filePath)
 
-   // clusteredData.foreach(clusteredPoint => println(clusteredPoint.toString()))
-   // groupByClusters(filePath)
+    // clusteredData.foreach(clusteredPoint => println(clusteredPoint.toString()))
+    // groupByClusters(filePath)
 
     log.info("Stopping Spark Context...")
     sc.stop()
 
   }
-
-  // TODO: group by cluster ID, currently all files displays the same result in QGIS
-  def groupByClusters(filePath : String): Unit = {
-    println("Starting grouping")
-    val clusters = new ArrayBuffer[String]()
-    val lines = fromFile(filePath + "/part-00000").getLines
-    lines.foreach(line => clusters.insert(line.last, line))
-    println(lines mkString)
-  }
-
-
 }

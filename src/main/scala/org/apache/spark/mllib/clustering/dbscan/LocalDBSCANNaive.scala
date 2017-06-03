@@ -16,11 +16,10 @@
  */
 package org.apache.spark.mllib.clustering.dbscan
 
-import scala.collection.mutable.Queue
-
 import org.apache.spark.internal.Logging
-import org.apache.spark.mllib.clustering.dbscan.DBSCANLabeledPoint.Flag
-import org.apache.spark.mllib.linalg.Vectors
+import org.apache.spark.mllib.clustering.dbscan.DetectedLabeledPoint.Flag
+
+import scala.collection.mutable.Queue
 
 /**
  * A naive implementation of DBSCAN. It has O(n2) complexity
@@ -32,17 +31,17 @@ class LocalDBSCANNaive(eps: Double, minPoints: Int) extends Logging {
 
   val minDistanceSquared = eps * eps
 
-  def samplePoint = Array(new DBSCANLabeledPoint(Vectors.dense(Array(0D, 0D))))
+  def samplePoint = Array(new DetectedLabeledPoint(Vector("0D", "0D")))
 
-  def fit(points: Iterable[DBSCANPoint]): Iterable[DBSCANLabeledPoint] = {
+  def fit(points: Iterable[DetectedPoint]): Iterable[DetectedLabeledPoint] = {
 
     logInfo(s"About to start fitting")
 
-    val labeledPoints = points.map { new DBSCANLabeledPoint(_) }.toArray
+    val labeledPoints = points.map { new DetectedLabeledPoint(_) }.toArray
 
     val totalClusters =
       labeledPoints
-        .foldLeft(DBSCANLabeledPoint.Unknown)(
+        .foldLeft(DetectedLabeledPoint.Unknown)(
           (cluster, point) => {
             if (!point.visited) {
               point.visited = true
@@ -68,17 +67,17 @@ class LocalDBSCANNaive(eps: Double, minPoints: Int) extends Logging {
   }
 
   private def findNeighbors(
-    point: DBSCANPoint,
-    all: Array[DBSCANLabeledPoint]): Iterable[DBSCANLabeledPoint] =
+                             point: DetectedPoint,
+                             all: Array[DetectedLabeledPoint]): Iterable[DetectedLabeledPoint] =
     all.view.filter(other => {
       point.distanceSquared(other) <= minDistanceSquared
     })
 
   def expandCluster(
-    point: DBSCANLabeledPoint,
-    neighbors: Iterable[DBSCANLabeledPoint],
-    all: Array[DBSCANLabeledPoint],
-    cluster: Int): Unit = {
+                     point: DetectedLabeledPoint,
+                     neighbors: Iterable[DetectedLabeledPoint],
+                     all: Array[DetectedLabeledPoint],
+                     cluster: Int): Unit = {
 
     point.flag = Flag.Core
     point.cluster = cluster
@@ -102,7 +101,7 @@ class LocalDBSCANNaive(eps: Double, minPoints: Int) extends Logging {
             neighbor.flag = Flag.Border
           }
 
-          if (neighbor.cluster == DBSCANLabeledPoint.Unknown) {
+          if (neighbor.cluster == DetectedLabeledPoint.Unknown) {
             neighbor.cluster = cluster
             neighbor.flag = Flag.Border
           }

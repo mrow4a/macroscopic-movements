@@ -16,6 +16,7 @@
  */
 package movements
 
+import org.apache.spark.mllib.clustering.dbscan.DetectedPoint
 import org.apache.spark.rdd.RDD
 
 import scala.collection.mutable.ArrayBuffer
@@ -28,31 +29,42 @@ object StopDetection {
   /**
     * TODO: it might need some configuration parameters
     */
-  def filter(data: RDD[DetectedPoint])
-  : RDD[DetectedPoint] = {
+  def filter(data: RDD[DetectedPoint]): RDD[DetectedPoint] = {
     new StopDetection().filter(data)
   }
 }
 
-class StopDetection private () extends Serializable {
+class StopDetection private() extends Serializable {
 
   /**
     * Constants
     */
   def minDuration = 0.0001
-  def maxDuration = 4.0 * 60.0 * 60.0 // default to 24h
-  def slidingWindowThreshold = 1800 // 30 minutes in seconds
-  def maxWalkDistanceHuman = 1000.0 // meters
-  def minWalkSpeedHuman = 0.833 // meters per second
-  def maxWalkSpeedHuman = 1.4 // meters per second
+
+  def maxDuration = 4.0 * 60.0 * 60.0
+
+  // default to 24h
+  def slidingWindowThreshold = 1800
+
+  // 30 minutes in seconds
+  def maxWalkDistanceHuman = 1000.0
+
+  // meters
+  def minWalkSpeedHuman = 0.833
+
+  // meters per second
+  def maxWalkSpeedHuman = 1.4
+
+  // meters per second
   def maxTransportSpeed = 50 // meters per second
 
   /**
     * This function filters all DetectedPoints and
     * return Vector with (0)->Latitude and (1)->Longitude
     */
+  // TODO: input vector, transformation to detectedpoint in this class
   private def filter(parsedData: RDD[DetectedPoint]): RDD[DetectedPoint] = {
-    parsedData
+    parsedData // .map(DetectedPoint)
       .groupBy(_.id).values // Split into several partitions by ID
       .flatMap(filterMovements) // Process each group in parallel
   }
@@ -68,15 +80,15 @@ class StopDetection private () extends Serializable {
 
   private def determineStop(window: List[(StopCandidatePoint, ArrayBuffer[Double])])
   : (DetectedPoint, Boolean) = {
-    if (window.size == 2){
+    if (window.size == 2) {
       // If window is equal to two, there is no stop
       // since both stop candidates are the same points
-      val currentResult  = window(1)
+      val currentResult = window(1)
       (currentResult._1.detectedPoint, false)
     } else {
-      val previousResult  = window(0)
-      val currentResult  = window(1)
-      val nextResult  = window(2)
+      val previousResult = window(0)
+      val currentResult = window(1)
+      val nextResult = window(2)
 
       if (currentResult._1.bT == BehaviourType.PossibleStop ||
         currentResult._1.bT == BehaviourType.Stop) {
@@ -112,10 +124,10 @@ class StopDetection private () extends Serializable {
 
       // Determine what is the behaviour type
       val distance = determineDistance(
-        lastPoint.detectedPoint.lat,
-        lastPoint.detectedPoint.long,
-        current.lat,
-        current.long)
+        lastPoint.detectedPoint.x,
+        lastPoint.detectedPoint.y,
+        current.x,
+        current.y)
       val speed = determineSpeed(distance, timeDifference)
       val behaviourType = determineBehaviour(distance, speed)
 
@@ -138,7 +150,7 @@ class StopDetection private () extends Serializable {
       // Increase total duration and check
       if (totalDuration + current < slidingWindowThreshold) {
         totalDuration += current
-        mobilityIndex += 1.0/current
+        mobilityIndex += 1.0 / current
         newDurationsList += current
       }
 
@@ -147,9 +159,9 @@ class StopDetection private () extends Serializable {
     }
   }
 
-  private def determineBehaviour(distance: Double, speed: Double) : BehaviourType.Type = {
+  private def determineBehaviour(distance: Double, speed: Double): BehaviourType.Type = {
     var result = BehaviourType.Travel
-    if (speed < maxTransportSpeed){
+    if (speed < maxTransportSpeed) {
       if (speed < minWalkSpeedHuman && distance < maxWalkDistanceHuman) {
         result = BehaviourType.Stop
       }
@@ -164,12 +176,12 @@ class StopDetection private () extends Serializable {
     result
   }
 
-  private def determineSpeed(distance: Double, duration: Double) : Double = {
+  private def determineSpeed(distance: Double, duration: Double): Double = {
     distance / duration
   }
 
-  private def determineDistance(lat1 : Double, lng1 : Double,
-                                lat2 : Double, lng2 : Double) : Double = {
+  private def determineDistance(lat1: Double, lng1: Double,
+                                lat2: Double, lng2: Double): Double = {
     val earthRadius = 6371000
     val dLat = Math.toRadians(lat2 - lat1)
     val dLng = Math.toRadians(lng2 - lng1)
@@ -182,10 +194,10 @@ class StopDetection private () extends Serializable {
     (earthRadius * c).toFloat
   }
 
-  private def determineTimeDifference(lastDay : Int, lastHour : Int,
-                                      currentDay : Int, currentHour : Int) : Double = {
+  private def determineTimeDifference(lastDay: Int, lastHour: Int,
+                                      currentDay: Int, currentHour: Int): Double = {
     var pointsDuration = maxDuration
-    if (currentDay == lastDay && lastHour <= currentHour){
+    if (currentDay == lastDay && lastHour <= currentHour) {
       // case in which it is the same day
       pointsDuration = currentHour - lastHour
     } else if (currentDay == lastDay + 1) {
@@ -193,7 +205,7 @@ class StopDetection private () extends Serializable {
       pointsDuration = maxDuration - lastHour + currentHour
     }
 
-    if (pointsDuration == 0){
+    if (pointsDuration == 0) {
       pointsDuration = minDuration
     }
 

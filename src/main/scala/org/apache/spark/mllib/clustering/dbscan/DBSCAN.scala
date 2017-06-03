@@ -17,31 +17,30 @@
 package org.apache.spark.mllib.clustering.dbscan
 
 import org.apache.spark.internal.Logging
-import org.apache.spark.rdd.PairRDDFunctions
-import org.apache.spark.mllib.clustering.dbscan.DBSCANLabeledPoint.Flag
+import org.apache.spark.mllib.clustering.dbscan.DetectedLabeledPoint.Flag
 import org.apache.spark.mllib.linalg.Vector
 import org.apache.spark.rdd.RDD
 
 /**
- * Top level method for calling DBSCAN
- */
+  * Top level method for calling DBSCAN
+  */
 object DBSCAN {
 
   /**
-   * Train a DBSCAN Model using the given set of parameters
-   *
-   * @param data training points stored as `RDD[Vector]`
-   * only the first two points of the vector are taken into consideration
-   * @param eps the maximum distance between two points for them to be considered as part
-   * of the same region
-   * @param minPoints the minimum number of points required to form a dense region
-   * @param maxPointsPerPartition the largest number of points in a single partition
-   */
+    * Train a DBSCAN Model using the given set of parameters
+    *
+    * @param data                  training points stored as `RDD[Vector]`
+    *                              only the first two points of the vector are taken into consideration
+    * @param eps                   the maximum distance between two points for them to be considered as part
+    *                              of the same region
+    * @param minPoints             the minimum number of points required to form a dense region
+    * @param maxPointsPerPartition the largest number of points in a single partition
+    */
   def train(
-    data: RDD[Vector],
-    eps: Double,
-    minPoints: Int,
-    maxPointsPerPartition: Int): DBSCAN = {
+             data: RDD[DetectedPoint],
+             eps: Double,
+             minPoints: Int,
+             maxPointsPerPartition: Int): DBSCAN = {
 
     new DBSCAN(eps, minPoints, maxPointsPerPartition, null, null).train(data)
 
@@ -50,21 +49,21 @@ object DBSCAN {
 }
 
 /**
- * A parallel implementation of DBSCAN clustering. The implementation will split the data space
- * into a number of partitions, making a best effort to keep the number of points in each
- *  partition under `maxPointsPerPartition`. After partitioning, traditional DBSCAN
- *  clustering will be run in parallel for each partition and finally the results
- *  of each partition will be merged to identify global clusters.
- *
- *  This is an iterative algorithm that will make multiple passes over the data,
- *  any given RDDs should be cached by the user.
- */
-class DBSCAN private (
-  val eps: Double,
-  val minPoints: Int,
-  val maxPointsPerPartition: Int,
-  @transient val partitions: List[(Int, DBSCANRectangle)],
-  @transient private val labeledPartitionedPoints: RDD[(Int, DBSCANLabeledPoint)])
+  * A parallel implementation of DBSCAN clustering. The implementation will split the data space
+  * into a number of partitions, making a best effort to keep the number of points in each
+  * partition under `maxPointsPerPartition`. After partitioning, traditional DBSCAN
+  * clustering will be run in parallel for each partition and finally the results
+  * of each partition will be merged to identify global clusters.
+  *
+  * This is an iterative algorithm that will make multiple passes over the data,
+  * any given RDDs should be cached by the user.
+  */
+class DBSCAN private(
+                      val eps: Double,
+                      val minPoints: Int,
+                      val maxPointsPerPartition: Int,
+                      @transient val partitions: List[(Int, DBSCANRectangle)],
+                      @transient private val labeledPartitionedPoints: RDD[(Int, DetectedLabeledPoint)])
 
   extends Serializable with Logging {
 
@@ -73,21 +72,21 @@ class DBSCAN private (
 
   def minimumRectangleSize = 2 * eps
 
-  def labeledPoints: RDD[DBSCANLabeledPoint] = {
+  def labeledPoints: RDD[DetectedLabeledPoint] = {
     labeledPartitionedPoints.values
   }
 
-  private def train(vectors: RDD[Vector]): DBSCAN = {
+  private def train(vector: RDD[DetectedPoint]): DBSCAN = {
 
     // generate the smallest rectangles that split the space
     // and count how many points are contained in each one of them
     val minimumRectanglesWithCount =
-      vectors
-        .map(toMinimumBoundingRectangle)
-        .map((_, 1))
-        .aggregateByKey(0)(_ + _, _ + _)
-        .collect()
-        .toSet
+    vector
+      .map(toMinimumBoundingRectangle)
+      .map((_, 1))
+      .aggregateByKey(0)(_ + _, _ + _)
+      .collect()
+      .toSet
 
     // find the best partitions for the data space
     val localPartitions = EvenSplitPartitioner
@@ -102,11 +101,11 @@ class DBSCAN private (
         .map({ case (p, _) => (p.shrink(eps), p, p.shrink(-eps)) })
         .zipWithIndex
 
-    val margins = vectors.context.broadcast(localMargins)
+    val margins = vector.context.broadcast(localMargins)
 
     // assign each point to its proper partition
     val duplicated = for {
-      point <- vectors.map(DBSCANPoint)
+      point <- vector
       ((inner, main, outer), id) <- margins.value
       if outer.contains(point)
     } yield (id, point)
@@ -182,7 +181,7 @@ class DBSCAN private (
     clusterIdToGlobalId.foreach(e => logDebug(e.toString))
     logInfo(s"Total Clusters: ${localClusterIds.size}, Unique: $total")
 
-    val clusterIds = vectors.context.broadcast(clusterIdToGlobalId)
+    val clusterIds = vector.context.broadcast(clusterIdToGlobalId)
 
     logDebug("About to relabel inner points")
     // relabel non-duplicated points
@@ -204,7 +203,7 @@ class DBSCAN private (
     // de-duplicate and label merge points
     val labeledOuter =
       mergePoints.flatMapValues(partition => {
-        partition.foldLeft(Map[DBSCANPoint, DBSCANLabeledPoint]())({
+        partition.foldLeft(Map[DetectedPoint, DetectedLabeledPoint]())({
           case (all, (partition, point)) =>
 
             if (point.flag != Flag.Noise) {
@@ -242,17 +241,17 @@ class DBSCAN private (
   }
 
   /**
-   * Find the appropriate label to the given `vector`
-   *
-   * This method is not yet implemented
-   */
-  def predict(vector: Vector): DBSCANLabeledPoint = {
+    * Find the appropriate label to the given `vector`
+    *
+    * This method is not yet implemented
+    */
+  def predict(vector: Vector): DetectedLabeledPoint = {
     throw new NotImplementedError
   }
 
   private def isInnerPoint(
-    entry: (Int, DBSCANLabeledPoint),
-    margins: List[(Margins, Int)]): Boolean = {
+                            entry: (Int, DetectedLabeledPoint),
+                            margins: List[(Margins, Int)]): Boolean = {
     entry match {
       case (partition, point) =>
         val ((inner, _, _), _) = margins.filter({
@@ -264,9 +263,9 @@ class DBSCAN private (
   }
 
   private def findAdjacencies(
-    partition: Iterable[(Int, DBSCANLabeledPoint)]): Set[((Int, Int), (Int, Int))] = {
+                               partition: Iterable[(Int, DetectedLabeledPoint)]): Set[((Int, Int), (Int, Int))] = {
 
-    val zero = (Map[DBSCANPoint, ClusterId](), Set[(ClusterId, ClusterId)]())
+    val zero = (Map[DetectedPoint, ClusterId](), Set[(ClusterId, ClusterId)]())
 
     val (seen, adjacencies) = partition.foldLeft(zero)({
 
@@ -280,7 +279,7 @@ class DBSCAN private (
           val clusterId = (partition, point.cluster)
 
           seen.get(point) match {
-            case None                => (seen + (point -> clusterId), adjacencies)
+            case None => (seen + (point -> clusterId), adjacencies)
             case Some(prevClusterId) => (seen, adjacencies + ((prevClusterId, clusterId)))
           }
 
@@ -290,8 +289,9 @@ class DBSCAN private (
     adjacencies
   }
 
-  private def toMinimumBoundingRectangle(vector: Vector): DBSCANRectangle = {
-    val point = DBSCANPoint(vector)
+  // TODO: this should be the only method that has dependency on DetectedPoint
+  private def toMinimumBoundingRectangle(point: DetectedPoint): DBSCANRectangle = {
+    // val point = DetectedPoint(vector)
     val x = corner(point.x)
     val y = corner(point.y)
     DBSCANRectangle(x, y, x + minimumRectangleSize, y + minimumRectangleSize)
