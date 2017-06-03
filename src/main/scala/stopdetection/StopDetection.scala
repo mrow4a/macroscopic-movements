@@ -14,9 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package movements
+package stopdetection
 
-import org.apache.spark.mllib.clustering.dbscan.DetectedPoint
 import org.apache.spark.rdd.RDD
 
 import scala.collection.mutable.ArrayBuffer
@@ -29,7 +28,7 @@ object StopDetection {
   /**
     * TODO: it might need some configuration parameters
     */
-  def filter(data: RDD[DetectedPoint]): RDD[DetectedPoint] = {
+  def filter(data: RDD[Vector[String]]): RDD[Vector[String]] = {
     new StopDetection().filter(data)
   }
 }
@@ -39,64 +38,65 @@ class StopDetection private() extends Serializable {
   /**
     * Constants
     */
+
+  // default to very small number in seconds
   def minDuration = 0.0001
 
-  def maxDuration = 4.0 * 60.0 * 60.0
-
-  // default to 24h
-  def slidingWindowThreshold = 1800
+  // default to 24h in seconds
+  def maxDuration = 86400
 
   // 30 minutes in seconds
-  def maxWalkDistanceHuman = 1000.0
+  def slidingWindowThreshold = 1800
 
   // meters
+  def maxWalkDistanceHuman = 1000.0
+
+  // meters per second
   def minWalkSpeedHuman = 0.833
 
   // meters per second
   def maxWalkSpeedHuman = 1.4
 
   // meters per second
-  def maxTransportSpeed = 50 // meters per second
+  def maxTransportSpeed = 50
 
   /**
     * This function filters all DetectedPoints and
-    * return Vector with (0)->Latitude and (1)->Longitude
+    * return Vector with (0)->Latitude (1)->Longitude, (2)->ID, (3)->TimeStamp,
     */
-  // TODO: input vector, transformation to detectedpoint in this class
-  private def filter(parsedData: RDD[DetectedPoint]): RDD[DetectedPoint] = {
-    parsedData // .map(DetectedPoint)
-      .groupBy(_.id).values // Split into several partitions by ID
-      .flatMap(filterMovements) // Process each group in parallel
+  private def filter(parsedData: RDD[Vector[String]]): RDD[Vector[String]] = {
+    parsedData
+      // Convert to Detected Point
+      .map(DetectedPoint)
+      // Split into several partitions by ID
+      .groupBy(_.id).values
+      // Filter movements for each group in parallel (map) and
+      // then flatten (merge into single RDD)
+      .flatMap(filterMovements)
   }
 
-  private def filterMovements(userValues: Iterable[DetectedPoint]): Iterator[DetectedPoint] = {
+  private def filterMovements(userValues: Iterable[DetectedPoint]): Iterator[Vector[String]] = {
+    // Convert to list and ensure that values are sorted be timestamp
+    val sortedUserValues = userValues.toList.sortBy(_.timestamp)
+
     // Initialize first value at head of iterable and filter movements
-    val firstValue = StopCandidatePoint(userValues.head)
-    userValues
+    val firstValue = new StopCandidatePoint(sortedUserValues.head.vector)
+
+    // Return detected stops only in form of string vector
+    sortedUserValues
+      // Visit each detected point and create list of StopCandidatePoint
+      // (for details visit class desc.)
       .scanLeft((firstValue, ArrayBuffer[Double]()))(analyze)
-      .sliding(3).map(u => determineStop(u.toList))
-      .filter(_._2 == true).map(_._1)
-  }
-
-  private def determineStop(window: List[(StopCandidatePoint, ArrayBuffer[Double])])
-  : (DetectedPoint, Boolean) = {
-    if (window.size == 2) {
-      // If window is equal to two, there is no stop
-      // since both stop candidates are the same points
-      val currentResult = window(1)
-      (currentResult._1.detectedPoint, false)
-    } else {
-      val previousResult = window(0)
-      val currentResult = window(1)
-      val nextResult = window(2)
-
-      if (currentResult._1.bT == BehaviourType.PossibleStop ||
-        currentResult._1.bT == BehaviourType.Stop) {
-        (currentResult._1.detectedPoint, true)
-      } else {
-        (currentResult._1.detectedPoint, false)
-      }
-    }
+      // Take window of 3 StopCandidatePoint's and determine stops in each groups
+      .sliding(3).map(determineStop)
+      // Return only points which were detected as stops
+      .filter(_._2 == true)
+      // Return result Vector
+      .map(resultPair => Vector(resultPair._1.lat.toString,
+                                resultPair._1.long.toString,
+                                resultPair._1.id.toString,
+                                resultPair._1.timestamp.toString)
+      )
   }
 
   private def analyze(result: (StopCandidatePoint, ArrayBuffer[Double]),
@@ -113,8 +113,7 @@ class StopDetection private() extends Serializable {
     } else {
       // Determine duration between previous and current point
       val timeDifference = determineTimeDifference(
-        lastPoint.detectedPoint.dayOfWeek, lastPoint.detectedPoint.secondsOfDay,
-        current.dayOfWeek, current.secondsOfDay)
+        lastPoint.timestamp, current.timestamp)
       durationsSlidingWindow += timeDifference
 
       // Determine mobility indexes and new duration sliding window
@@ -124,19 +123,43 @@ class StopDetection private() extends Serializable {
 
       // Determine what is the behaviour type
       val distance = determineDistance(
-        lastPoint.detectedPoint.x,
-        lastPoint.detectedPoint.y,
-        current.x,
-        current.y)
+        lastPoint.lat,
+        lastPoint.long,
+        current.lat,
+        current.long)
       val speed = determineSpeed(distance, timeDifference)
       val behaviourType = determineBehaviour(distance, speed)
 
       // Add to feedback loop lists
-      val resultPoint = StopCandidatePoint(current, mobilityIndex, behaviourType)
+      var resultPoint = new StopCandidatePoint(current)
+      resultPoint.mobilityIndex = mobilityIndex
+      resultPoint.behaviourType = behaviourType
       (resultPoint, updatedSlidingWindow)
     }
 
   }
+
+  private def determineStop(window: List[(StopCandidatePoint, ArrayBuffer[Double])])
+  : (DetectedPoint, Boolean) = {
+    if (window.size == 2) {
+      // If window is equal to two, there is no stop
+      // since both stop candidates are the same points
+      val currentResult = window(1)
+      (currentResult._1, false)
+    } else {
+      val previousResult = window(0)
+      val currentResult = window(1)
+      val nextResult = window(2)
+
+      if (currentResult._1.behaviourType == BehaviourType.PossibleStop ||
+        currentResult._1.behaviourType == BehaviourType.Stop) {
+        (currentResult._1, true)
+      } else {
+        (currentResult._1, false)
+      }
+    }
+  }
+
 
   private def determineSlidingWindow(durationsList: ArrayBuffer[Double])
   : (ArrayBuffer[Double], Double, Double) = {
@@ -194,17 +217,8 @@ class StopDetection private() extends Serializable {
     (earthRadius * c).toFloat
   }
 
-  private def determineTimeDifference(lastDay: Int, lastHour: Int,
-                                      currentDay: Int, currentHour: Int): Double = {
-    var pointsDuration = maxDuration
-    if (currentDay == lastDay && lastHour <= currentHour) {
-      // case in which it is the same day
-      pointsDuration = currentHour - lastHour
-    } else if (currentDay == lastDay + 1) {
-      // case in which it is the next day
-      pointsDuration = maxDuration - lastHour + currentHour
-    }
-
+  private def determineTimeDifference(lastTimestamp: Int, currentTimestmap: Int): Double = {
+    var pointsDuration = (currentTimestmap - lastTimestamp).toDouble
     if (pointsDuration == 0) {
       pointsDuration = minDuration
     }

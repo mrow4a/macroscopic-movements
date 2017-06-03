@@ -1,6 +1,6 @@
 package util
 
-import movements.StopDetectionJob
+import movements.ClusterStopsJob
 
 /**
   * Created by gabri on 2017-06-01.
@@ -16,7 +16,7 @@ object DBSCANrunner {
     val array = Array(file, partitionSize, radius, minPts)
 
     for(i <- 0 to 10) {
-      StopDetectionJob.main(array)
+      ClusterStopsJob.main(array)
 
       array(3) = (array(3).toDouble + 0.0001).toString
     }

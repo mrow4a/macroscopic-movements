@@ -16,6 +16,8 @@
  */
 package org.apache.spark.mllib.clustering.dbscan
 
+import org.apache.spark.rdd.PairRDDFunctions
+import org.apache.spark.mllib.linalg.Vectors
 import org.apache.spark.mllib.util.MLlibTestSparkContext
 import org.scalatest.Matchers
 
@@ -29,7 +31,7 @@ class DBSCANSuite extends LocalDBSCANArcherySuite with MLlibTestSparkContext wit
 
     val data = sc.textFile(getFile(dataFile).toString())
 
-    val parsedData = data.map(s => DetectedPoint(s.split(',').toVector)) // .map(_.toDouble)
+    val parsedData = data.map(s => s.split(',').toVector)
 
     val model = DBSCAN.train(parsedData, eps = 0.3F, minPoints = 10, maxPointsPerPartition = 250)
     
