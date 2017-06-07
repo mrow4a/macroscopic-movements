@@ -17,15 +17,14 @@
 
 package movements
 
-import org.apache.spark.mllib.clustering.dbscan.{DBSCAN, DetectedPoint}
+import org.apache.spark.mllib.clustering.dbscan.DBSCAN
 import org.apache.spark.{SparkConf, SparkContext}
 import org.slf4j.LoggerFactory
+import stopdetection.StopDetection
 
-import scala.util.Random
+object ClusterStopsJob {
 
-object StopDetectionJob {
-
-  val log = LoggerFactory.getLogger(StopDetectionJob.getClass)
+  val log = LoggerFactory.getLogger(ClusterStopsJob.getClass)
 
   def main(args: Array[String]) {
     if (args.length < 3) {
@@ -33,8 +32,6 @@ object StopDetectionJob {
         "<src file> <max points per partition> <eps> <min points per partition>")
       System.exit(1)
     }
-
-    // System.setOut(new PrintStream(new FileOutputStream("/tmp/dbscan_output.txt")))
 
     log.info("Parse arguments of the function")
     val (src, maxPointsPerPartition, eps, minPoints) =
@@ -50,41 +47,32 @@ object StopDetectionJob {
     log.info("Parse Input File to StopPoint class instances")
     val data = sc.textFile(src)
 
-    // TODO fix conversion problem below
-  /*  val df = new DecimalFormat()
-    val symbols = new DecimalFormatSymbols()
-    symbols.setDecimalSeparator(',')
-    symbols.setGroupingSeparator(' ')
-    df.setDecimalFormatSymbols(symbols)
-    df.parse(p)
-*/
-    val parsedData = data.map(s => DetectedPoint(s.split(';').toVector)).cache() // Vectors.dense(s.split(';').map(try _.toDouble))
+    val parsedData = data.map(s => s.split(';').toVector)
 
     log.info("Filter Moves to obtain stops only")
 
     val detectedStops = StopDetection.filter(parsedData)
 
-    //detectedStops.foreach(detectedPoint => println(detectedPoint.toString()))
+    // detectedStops.foreach(detectedPoint => println(detectedPoint.toString()))
 
     log.debug("Cluster Points")
-    // TODO: pass vector, internal conversion to the point
+
     val dbScanModel = DBSCAN.train(
        detectedStops,
        eps,
        minPoints,
        maxPointsPerPartition)
 
-    val random = new Random()
-     var filePath = "resources/Locker/dbscan/" + args(2) + "_" + args(3) + "_" + random.nextInt()
-     val clusteredData = dbScanModel.labeledPoints.map(p => s"${p.x},${p.y},${p.cluster}") // removed ${p.id},
+    val clusteredData = dbScanModel.labeledPoints.map(p => s"${p.id},${p.x},${p.y},${p.cluster}")
 
-     clusteredData.coalesce(1).saveAsTextFile(filePath)
+    log.debug("Save points to the result file")
+
+    var filePath = "resources/cluster_stops_result"
+    clusteredData.coalesce(1).saveAsTextFile(filePath)
 
     // clusteredData.foreach(clusteredPoint => println(clusteredPoint.toString()))
-    // groupByClusters(filePath)
 
     log.info("Stopping Spark Context...")
     sc.stop()
-
   }
 }

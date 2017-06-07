@@ -19,7 +19,7 @@ package org.apache.spark.mllib.clustering.dbscan
 import scala.collection.mutable.Queue
 
 import org.apache.spark.internal.Logging
-import org.apache.spark.mllib.clustering.dbscan.DetectedLabeledPoint.Flag
+import org.apache.spark.mllib.clustering.dbscan.DBSCANLabeledPoint.Flag
 
 import archery.Box
 import archery.Entry
@@ -33,14 +33,14 @@ class LocalDBSCANArchery(eps: Double, minPoints: Int) extends Logging {
 
   val minDistanceSquared = eps * eps
 
-  def fit(points: Iterable[DetectedPoint]): Iterable[DetectedLabeledPoint] = {
+  def fit(points: Iterable[DBSCANPoint]): Iterable[DBSCANLabeledPoint] = {
 
-    val tree = points.foldLeft(RTree[DetectedLabeledPoint]())(
+    val tree = points.foldLeft(RTree[DBSCANLabeledPoint]())(
       (tempTree, p) =>
         tempTree.insert(
-          Entry(Point(p.x.toFloat, p.y.toFloat), new DetectedLabeledPoint(p))))
+          Entry(Point(p.x.toFloat, p.y.toFloat), new DBSCANLabeledPoint(p))))
 
-    var cluster = DetectedLabeledPoint.Unknown
+    var cluster = DBSCANLabeledPoint.Unknown
 
     tree.entries.foreach(entry => {
 
@@ -69,10 +69,10 @@ class LocalDBSCANArchery(eps: Double, minPoints: Int) extends Logging {
   }
 
   private def expandCluster(
-                             point: DetectedLabeledPoint,
-                             neighbors: Seq[Entry[DetectedLabeledPoint]],
-                             tree: RTree[DetectedLabeledPoint],
-                             cluster: Int): Unit = {
+    point: DBSCANLabeledPoint,
+    neighbors: Seq[Entry[DBSCANLabeledPoint]],
+    tree: RTree[DBSCANLabeledPoint],
+    cluster: Int): Unit = {
 
     point.flag = Flag.Core
     point.cluster = cluster
@@ -100,7 +100,7 @@ class LocalDBSCANArchery(eps: Double, minPoints: Int) extends Logging {
           }
         }
 
-        if (neighbor.cluster == DetectedLabeledPoint.Unknown) {
+        if (neighbor.cluster == DBSCANLabeledPoint.Unknown) {
           neighbor.cluster = cluster
           neighbor.flag = Flag.Border
         }
@@ -111,11 +111,11 @@ class LocalDBSCANArchery(eps: Double, minPoints: Int) extends Logging {
 
   }
 
-  private def inRange(point: DetectedPoint)(entry: Entry[DetectedLabeledPoint]): Boolean = {
+  private def inRange(point: DBSCANPoint)(entry: Entry[DBSCANLabeledPoint]): Boolean = {
     entry.value.distanceSquared(point) <= minDistanceSquared
   }
 
-  private def toBoundingBox(point: DetectedPoint): Box = {
+  private def toBoundingBox(point: DBSCANPoint): Box = {
     Box(
       (point.x - eps).toFloat,
       (point.y - eps).toFloat,

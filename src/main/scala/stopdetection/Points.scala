@@ -15,9 +15,24 @@
  * limitations under the License.
  */
 
-package movements
+package stopdetection
 
-import org.apache.spark.mllib.clustering.dbscan.DetectedPoint
+case class DetectedPoint(vector: Vector[String]){
+
+  def timestamp: Int = getTimestamp(vector(0), vector(1))
+  def id: String = vector(2)
+  def lat: Double = vector(3).toDouble
+  def long: Double = vector(4).toDouble
+
+  def getTimestamp(dayOfWeek: String, timeOfDay: String) : Int = {
+    val splitTimestamp = timeOfDay.split(':')
+    dayOfWeek.toInt * 86400 +          // convert day number to seconds
+      splitTimestamp(0).toInt * 3600 + // convert hours number to seconds
+      splitTimestamp(1).toInt * 60 +   // convert minutes number to seconds
+      splitTimestamp(2).toInt          // get seconds
+  }
+
+}
 
 object BehaviourType extends Enumeration {
   type Type = Value
@@ -28,14 +43,14 @@ object BehaviourType extends Enumeration {
   val Travel = Value(3)
 }
 
-case class StopCandidatePoint(val dP: DetectedPoint,
-                               val mI: Double = 0,
-                               val bT: BehaviourType.Type = BehaviourType.Travel){
-  def detectedPoint = dP
-  def mobilityIndex = mI
-  def behaviourType = bT
+class StopCandidatePoint(vector: Vector[String]) extends DetectedPoint(vector){
+
+  def this(point: DetectedPoint) = this(point.vector)
+
+  var mobilityIndex: Double = 0
+  var behaviourType: BehaviourType.Type = BehaviourType.Travel
 
   override def toString(): String = {
-    detectedPoint + " " + mobilityIndex +  " " + behaviourType
+    vector + " " +mobilityIndex + " " + behaviourType
   }
 }
