@@ -21,6 +21,8 @@ import org.apache.spark.mllib.clustering.dbscan.{DBSCAN, DetectedPoint}
 import org.apache.spark.{SparkConf, SparkContext}
 import org.slf4j.LoggerFactory
 
+import scala.util.Random
+
 object StopDetectionJob {
 
   val log = LoggerFactory.getLogger(StopDetectionJob.getClass)
@@ -62,7 +64,7 @@ object StopDetectionJob {
 
     val detectedStops = StopDetection.filter(parsedData)
 
-    detectedStops.foreach(detectedPoint => println(detectedPoint.toString()))
+    //detectedStops.foreach(detectedPoint => println(detectedPoint.toString()))
 
     log.debug("Cluster Points")
     // TODO: pass vector, internal conversion to the point
@@ -72,8 +74,9 @@ object StopDetectionJob {
        minPoints,
        maxPointsPerPartition)
 
-     var filePath = "resources/Locker/dbscan_spark_res"
-     val clusteredData = dbScanModel.labeledPoints.map(p => s"${p.id},${p.x},${p.y},${p.cluster}")
+    val random = new Random()
+     var filePath = "resources/Locker/dbscan/" + args(2) + "_" + args(3) + "_" + random.nextInt()
+     val clusteredData = dbScanModel.labeledPoints.map(p => s"${p.x},${p.y},${p.cluster}") // removed ${p.id},
 
      clusteredData.coalesce(1).saveAsTextFile(filePath)
 
