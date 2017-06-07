@@ -26,39 +26,42 @@ import scala.collection.mutable.ArrayBuffer
 object StopDetection {
 
   /**
-    * TODO: it might need some configuration parameters
+    * Filter detected points to find stops
+    *
+    * @param data parsed points stored as `RDD[[Vector[String]]`
+    * Vector[String] should contain following data
+    * at specific positions (0)->Latitude (1)->Longitude, (2)->ID, (3)->TimeStamp
+    *
+    * @param durationsSlidingWindowSize
+    * @param stopCertaintyMaxDistance
+    * @param stopCertaintyMaxSpeed
+    * @param travelCertaintyMinSpeed
     */
-  def filter(data: RDD[Vector[String]]): RDD[Vector[String]] = {
-    new StopDetection().filter(data)
+  def filter(
+      data: RDD[Vector[String]],
+      durationsSlidingWindowSize: Double,
+      stopCertaintyMaxDistance: Double,
+      stopCertaintyMaxSpeed: Double,
+      travelCertaintyMinSpeed: Double): RDD[Vector[String]] = {
+
+    new StopDetection(
+      durationsSlidingWindowSize,
+      stopCertaintyMaxDistance,
+      stopCertaintyMaxSpeed,
+      travelCertaintyMinSpeed).filter(data)
   }
 }
 
-class StopDetection private() extends Serializable {
+class StopDetection private(
+      val durationsSlidingWindowSize: Double,
+      val stopCertaintyMaxDistance: Double,
+      val stopCertaintyMaxSpeed: Double,
+      val travelCertaintyMinSpeed: Double)
+  extends Serializable {
 
-  /**
-    * Constants
-    */
-
-  // default to very small number in seconds
-  def minDuration = 0.0001
-
-  // default to 24h in seconds
-  def maxDuration = 86400
-
-  // 30 minutes in seconds
-  def slidingWindowThreshold = 1800
-
-  // meters
-  def maxWalkDistanceHuman = 1000.0
-
-  // meters per second
-  def minWalkSpeedHuman = 0.833
-
-  // meters per second
-  def maxWalkSpeedHuman = 1.4
-
-  // meters per second
-  def maxTransportSpeed = 50
+  /* Constants */
+  def minDuration: Double = 0.0001 // default to very small number in seconds
+  def maxDuration: Double = 86400 // default to 24h in seconds
 
   /**
     * This function filters all DetectedPoints and
@@ -151,9 +154,11 @@ class StopDetection private() extends Serializable {
       val currentResult = window(1)
       val nextResult = window(2)
 
-      if (currentResult._1.behaviourType == BehaviourType.PossibleStop ||
-        currentResult._1.behaviourType == BehaviourType.Stop) {
+      if (currentResult._1.behaviourType == BehaviourType.Stop) {
         (currentResult._1, true)
+      } else if (currentResult._1.behaviourType == BehaviourType.PossibleStop
+        && previousResult._1.mobilityIndex > currentResult._1.mobilityIndex) {
+        (previousResult._1, true)
       } else {
         (currentResult._1, false)
       }
@@ -170,11 +175,11 @@ class StopDetection private() extends Serializable {
       var mobilityIndex = result._2
       var totalDuration = result._3
 
-      // Increase total duration and check
-      if (totalDuration + current < slidingWindowThreshold) {
-        totalDuration += current
-        mobilityIndex += 1.0 / current
-        newDurationsList += current
+      totalDuration += current // increase sum of past durations
+      // Check if sum of duration did not exceed the maximum sliding window duration
+      if (totalDuration < durationsSlidingWindowSize || newDurationsList.isEmpty) {
+        mobilityIndex += 1.0 / current // recalculate mobility index
+        newDurationsList += current // add current duration to the result sliding window
       }
 
       (newDurationsList, mobilityIndex, totalDuration)
@@ -184,16 +189,14 @@ class StopDetection private() extends Serializable {
 
   private def determineBehaviour(distance: Double, speed: Double): BehaviourType.Type = {
     var result = BehaviourType.Travel
-    if (speed < maxTransportSpeed) {
-      if (speed < minWalkSpeedHuman && distance < maxWalkDistanceHuman) {
-        result = BehaviourType.Stop
-      }
-      else if (speed > minWalkSpeedHuman && distance < maxWalkDistanceHuman) {
-        result = BehaviourType.PossibleTravel
-      }
-      else if (speed < maxWalkSpeedHuman) {
-        result = BehaviourType.PossibleStop
-      }
+    if (speed < stopCertaintyMaxSpeed && distance < stopCertaintyMaxDistance) {
+      result = BehaviourType.Stop
+    }
+    else if (speed > stopCertaintyMaxSpeed && distance < stopCertaintyMaxDistance) {
+      result = BehaviourType.PossibleTravel
+    }
+    else if (speed < travelCertaintyMinSpeed) {
+      result = BehaviourType.PossibleStop
     }
 
     result

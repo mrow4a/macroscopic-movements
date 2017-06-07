@@ -51,9 +51,17 @@ object ClusterStopsJob {
 
     log.info("Filter Moves to obtain stops only")
 
-    val detectedStops = StopDetection.filter(parsedData)
+    val durationsSlidingWindowSize = 2400.0 // By default 40 minutes
+    val stopCertaintyMaxDistance = 1500.0 // By default max walking distance for human
+    val stopCertaintyMaxSpeed = 0.833 // By default min human walking speed
+    val travelCertaintyMinSpeed = 1.4 // By default max human walking speed
 
-    // detectedStops.foreach(detectedPoint => println(detectedPoint.toString()))
+    val detectedStops = StopDetection.filter(
+      parsedData,
+      durationsSlidingWindowSize,
+      stopCertaintyMaxDistance,
+      stopCertaintyMaxSpeed,
+      travelCertaintyMinSpeed)
 
     log.debug("Cluster Points")
 
