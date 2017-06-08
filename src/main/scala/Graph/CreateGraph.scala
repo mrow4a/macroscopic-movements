@@ -28,7 +28,7 @@ import scala.collection.mutable.ArrayBuffer
 /**
   * Created by ananya on 23.05.17.
   */
-class CreateVertex(sc: SparkContext) {
+class CreateGraph(sc: SparkContext) {
   /* def myfunc2(index: Int, inputs: Iterator[String]) : Iterator[(Int, Int)] = {
     var results = List[(Int,Int)]()
     results .::= (index, inputs.size)
@@ -38,7 +38,7 @@ class CreateVertex(sc: SparkContext) {
 }
 
 
-object CreateVertex {
+object CreateGraph {
   def main(args: Array[String]) {
     if (args.length < 1) {
       System.exit(1)
@@ -50,7 +50,7 @@ object CreateVertex {
       conf.set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
       conf.setMaster("local[2]").set("spark.executor.memory", "1g")
       val context = new SparkContext(conf)
-      val job = new CreateVertex(context)
+      val job = new CreateGraph(context)
 
       val data = context.textFile(src)
 
@@ -67,8 +67,6 @@ object CreateVertex {
 
       var filePath = "resources/edges"
       userData.coalesce(1).saveAsTextFile(filePath)
-
-      val edgeCount = userData.map(CountEdge)
 
       val edges: RDD[Edge[String]] = userData.map { line =>
         Edge(line._1.toInt, line._2.toInt, "1") // line._3)
@@ -111,11 +109,7 @@ object CreateVertex {
     } // end of foldLeft
     }
   }// end of function
-  def CountEdge(data: (String,String)) : ArrayBuffer[(String,String,String)] = {
-    val temp = List(data)
 
-
-  }
 }
 
 
