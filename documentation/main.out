@@ -1,6 +1,19 @@
-\BOOKMARK [0][-]{chapter.1}{Concept and Design}{}% 1
-\BOOKMARK [1][-]{section.1.1}{Stop Detection}{chapter.1}% 2
-\BOOKMARK [1][-]{section.1.2}{Clustering of Stops}{chapter.1}% 3
-\BOOKMARK [1][-]{section.1.3}{City Movements Graph}{chapter.1}% 4
-\BOOKMARK [0][-]{chapter.2}{Implementation}{}% 5
-\BOOKMARK [0][-]{chapter.3}{Evaluation}{}% 6
+\BOOKMARK [0][-]{chapter.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.1.1}{Macroscopic City Movements - problem definition}{chapter.1}% 2
+\BOOKMARK [1][-]{section.1.2}{Human Mobility within the city}{chapter.1}% 3
+\BOOKMARK [1][-]{section.1.3}{Methodology of obtaining location data}{chapter.1}% 4
+\BOOKMARK [1][-]{section.1.4}{Location data characteristics for Berlin area}{chapter.1}% 5
+\BOOKMARK [2][-]{subsection.1.4.1}{General overview}{section.1.4}% 6
+\BOOKMARK [2][-]{subsection.1.4.2}{Data analysis}{section.1.4}% 7
+\BOOKMARK [1][-]{section.1.5}{Approaches to stop detection for localization services}{chapter.1}% 8
+\BOOKMARK [2][-]{subsection.1.5.1}{Stop Detection analyzing repetitive appearance at location}{section.1.5}% 9
+\BOOKMARK [2][-]{subsection.1.5.2}{Stop Detection based on continuous localization}{section.1.5}% 10
+\BOOKMARK [2][-]{subsection.1.5.3}{Stop Detection based on mobility index}{section.1.5}% 11
+\BOOKMARK [0][-]{chapter.2}{Concept and Design}{}% 12
+\BOOKMARK [1][-]{section.2.1}{Stop Detection}{chapter.2}% 13
+\BOOKMARK [2][-]{subsection.2.1.1}{Identifying stop candidates}{section.2.1}% 14
+\BOOKMARK [2][-]{subsection.2.1.2}{Reconciliation of stop candidates}{section.2.1}% 15
+\BOOKMARK [1][-]{section.2.2}{Clustering of Stops}{chapter.2}% 16
+\BOOKMARK [1][-]{section.2.3}{City Movements Graph}{chapter.2}% 17
+\BOOKMARK [0][-]{chapter.3}{Implementation}{}% 18
+\BOOKMARK [0][-]{chapter.4}{Evaluation}{}% 19
