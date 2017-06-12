@@ -1,0 +1,115 @@
+\chapter{Implementation}
+\label{cha:implementation}
+
+\section{Scripts for data analysis - usage}
+
+TODO: 
+
+\section{Stop Location Identification - batch processing in Apache Spark}
+
+TODO: final implementation and algorithm should be discussed here
+
+\subsection{Calculation of the index for verification of mobility index approach - python implementation}
+
+There are two approaches to calculate mobility index, having equally spaced windows in time, or sliding window.
+\\\\
+In the first approach, for a single user, minimum and maximum timestamp of sorted sequence is being found. Having value of MobilityIndexWindow (e.g. 30 minutes), function is creating equaly spaced bins of that value within maximum and minimum timestamps. Each point is being visited and is assigned to the proper timestamp bin according to its own timestamp and duration to the previous point. However, danger of this approach is that points and their duration are randomly placed in bins and could lead to represent mobility of fixed window, instead of mobility history for points.  
+\\\\
+In the second approach, for a single user, each point is being visited and temporarly marked as "current position". For each current position, all points which are distant in time by MobilityIndexWindow in the past, are assigned to the sliding window. This approach represents mobility history in the past time window for each point. 
+
+\begin{figure}
+	\centering
+	\begin{minipage}{.45\textwidth}
+		\centering
+		\includegraphics[width=.9\linewidth]{images/mob_calc1.png}
+	\end{minipage}%
+	\begin{minipage}{.45\textwidth}
+		\centering
+		\includegraphics[width=.9\linewidth]{images/mob_calc2.png}
+	\end{minipage}
+	\captionof{figure}{Mobility Index calculation using equally spaced windows in time (left) and using sliding window over time (right). Time Window of 30 minutes using the same data set for one unique user}
+	\label{fig:mob_calc}
+\end{figure}
+
+\FloatBarrier
+
+At the end, mobility index, as defined in \autoref{cha:introduction_mob_index_sect}, is being calculated over the assigned values - \autoref{fig:mob_calc}. 
+
+\subsection{Algorithm for stop detection}
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.95\textwidth]{images/stop_algo.png}
+	\caption{ Stop detection algorithm for proactive localization services. }
+	\label{fig:stop_algo}
+\end{figure} 
+
+\FloatBarrier
+
+\section{Clustering algorithm}
+
+For clustering we started off with DBScan, described in \autoref{chap:related_work}. The difficulty with DBScan is figuring out the two parameters, the minimum points per cluster (\textit{minPts}) and the radius of the clusters (\textit{eps}). 
+
+\subsection{DBSCAN on Spark}
+
+We wanted a scalable implementation of DBSCAN that could handle large data sets, preferable in parallel. We decided to use Apache Spark, a scalable engine for large-scale data processing \cite{spark}. For this we used an implementation by Irving Cordova, based upon an algorithm called MR-DBSCAN built for the MapReduce framework \cite{dbscan_on_spark}. The implementation of DBScan runs in parallel by splitting the data space into boxes, using the number of boxes as a cost estimator for the algorithm. Each box then grows to include one \textit{eps} in it. After each box and its points has been determined the traditional DBScan algorithm is run on the points in each box. Finally it examines the intersection points betweeen boxes and merges the result together \cite{vis_dbscan_on_spark}. The figures below visualises the execution steps.
+
+\begin{figure}
+	\centering
+	\begin{minipage}{.5\textwidth}
+		\centering
+		\includegraphics[width=.6\linewidth]{images/db1_c.png}
+		\captionof{figure}{Step 1. DBSCAN on Spark assign the data space into boxes.}
+		\label{fig:db1_c}
+	\end{minipage}%
+	\begin{minipage}{.5\textwidth}
+		\centering
+		\includegraphics[width=.6\linewidth]{images/db2_c.png}
+		\captionof{figure}{Step 2. Each box grows to include the points that are within one \textit{eps} of it.}
+		\label{fig:db2_c}
+	\end{minipage}
+	\begin{minipage}{.5\textwidth}
+		\centering
+		\includegraphics[width=.6\linewidth]{images/db3_c.png}
+		\captionof{figure}{Step 3. Traditional DBScan algorithm is applied in parallel for each box. Each different color represents a different cluster. }
+		\label{fig:db3_c}
+	\end{minipage}%	
+	\begin{minipage}{.5\textwidth}
+		\centering
+		\includegraphics[width=.6\linewidth]{images/db4_c.png}
+		\captionof{figure}{Step 4. After DBSCAN is done, all points witihin the borders of two clusters are examnied. If they are part of a cluster within two boxes they are merged to one cluster. }
+		\label{fig:db4_c}	
+	\end{minipage}		
+	\begin{minipage}{.5\textwidth}
+		\centering
+		\includegraphics[width=1\linewidth]{images/db5_c.png}
+		\captionof{figure}{Step 5. Finally all remaning points are labeled with the global identified cluster and we are done. (red points are noise points). }
+		\label{fig:db5_c}	
+	\end{minipage}%
+\end{figure}
+
+\pagebreak
+
+
+\section{Graph Analysis}
+\subsection{Data Preparation}
+
+ For our analysis we had to first consider cleaning the data and structuring it in a suitable format. The output of the clustering algorithm forms the basis for this step. The clustering algorithm identifies many stop points as outliers with cluster id=0. These outliers are filtered out from the main data set. It is to be noted however, that the outliers are useful in analyzing the quality ?? of the data to be used for the graphical analysis process.
+ 
+After removing the outliers, the list of all remaining valid clusters are considered as the set of vertices and are denoted as V.
+The next task is to construct the set of edges. This task has been achieved in two steps. At first, data for each user has been processed and edges constructed between clusters - as described in \autoref{cha:movementsGraph} Next, a list of all edges was made, and the number of times an edge repeats in the list was taken as the weight of the edge.
+This list of edges and vertices forms the basic information for the graphical analysis phase.
+
+\subsection{Analysis}
+We have used both GraphX and Python for the graphical analysis.
+We use GraphX to create the Graph using list of edges. Using built-in graph analysis methods provided GraphX we can extract the distribution of in-degrees and out-degrees, list of strongly and weakly connected components . We can obtain a list of most important Vertices using the PageRank method. <Need to add more here>
+We are using the NetworkX library of Python to verify and plot results.
+
+
+
+
+
+
+
+
+
