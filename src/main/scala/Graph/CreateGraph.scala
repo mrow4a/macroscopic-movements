@@ -29,11 +29,6 @@ import scala.collection.mutable.ArrayBuffer
   * Created by ananya on 23.05.17.
   */
 class CreateGraph(sc: SparkContext) {
-  /* def myfunc2(index: Int, inputs: Iterator[String]) : Iterator[(Int, Int)] = {
-    var results = List[(Int,Int)]()
-    results .::= (index, inputs.size)
-    results.iterator
-  } */
 
 }
 
@@ -59,32 +54,26 @@ object CreateGraph {
         (p(2), p(3))
       }.filter(_._2.toInt != 0)   // All lines with Cluster Id = 0 removed.
 
-      var result = ""
       val userData = newTransactionsPair.groupBy(a => a._1).values
         .flatMap(mapEdge)
         .filter(_._1.nonEmpty)
         .cache()      // -- will use this for tripcount() as well as other calculations.
 
+      var parsedData = userData
+        .groupBy(a => (a._1,a._2)).values.flatMap(tripCount)
+
+       parsedData.saveAsTextFile("resources/parsedData")
       var filePath = "resources/edges"
-      userData.coalesce(1).saveAsTextFile(filePath)
+    //  userData.coalesce(1).saveAsTextFile(filePath)
 
-      val edges: RDD[Edge[String]] = userData.map { line =>
-        Edge(line._1.toInt, line._2.toInt, "1") // line._3)
-      }      // need to remove duplicates, and add count for each pair.
+      val edges: RDD[Edge[String]] = parsedData.map { line =>
+        Edge(line._1.toInt, line._2.toInt, line._3.toString)
+      }
 
-      edges.saveAsTextFile("resources/test")
-      // var testGraph = GraphLoader.edgeListFile(context, "resources/test")
-      var testGraph = Graph.fromEdges(edges , defaultValue = 1)
-      println(testGraph.edges.first())
-      // println(testGraph.inDegrees)
-      testGraph.inDegrees.saveAsTextFile("resources/vertices")
-      //  val edgeCount = testGraph.edges.countByValue()
+      edges.saveAsTextFile(filePath)
 
-      // countByValue() result: EdgeCount: Map(Edge(6,9,1) -> 2, Edge(1,2,1) -> 3,
-      // Edge(2,3,1) -> 1, Edge(2,6,1) -> 1, Edge(3,5,1) -> 1, Edge(3,7,1) -> 1,
-      // Edge(9,3,1) -> 1, Edge(5,8,1) -> 1, Edge(9,1,1) -> 1)
-      //  println("EdgeCount: " + edgeCount)
-      // edgeCount.saveAsTextFile("GraphEdges")
+      var userGraph = Graph.fromEdges(edges , defaultValue = 1)
+      userGraph.triplets.saveAsTextFile("resources/triplet")
 
       context.stop()
     }
@@ -110,6 +99,17 @@ object CreateGraph {
     }
   }// end of function
 
+   def tripCount(data : Iterable[(String, String)]) : Iterable[(String, String,Int)] = {
+    var count = 0
+    val resultMax = data.foldLeft(ArrayBuffer[(String,String,Int)]()) { (result,c) => {
+        count = count + 1
+        val temp = (c._1, c._2, count)
+        result += temp
+        result
+    }}.max  // end of foldLeft */
+    val resultFinal = (resultMax._1,resultMax._2,resultMax._3)
+    List(resultFinal)
+  }   // end of funtion
 }
 
 
