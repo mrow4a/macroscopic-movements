@@ -1,11 +1,23 @@
+<<<<<<< aca7e8935c264727bbcb343857b822a347891b47
+<<<<<<< 9e476ffc924e5aca20c89e0e2c92cb81b97170a7
+<<<<<<< f11e91c57998b18cc4aaee81f3b2c9db990dea64
 This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.5.29)  27 JUN 2017 11:24
+=======
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.6.11)  12 JUN 2017 12:54
+>>>>>>> Documentation WIP
+=======
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.6.11)  12 JUN 2017 13:11
+>>>>>>> Documentation WIP
+=======
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.6.11)  14 JUN 2017 12:39
+>>>>>>> Documentation WIP
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **main.tex
 (./main.tex
 LaTeX2e <2016/02/01>
-Babel <3.9q> and hyphenation patterns for 3 language(s) loaded.
+Babel <3.9q> and hyphenation patterns for 81 language(s) loaded.
 (/usr/share/texlive/texmf-dist/tex/latex/koma-script/scrbook.cls
 Document Class: scrbook 2015/10/03 v3.19a KOMA-Script document class (book)
 (/usr/share/texlive/texmf-dist/tex/latex/koma-script/scrkbase.sty
@@ -216,7 +228,7 @@ Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 )
 (/usr/share/texlive/texmf-dist/tex/latex/hyphenat/hyphenat.sty
 Package: hyphenat 2009/09/02 v2.3c hyphenation utilities
-\langwohyphens=\language3
+\langwohyphens=\language81
 LaTeX Info: Redefining \_ on input line 43.
 )
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/mathpazo.sty
@@ -686,8 +698,6 @@ File: babel.def 2016/02/24 3.9q Babel common definitions
 \babel@savecnt=\count304
 \U@D=\dimen142
 )
-\l@british = a dialect from \language\l@english 
-\l@UKenglish = a dialect from \language\l@english 
 \l@canadian = a dialect from \language\l@american 
 \l@australian = a dialect from \language\l@british 
 \l@newzealand = a dialect from \language\l@british 
@@ -1765,7 +1775,11 @@ LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <24.88> not available
 LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <12> not available
 (Font)              Font shape `T1/ppl/b/n' tried instead on input line 19.
 
+<<<<<<< aca7e8935c264727bbcb343857b822a347891b47
 <images/snet/titlepage.pdf, id=159, 143.33551pt x 202.8378pt>
+=======
+<images/snet/titlepage.pdf, id=35, 143.33551pt x 202.8378pt>
+>>>>>>> Documentation WIP
 File: images/snet/titlepage.pdf Graphic file (type pdf)
 
 <use images/snet/titlepage.pdf>
@@ -1896,6 +1910,7 @@ LaTeX Font Info:    Font shape `U/msb/m/n' will be
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
 (Font)              scaled to size 8.33606pt on input line 1.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
+<<<<<<< aca7e8935c264727bbcb343857b822a347891b47
 (Font)              scaled to size 6.25204pt on input line 1.
  [2 <./images/movement_update.png> <./images/snet/snet_footer.png>]
 chapter 2.
@@ -1972,8 +1987,20 @@ Underfull \hbox (badness 10000) in paragraph at lines 24--31
  []
 
 [5
+=======
+(Font)              scaled to size 6.25204pt on input line 4.
+LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <14.4> not available
+(Font)              Font shape `T1/ppl/b/n' tried instead on input line 8.
+ [1
 
+>>>>>>> Documentation WIP
 
+])
+(./content/04_implementation.tex
+<images/snet/snet_footer.png, id=55, 281.05pt x 63.23625pt>
+File: images/snet/snet_footer.png Graphic file (type png)
+
+<<<<<<< aca7e8935c264727bbcb343857b822a347891b47
 ]
 
 LaTeX Warning: Citation 'clustering' on page 6 undefined on input line 34.
@@ -1995,6 +2022,17 @@ Package pdftex.def Info: images/snet/snet_footer.png used on input line 49.
 (pdftex.def)             Requested size: 81.94212pt x 18.43645pt.
  [6])
 (./content/04_implementation.tex [7 <./images/clustering.png>] [8
+=======
+<use images/snet/snet_footer.png>
+Package pdftex.def Info: images/snet/snet_footer.png used on input line 1.
+(pdftex.def)             Requested size: 81.94212pt x 18.43645pt.
+ [2 <./images/snet/snet_footer.png>]
+chapter 2.
+) (./content/05_evaluation.tex [3
+
+
+] [4
+>>>>>>> Documentation WIP
 
 
 ]
@@ -2328,6 +2366,7 @@ Package atveryend Info: Empty hook `AfterLastShipout' on input line 98.
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 98.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 98.
 Package rerunfilecheck Info: File `main.out' has not changed.
+<<<<<<< aca7e8935c264727bbcb343857b822a347891b47
 (rerunfilecheck)             Checksum: B35BC8FAF1800BBBC1CABA0BB035FC4B;2964.
 
 
@@ -2338,11 +2377,16 @@ Package biblatex Warning: Please (re)run Biber on the file:
 (biblatex)                main
 (biblatex)                and rerun LaTeX afterwards.
 
+=======
+(rerunfilecheck)             Checksum: 88AAD2A55C9AC8E90DAB10C48D558FA9;427.
+>>>>>>> Documentation WIP
 Package logreq Info: Writing requests to 'main.run.xml'.
 \openout1 = `main.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
+<<<<<<< aca7e8935c264727bbcb343857b822a347891b47
+<<<<<<< f11e91c57998b18cc4aaee81f3b2c9db990dea64
  30364 strings out of 494953
  539112 string characters out of 6180977
  1016935 words of memory out of 5000000
@@ -2359,9 +2403,43 @@ fb></usr/share/texlive/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></usr/sha
 re/texlive/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></usr/share/texlive/t
 exmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
 Output written on main.pdf (31 pages, 7316449 bytes).
+=======
+ 29895 strings out of 493029
+ 530222 string characters out of 6136234
+=======
+ 29906 strings out of 493029
+ 530433 string characters out of 6136234
+>>>>>>> Documentation WIP
+ 1013818 words of memory out of 5000000
+ 32848 multiletter control sequences out of 15000+600000
+ 33942 words of font info for 66 fonts, out of 8000000 for 9000
+ 1143 hyphenation exceptions out of 8191
+ 69i,16n,66p,2349b,1637s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texliv
+e/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texm
+f-dist/fonts/type1/urw/palatino/uplb8a.pfb></usr/share/texlive/texmf-dist/fonts
+/type1/urw/palatino/uplr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/p
+<<<<<<< aca7e8935c264727bbcb343857b822a347891b47
+alatino/uplri8a.pfb>
+<<<<<<< 9e476ffc924e5aca20c89e0e2c92cb81b97170a7
+Output written on main.pdf (8 pages, 83363 bytes).
+>>>>>>> Documentation WIP
+=======
+Output written on main.pdf (8 pages, 83546 bytes).
+>>>>>>> Documentation WIP
 PDF statistics:
  433 PDF objects out of 1000 (max. 8388607)
  353 compressed objects within 4 object streams
  90 named destinations out of 1000 (max. 500000)
  437 words of extra memory for PDF output out of 10000 (max. 10000000)
+=======
+alatino/uplr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/palatino/uplr
+i8a.pfb>
+Output written on main.pdf (8 pages, 102553 bytes).
+PDF statistics:
+ 105 PDF objects out of 1000 (max. 8388607)
+ 86 compressed objects within 1 object stream
+ 16 named destinations out of 1000 (max. 500000)
+ 79 words of extra memory for PDF output out of 10000 (max. 10000000)
+>>>>>>> Documentation WIP
 

@@ -3,8 +3,12 @@
 
 \section{Stop Location Detection}
 
+<<<<<<< f11e91c57998b18cc4aaee81f3b2c9db990dea64
 \subsection{Stop Detection for proactive localization based services}
 \label{cha:stopdet_proactive}
+=======
+We need to describe here what do we want to achieve, what do we mean by modeling and visualizing macroscopic movements etc - thus general architecture that we have 3 components, Stop Detection from telekom data based on movements and updates of "areas" in your mobile phone, Clustering of Stops to find most popular "stops" in the city, Graph Generation to find where do the people move and in what amount
+>>>>>>> Documentation WIP
 
 Analyzing different approaches for stop detection based on localization data (ref. \autoref{cha:introduction_appr_stopdet}), we decided to test and verify algorithms based on human behavior regarding mobility within the cities (ref. \autoref{cha:introduction_hummob}) and reusing the concept of Mobility Index (ref. \autoref{cha:introduction_mob_index_sect})). Stop Location Detection Algorithm have to be able not only identify the time of start stop, but also the stop location.
 \\\\
@@ -31,6 +35,7 @@ For movements between points over mid/long distances recorded, user might have s
 
 \section{Clustering of Stops}
 
+<<<<<<< f11e91c57998b18cc4aaee81f3b2c9db990dea64
 Clustering can be described as "\textit{the task of grouping a set of objects in such a way that objects in the same group (called a cluster) are more similar (in some sense or another) to each other than to those in other groups (clusters)}" \cite{clustering}. 
 \\\\
 After our stop detection algorithm has detected the proper stops we want to perform some analysis on these. Our goal is to get the overall movement patterns of the population of a certain area, which means we are interested in \textbf{macroscopic} movements and not microscopic (individual) movement. If we would consider every individual our analysis algorithms would get fed with a lot of noise (outliers) which would make our data mining and prediction difficult and inaccurate. Meaning, \textit{Macroscopic Movements} are not interesting in tracking individuals but rather seeing the big picture.
@@ -48,5 +53,33 @@ After our stop detection algorithm has detected the proper stops we want to perf
 
 \FloatBarrier
 \section{City Movements Graph}
+One of the purposes of this project is to identify popular locations and routes in a city as well as determine movement patterns of people. The stop locations  identified in this project, correspond to actual physical locations in the city with individual latitude and longitude values. These stop locations are further clustered to identify places of interest in the city. A collection of such stop points, varying over time of the day and User Id, allows us to chart the movement of users from one point of interest to another. 
 
-\FloatBarrier
+It is important to outline how the vertices and edges were selected for creating the city graph. The clusters created out of the Stop points are represented as vertices. If any user has more than two such vertices, it is assumed that the user has moved between these successive points and an edge is constructed between them. Direction of movement is considered from the first point to the second point in the sequence.
+
+Such a graphical representation allows us to mathematically represent the data, e.g. with the help of Incidence, Adjacency, and Origin-Destination  matrices. Correlations like these enable easy visualization of the movement patterns. 
+\textit{TO INSERT IMAGE OF GRAPH + MATRIX}
+
+We can mark a vertex as either a sources or a destination of an edge. This incidence relation allows us to calculate the in-degrees and out-degrees of the vertices. Information like this can indicate most visited places in the city by their high in/out-degrees. For example: the central train station of a city will have a high in and out-degree due to high number of people traveling to or from that place.
+
+\FloatBarrier=======
+\section{City Movements Graph}
+One of the purposes of this project is to determine movement patterns of people and also identify popular locations and routes in a city. The "stop points" identified from the telekom data correspond to actual physical locations in the city with individual latitude and longitude values. These "stop points" are further clustered to identify places of interest in the city. These positions indicate places in a city where people are known to have stopped. Thus, these stop positions can be used to graphically represent movement of people in the city. When mapped to physical entities in a city, these stop positions correspond to an office, a University, a bus or train station, shopping mall etc. Thus movement pattern of inhabitants of a city can be determined.
+
+\subsection {Purpose of graphical representation:} Representing user movement data graphically allows easy visualization and analysis of the data. Graphical representation of the movement patterns allows computation of different correlation and obtain conclusions?
+
+\textbf{Selection of vertices and edges} It is important to outline how the vertices and edges were selected for graph creation.The clusters created out of the Stop points are represented as vertices. 
+\textbf{Edge selection} For selecting edges, each user data is processed individually to determine the sequence of movement of a user from one vertex to the other. An edge is constructed between two vertices, if position of user changes from one cluster to another, with the assumption that user moved from the first cluster to the next one at some point of time.
+
+<<<<<<< aca7e8935c264727bbcb343857b822a347891b47
+<<<<<<< 35f005625e822ce66484e7d8466a14a805df8c98
+The total list of edges is created with an aggregation of edges created for all users. In case of multiple occurrences of particular edges, the count is noted. For all other edges, number of occurrence is defaulted to 1.
+>>>>>>> Documentation WIP
+=======
+The total list of edges is created with an aggregation of edges created for all users. In case of multiple occurrences of particular edges, the count is noted. For all other edges, number of occurrence is defaulted to 1. 
+=======
+The total list of edges is obtained by aggregating the edges created for all users. In case of multiple occurrence of an edges, the count is noted. For all other edges, number of occurrence is defaulted to 1. 
+>>>>>>> Documentation WIP
+
+\textbf{Intended goal}
+>>>>>>> Documentation WIP
