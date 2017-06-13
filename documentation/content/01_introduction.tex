@@ -70,6 +70,8 @@ The given data batch has been gathered in the interval of 24h starting from 3am 
 \subsection{Data analysis}
 \label{cha:introduction_dataanaly}
 
+Statistics performed using tool written in Python (https://github.com/mrow4a/macroscopic-movements-algorithm-prototypes) shows, that for users at least once visiting Berlin, had in average 17 points gathered because of their movements in the period of 24h, harmonic mean of 4 points and maximum 100 of points.
+
 \autoref{fig:introduction_ber_stats} shows that there is significant fraction of points which timestamp or distance did not change, thus duplicated point has been recorded. 
 \\
 TODO: This needs to be investigated
@@ -107,7 +109,7 @@ Here we should explain different approaches
 In the paper \cite{MobilityIndexGIS}, movement of mobile devices between cells (handovers) is considered. To detect the periods of slow movements of stops at the specific location, parameter called Mobility Index is considered. 
 \begin{figure}[!ht]
 	\centering
-	\includegraphics[width=0.6\textwidth]{images/intro_mobility_index.png}\\
+	\includegraphics[width=0.5\textwidth]{images/intro_mobility_index.png}\\
 	\caption{Mobility Index. Source: \cite{MobilityIndexGIS}}
 	\label{fig:introduction_mob_index}
 \end{figure}
@@ -117,3 +119,5 @@ terminal can change from one cell to another within
 seconds or after several minutes. Given a set of consecutive records, the mobility of a user can be estimated by calculating the Mobility Index over a pre-defined time period (sliding window). The Mobility Index is the sum of the distance between each record and the previous ones, where the distance is the inverse of the time spent on each cell. If the value of MI is below certain threshold, it is assumed that the object stopped or moved slowly. 
 \\\\
 In the publication, sliding window of 10 minutes and a mobility index threshold value of 6 has been used for certain area. The obtained results were in agreement with actual movements during more than 90\% of the time. 
+\\\\
+High mobility index tells that user have been moving from checkpoint to checkpoint within very small time distance. Rapid drop in mobility index represents very long duration at the last point, and slight decrease in mobility index means that user changed position, but within longer duration.
