@@ -57,13 +57,20 @@ object ClusterStopsJob {
     val stopCertaintyMaxDistance = 1500.0 // By default max walking distance for human
     val stopCertaintyMaxSpeed = 0.833 // By default min human walking speed
     val travelCertaintyMinSpeed = 1.4 // By default max human walking speed
+    val filterSpeedThreshold = 70 // Filter all speeds above 250 km/h
+    val filterDistanceThreshold = 100 // Filter all points within distance of 100m, anomalies
+    val filterDurationThreshold = 5 // Filter all points within duration of 5s, anomalies
 
     val detectedStops = StopDetection.filter(
       parsedData,
       durationsSlidingWindowSize,
       stopCertaintyMaxDistance,
       stopCertaintyMaxSpeed,
-      travelCertaintyMinSpeed)
+      travelCertaintyMinSpeed,
+      filterSpeedThreshold,
+      filterDistanceThreshold,
+      filterDurationThreshold
+    )
 
     log.debug("Cluster Points")
 

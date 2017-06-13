@@ -47,7 +47,10 @@ class StopCandidatePoint(vector: Vector[String]) extends DetectedPoint(vector){
 
   def this(point: DetectedPoint) = this(point.vector)
 
-  var mobilityIndex: Double = 0
+  var mobilityIndex: Double = -1
+  var speed: Double = -1
+  var distance: Double = -1
+  var duration: Double = -1
   var behaviourType: BehaviourType.Type = BehaviourType.Travel
 
   override def toString(): String = {
