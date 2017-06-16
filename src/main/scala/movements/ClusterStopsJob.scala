@@ -22,6 +22,7 @@ import org.apache.spark.{SparkConf, SparkContext}
 import org.slf4j.LoggerFactory
 import stopdetection.StopDetection
 
+
 object ClusterStopsJob {
 
   val log = LoggerFactory.getLogger(ClusterStopsJob.getClass)
@@ -54,25 +55,34 @@ object ClusterStopsJob {
     val detectedStops = StopDetection.filter(parsedData)
 
     // detectedStops.foreach(detectedPoint => println(detectedPoint.toString()))
+    var testPts = 1
+    for (i <- 0 to 20) {
+      log.debug("Cluster Points for points = " + testPts)
+      testPts += 1
 
-    log.debug("Cluster Points")
+      val dbScanModel = DBSCAN.train(
+        detectedStops,
+        eps,
+        testPts,
+        maxPointsPerPartition)
 
-    val dbScanModel = DBSCAN.train(
-       detectedStops,
-       eps,
-       minPoints,
-       maxPointsPerPartition)
-
-    val clusteredData = dbScanModel.labeledPoints.map(p => s"${p.id},${p.x},${p.y},${p.cluster}")
-
-    log.debug("Save points to the result file")
-
-    var filePath = "resources/cluster_stops_result"
-    clusteredData.coalesce(1).saveAsTextFile(filePath)
+      createHistogram()
+      // val clusteredData = dbScanModel.labeledPoints.map(p => s"${p.id},${p.x},${p.y},${p.cluster}")
+      // log.debug("Save points to the result file")
+      // var filePath = "resources/cluster_stops_result"
+      // clusteredData.coalesce(1).saveAsTextFile(filePath)
+    }
 
     // clusteredData.foreach(clusteredPoint => println(clusteredPoint.toString()))
 
     log.info("Stopping Spark Context...")
     sc.stop()
   }
+
+  def createHistogram(): Unit = {
+      ???
+
+  }
+
+
 }
