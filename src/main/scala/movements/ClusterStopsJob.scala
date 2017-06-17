@@ -22,7 +22,6 @@ import org.apache.spark.{SparkConf, SparkContext}
 import org.slf4j.LoggerFactory
 import stopdetection.StopDetection
 
-
 object ClusterStopsJob {
 
   val log = LoggerFactory.getLogger(ClusterStopsJob.getClass)
@@ -52,37 +51,36 @@ object ClusterStopsJob {
 
     log.info("Filter Moves to obtain stops only")
 
-    val detectedStops = StopDetection.filter(parsedData)
+    val durationsSlidingWindowSize = 2400.0 // By default 40 minutes
+    val stopCertaintyMaxDistance = 1500.0 // By default max walking distance for human
+    val stopCertaintyMaxSpeed = 0.833 // By default min human walking speed
+    val travelCertaintyMinSpeed = 1.4 // By default max human walking speed
 
-    // detectedStops.foreach(detectedPoint => println(detectedPoint.toString()))
-    var testPts = 1
-    for (i <- 0 to 20) {
-      log.debug("Cluster Points for points = " + testPts)
-      testPts += 1
+    val detectedStops = StopDetection.filter(
+      parsedData,
+      durationsSlidingWindowSize,
+      stopCertaintyMaxDistance,
+      stopCertaintyMaxSpeed,
+      travelCertaintyMinSpeed)
 
-      val dbScanModel = DBSCAN.train(
-        detectedStops,
-        eps,
-        testPts,
-        maxPointsPerPartition)
+    log.debug("Cluster Points")
 
-      createHistogram()
-      // val clusteredData = dbScanModel.labeledPoints.map(p => s"${p.id},${p.x},${p.y},${p.cluster}")
-      // log.debug("Save points to the result file")
-      // var filePath = "resources/cluster_stops_result"
-      // clusteredData.coalesce(1).saveAsTextFile(filePath)
-    }
+    val dbScanModel = DBSCAN.train(
+       detectedStops,
+       eps,
+       minPoints,
+       maxPointsPerPartition)
+
+    val clusteredData = dbScanModel.labeledPoints.map(p => s"${p.id},${p.x},${p.y},${p.cluster}")
+
+    log.debug("Save points to the result file")
+
+    var filePath = "resources/cluster_stops_result"
+    clusteredData.coalesce(1).saveAsTextFile(filePath)
 
     // clusteredData.foreach(clusteredPoint => println(clusteredPoint.toString()))
 
     log.info("Stopping Spark Context...")
     sc.stop()
   }
-
-  def createHistogram(): Unit = {
-      ???
-
-  }
-
-
 }
