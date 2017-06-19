@@ -1,8 +1,8 @@
 \chapter{Concept and Design}
 \label{cha:conceptanddesign}
 
-We need to describe here what do we want to achieve, what do we mean by modelling and visualizing macroscopic movements etc - thus general architecture that we have 3 components, Stop Detection from telekom data based on movements and updates of "areas" in your mobile phone, Clustering of Stops to find most popular "stops" in the city, Graph Generation to find where do the people move and in what amount
-
+\textbf{We need to describe here what do we want to achieve, what do we mean by modelling and visualizing macroscopic movements etc - thus general architecture that we have 3 components, Stop Detection from telekom data based on movements and updates of "areas" in your mobile phone, Clustering of Stops to find most popular "stops" in the city, Graph Generation to find where do the people move and in what amount
+}
 \section{Stop Detection}
 
 Analyzing different approaches for stop detection based on localization data (ref. \autoref{cha:introduction_appr_stopdet}), we decided to base our solution on standard human behavior regarding mobility within the cities (ref. \autoref{cha:introduction_hummob}) and reusing the concept of Mobility Index (ref. \autoref{cha:introduction_mob_index_sect})).
@@ -93,13 +93,30 @@ Analyzing traces from \autoref{fig:reco_ex_5b} and \autoref{fig:reco_ex_5a} we i
 \\\\
 Further examples, showing the above mentioned events can be found in \autoref{appendix:add_example_1}, \autoref{appendix:add_example_2}
 \\\\
-TODO: Now should decide what should be algorithm based on above mentioned values, most probably for:
+\textbf{TODO: Now should decide what should be algorithm based on above mentioned values, most probably for:
 \\-> mobility index higher then the threshold, and next point mobility index being lower then the threshold, there is no stop, but slow movement to possible stop location. 
 \\-> mobility index higher then the threshold, and next point mobility index being also higher then the threshold might mean that there is short stop at the location
 \\-> short distance covered, stop is either in both current and previous or in between
-\\-> for long distance the stop is close to previous point
+\\-> for long distance the stop is close to previous point}
 
 \section{Clustering of Stops}
+
+Clustering can be described as "\textit{the task of grouping a set of objects in such a way that objects in the same group (called a cluster) are more similar (in some sense or another) to each other than to those in other groups (clusters)}" \cite{clustering}. 
+\\\\
+After our stop detection algorithm has detected the proper stops we want to perform some analysis on these. Our goal is to get the overall movement patterns of the population of a certain area, which means we are interested in \textbf{macroscopic} movements and not microscopic (individual) movement. If we would consider every individual our analysis algorithms would get fed with a lot of noise (outliers) which would make our data mining and prediction difficult and inaccurate. Meaning, \textit{Macroscopic Movements} are not interesting in tracking individuals but rather seeing the big picture.
+
+ Once our clustering algorithm has been applied, and we have the overall picture, we can see which stops are most popular, where people are moving from them, and how long they stay at a certain location. One could then perform some interesting graph analysis on these locations, answering questions such as "what is the probability that a person moves from point \textit{A} to \textit{B}?", or "what is the average stop time at location \textit{A}?". 
+ 
+ To achieve these clusters, which represents our interesting stop locations, we need to apply some clustering algorithm. There are different types of clustering (such as centroid, distribution, or density-based), and different algorithms with parameters that can be applied (such as K-means, DBScan, or OPTICS). However, they all work to achieve the same goal of structuring (clustering, grouping) similar objects and neglecting outliers from these groups. The algorithm and parameters are application sensitive and our choice will be handled in the \textit{evaluation} section.
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.6\textwidth]{images/clustering.png}
+	\caption{ Clustering applied to a dataset. }
+	\label{fig:clustering}
+\end{figure} 
+
+
 
 \FloatBarrier
 \section{City Movements Graph}
