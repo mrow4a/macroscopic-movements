@@ -34,26 +34,18 @@ case class DetectedPoint(vector: Vector[String]){
 
 }
 
-object BehaviourType extends Enumeration {
-  type Type = Value
-
-  val Stop = Value(0)
-  val PossibleStop = Value(1)
-  val PossibleTravel = Value(2)
-  val Travel = Value(3)
-}
-
 class StopCandidatePoint(vector: Vector[String]) extends DetectedPoint(vector){
 
   def this(point: DetectedPoint) = this(point.vector)
 
-  var mobilityIndex: Double = -1
   var speed: Double = -1
   var distance: Double = -1
   var duration: Double = -1
-  var behaviourType: BehaviourType.Type = BehaviourType.Travel
+  var mobilityIndex: Double = -1
+  var previousMobilityIndex: Double = -1
+  var nextMobilityIndex: Double = -1
 
   override def toString(): String = {
-    vector + " " +mobilityIndex + " " + behaviourType
+    vector + " sp: " +speed + " dis: " + distance + "dur: " + duration
   }
 }

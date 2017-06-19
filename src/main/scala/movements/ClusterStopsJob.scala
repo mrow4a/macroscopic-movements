@@ -57,6 +57,9 @@ object ClusterStopsJob {
     val stopCertaintyMaxDistance = 1500.0 // By default max walking distance for human
     val stopCertaintyMaxSpeed = 0.833 // By default min human walking speed
     val travelCertaintyMinSpeed = 1.4 // By default max human walking speed
+    val mobilityIndexThreshold = 0.001 // Mobility Index Threshold used to determine mobility patterns
+
+    // Parameters for anomaly filtering, -1 for ignoring the parameters
     val filterSpeedThreshold = 70 // Filter all speeds above 250 km/h
     val filterDistanceThreshold = 100 // Filter all points within distance of 100m, anomalies
     val filterDurationThreshold = 5 // Filter all points within duration of 5s, anomalies
@@ -67,26 +70,28 @@ object ClusterStopsJob {
       stopCertaintyMaxDistance,
       stopCertaintyMaxSpeed,
       travelCertaintyMinSpeed,
+      mobilityIndexThreshold,
       filterSpeedThreshold,
       filterDistanceThreshold,
       filterDurationThreshold
     )
 
+    detectedStops.foreach(u => println(u.toString()))
     log.debug("Cluster Points")
 
-    val dbScanModel = DBSCAN.train(
-       detectedStops,
-       eps,
-       minPoints,
-       maxPointsPerPartition)
+//    val dbScanModel = DBSCAN.train(
+//       detectedStops,
+//       eps,
+//       minPoints,
+//       maxPointsPerPartition)
 
-    val clusteredData = dbScanModel.labeledPoints.map(p => s"${p.id},${p.x},${p.y},${p.cluster}")
+    // val clusteredData = dbScanModel.labeledPoints.map(p => s"${p.id},${p.x},${p.y},${p.cluster}")
 
     log.debug("Save points to the result file")
 
-    val random = new Random()
-    var filePath = "resources/Locker/dbscan/" + eps + "_" + minPoints + "_" + random.nextInt()
-    clusteredData.coalesce(1).saveAsTextFile(filePath)
+    // val random = new Random()
+    // var filePath = "resources/Locker/dbscan/" + eps + "_" + minPoints + "_" + random.nextInt()
+    // clusteredData.coalesce(1).saveAsTextFile(filePath)
 
     // clusteredData.foreach(clusteredPoint => println(clusteredPoint.toString()))
 

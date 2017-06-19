@@ -36,6 +36,7 @@ object StopDetection {
     * @param stopCertaintyMaxDistance
     * @param stopCertaintyMaxSpeed
     * @param travelCertaintyMinSpeed
+    * @param mobilityIndexThreshold
     * @param filterSpeedThreshold
     * @param filterDistanceThreshold
     * @param filterDurationThreshold
@@ -46,6 +47,7 @@ object StopDetection {
       stopCertaintyMaxDistance: Double,
       stopCertaintyMaxSpeed: Double,
       travelCertaintyMinSpeed: Double,
+      mobilityIndexThreshold: Double,
       filterSpeedThreshold: Double,
       filterDistanceThreshold: Double,
       filterDurationThreshold: Double): RDD[Vector[String]] = {
@@ -55,6 +57,7 @@ object StopDetection {
       stopCertaintyMaxDistance,
       stopCertaintyMaxSpeed,
       travelCertaintyMinSpeed,
+      mobilityIndexThreshold,
       filterSpeedThreshold,
       filterDistanceThreshold,
       filterDurationThreshold).filter(data)
@@ -66,6 +69,7 @@ class StopDetection private(
       val stopCertaintyMaxDistance: Double,
       val stopCertaintyMaxSpeed: Double,
       val travelCertaintyMinSpeed: Double,
+      val mobilityIndexThreshold: Double,
       val filterSpeedThreshold: Double,
       val filterDistanceThreshold: Double,
       val filterDurationThreshold: Double)
@@ -79,86 +83,28 @@ class StopDetection private(
     * This function filters all DetectedPoints and
     * return Vector with (0)->Latitude (1)->Longitude, (2)->ID, (3)->TimeStamp,
     */
-  private def filter(parsedData: RDD[Vector[String]]): RDD[Vector[String]] = {
+  private def filter(parsedData: RDD[Vector[String]]): RDD[StopCandidatePoint] = {
     parsedData
       // Convert to Detected Point
       .map(DetectedPoint)
       // Split into several partitions by ID
       .groupBy(_.id).values
       // Filter movements for each group in parallel (map) and
-      // then flatten (merge into single RDD)
-      .flatMap(filterMovements)
+      // then flatten (merge into RDD)
+      .flatMap(getCandidates)
   }
 
-  private def filterMovements(userValues: Iterable[DetectedPoint]): Iterator[Vector[String]] = {
-    val initStopCandidatePoint = new StopCandidatePoint(Vector("","","",""))
-    // Convert to list and ensure that values are sorted be timestamp
+  private def getCandidates(userValues: Iterable[DetectedPoint]): Iterable[StopCandidatePoint] = {
+    val initPoint = new StopCandidatePoint(Vector())
     userValues
+      // Ensure that values are sorted by timestamp
       .toList.sortBy(_.timestamp)
       // Visit each detected point and create list of StopCandidatePoint
       .sliding(2).map(determineMetadata)
-      // TODO
-      .scanLeft((initStopCandidatePoint, ArrayBuffer[Double]()))(analyze)
-      // TODO
-      .drop(1).map(_._1)
-      // Take window of 3 StopCandidatePoint's and determine stops in each groups
-      .sliding(2).map(determineStop)
-      // Return only points which were detected as stops
-      .filter(_._2 == true)
-      // Return only points
+      // Visit each pair of detected points and create list of StopCandidatePoints
+      .scanLeft((initPoint, ArrayBuffer[Double]()))(determineCurrentMobilityIndex)
       .map(_._1)
-      // Return result Vector
-      .map(resultPair => Vector(resultPair.lat.toString,
-                                resultPair.long.toString,
-                                resultPair.id.toString,
-                                resultPair.timestamp.toString)
-      )
-  }
-
-  private def analyze(result: (StopCandidatePoint, ArrayBuffer[Double]),
-                      current: StopCandidatePoint)
-  : (StopCandidatePoint, ArrayBuffer[Double]) = {
-    // Obtain parameters
-    var durationsSlidingWindow = result._2
-
-    // Determine mobility indexes and new duration sliding window
-    durationsSlidingWindow += current.duration
-    val determinationResult = determineSlidingWindow(durationsSlidingWindow)
-    val updatedSlidingWindow = determinationResult._1
-    val mobilityIndex = determinationResult._2
-
-    val behaviourType = determineBehaviour(current.distance, current.speed)
-    current.mobilityIndex = mobilityIndex
-    current.behaviourType = behaviourType
-    (current, updatedSlidingWindow)
-
-  }
-
-  private def determineStop(window: Seq[StopCandidatePoint])
-  : (DetectedPoint, Boolean) = {
-    if (window.size == 1) {
-      // If window is equal to two, there is no stop
-      // since both stop candidates are the same points
-      val currentResult = window(0)
-      if (currentResult.behaviourType == BehaviourType.Stop
-          || currentResult.behaviourType == BehaviourType.PossibleStop) {
-        (currentResult, true)
-      } else {
-        (currentResult, false)
-      }
-    } else {
-      val previousResult = window(0)
-      val currentResult = window(1)
-
-      if (currentResult.behaviourType == BehaviourType.Stop) {
-        (currentResult, true)
-      } else if (currentResult.behaviourType == BehaviourType.PossibleStop
-        && previousResult.mobilityIndex > currentResult.mobilityIndex) {
-        (previousResult, true)
-      } else {
-        (currentResult, false)
-      }
-    }
+      .scanRight(initPoint)(determineNextMobilityIndex)
   }
 
   private def determineMetadata(window: List[DetectedPoint])
@@ -193,40 +139,97 @@ class StopDetection private(
     }
   }
 
-  private def determineSlidingWindow(durationsList: ArrayBuffer[Double])
-  : (ArrayBuffer[Double], Double, Double) = {
-    // Go from last to first and get trimmed duration list and mobility index
-    durationsList.foldRight((ArrayBuffer[Double](), 0.0, 0.0)) { (current, result) => {
-      // Obtain parameters
-      var newDurationsList = result._1
-      var mobilityIndex = result._2
-      var totalDuration = result._3
+  private def determineCurrentMobilityIndex(result: (StopCandidatePoint, ArrayBuffer[Double]),
+                      current: StopCandidatePoint)
+  : (StopCandidatePoint, ArrayBuffer[Double]) = {
+    // Obtain parameters
+    var lastPoint = result._1
+    var durationsSlidingWindow = result._2
 
-      totalDuration += current // increase sum of past durations
-      // Check if sum of duration did not exceed the maximum sliding window duration
-      if (totalDuration < durationsSlidingWindowSize || newDurationsList.isEmpty) {
-        mobilityIndex += 1.0 / current // recalculate mobility index
-        newDurationsList += current // add current duration to the result sliding window
-      }
+    if (durationsSlidingWindow.isEmpty) {
+      durationsSlidingWindow += maxDuration
+      (current, durationsSlidingWindow)
+    } else {
+      val timeDifference = determineTimeDifference(
+        lastPoint.timestamp, current.timestamp)
+      val distance = determineDistance(
+        lastPoint.lat,
+        lastPoint.long,
+        current.lat,
+        current.long)
+      val speed = determineSpeed(distance, timeDifference)
 
-      (newDurationsList, mobilityIndex, totalDuration)
-    }
+      var isAnomaly = false
+      // Add basic metadata
+      var resultPoint = new StopCandidatePoint(current)
+
+      // Dont take into account points which are anomalies
+      resultPoint.speed = speed
+      resultPoint.distance = distance
+      resultPoint.duration = timeDifference
+
+      // Determine duration sliding window and mobility index
+      durationsSlidingWindow += timeDifference
+
+      val updatedSlidingWindow = determineSlidingWindow(durationsSlidingWindow)
+      resultPoint.previousMobilityIndex = lastPoint.mobilityIndex
+      resultPoint.mobilityIndex = determineMobilityIndex(updatedSlidingWindow)
+
+      (resultPoint, updatedSlidingWindow, isAnlomaly)
+
     }
   }
 
-  private def determineBehaviour(distance: Double, speed: Double): BehaviourType.Type = {
-    var result = BehaviourType.Travel
-    if (speed < stopCertaintyMaxSpeed && distance < stopCertaintyMaxDistance) {
-      result = BehaviourType.Stop
-    }
-    else if (speed > stopCertaintyMaxSpeed && distance < stopCertaintyMaxDistance) {
-      result = BehaviourType.PossibleTravel
-    }
-    else if (speed < travelCertaintyMinSpeed) {
-      result = BehaviourType.PossibleStop
-    }
+  private def determineNextMobilityIndex(currentPoint: StopCandidatePoint,
+                      next: StopCandidatePoint)
+  : StopCandidatePoint = {
+    // Obtain parameters
+    currentPoint.nextMobilityIndex = next.mobilityIndex
+    currentPoint
+  }
 
-    result
+  private def determineStop(currentResultPoint: StopCandidatePoint)
+  : (DetectedPoint, Boolean) = {
+    if(isPossibleStop(currentResultPoint.speed, currentResultPoint.distance)) {
+      (currentResultPoint, true)
+    } else {
+      (currentResultPoint, false)
+    }
+  }
+
+  private def determineMobilityIndex(durationsList: ArrayBuffer[Double])
+  : Double = {
+    // Sum of the inversions
+    durationsList.map(duration => 1/duration).sum
+  }
+
+  private def determineSlidingWindow(durationsList: ArrayBuffer[Double])
+  : ArrayBuffer[Double] = {
+    // Go from last to first and get trimmed duration list and mobility index
+    val result = durationsList.foldRight((ArrayBuffer[Double](), 0.0)) { (current, result) => {
+        // Obtain parameters
+        var newDurationsList = result._1
+        var totalDuration = result._2
+
+        totalDuration += current // increase sum of past durations
+        // Check if sum of duration did not exceed the maximum sliding window duration
+        if (totalDuration < durationsSlidingWindowSize || newDurationsList.isEmpty) {
+          newDurationsList += current // add current duration to the result sliding window
+        }
+
+        (newDurationsList, totalDuration)
+      }
+    }
+    result._1
+  }
+
+  private def isPossibleStop(distance: Double, speed: Double): Boolean = {
+    if (speed < stopCertaintyMaxSpeed && distance < stopCertaintyMaxDistance
+    || speed < travelCertaintyMinSpeed && distance > stopCertaintyMaxDistance) {
+      true
+    } else {
+      false
+    }
   }
 
   private def determineSpeed(distance: Double, duration: Double): Double = {
