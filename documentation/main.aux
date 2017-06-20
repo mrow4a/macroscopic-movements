@@ -102,41 +102,68 @@
 \@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 2.8}{\ignorespaces  Clustering applied to a dataset. \relax }}{13}{figure.caption.15}}
 \newlabel{fig:clustering}{{\relax 2.8}{13}{Clustering applied to a dataset. \relax }{figure.caption.15}{}}
 \@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {section}{\numberline {2.3}City Movements Graph}{13}{section.2.3}}
+\abx@aux@cite{spark}
+\abx@aux@segm{0}{0}{spark}
+\abx@aux@cite{dbscan_on_spark}
+\abx@aux@segm{0}{0}{dbscan_on_spark}
+\abx@aux@cite{vis_dbscan_on_spark}
+\abx@aux@segm{0}{0}{vis_dbscan_on_spark}
 \@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {chapter}{\numberline {3}Implementation}{15}{chapter.3}}
 \@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\defcounter {refsection}{0}\relax }\@writefile{lot}{\addvspace {10\p@ }}
 \@writefile{lol}{\defcounter {refsection}{0}\relax }\@writefile{lol}{\addvspace {10\p@ }}
 \newlabel{cha:implementation}{{3}{15}{Implementation}{chapter.3}{}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {section}{\numberline {3.1}Clustering algorithm}{15}{section.3.1}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {subsection}{\numberline {3.1.1}DBSCAN on Spark}{15}{subsection.3.1.1}}
+\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 3.1}{\ignorespaces Step 1. DBSCAN on Spark assign the data space into boxes.\relax }}{16}{figure.caption.16}}
+\newlabel{fig:db1_c}{{\relax 3.1}{16}{Step 1. DBSCAN on Spark assign the data space into boxes.\relax }{figure.caption.16}{}}
+\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 3.2}{\ignorespaces Step 2. Each box grows to include the points that are within one \textit  {eps} of it.\relax }}{16}{figure.caption.16}}
+\newlabel{fig:db2_c}{{\relax 3.2}{16}{Step 2. Each box grows to include the points that are within one \textit {eps} of it.\relax }{figure.caption.16}{}}
+\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 3.3}{\ignorespaces Step 3. Traditional DBScan algorithm is applied in parallel for each box. Each different color represents a different cluster. \relax }}{16}{figure.caption.16}}
+\newlabel{fig:db3_c}{{\relax 3.3}{16}{Step 3. Traditional DBScan algorithm is applied in parallel for each box. Each different color represents a different cluster. \relax }{figure.caption.16}{}}
+\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 3.4}{\ignorespaces Step 4. After DBSCAN is done, all points witihin the borders of two clusters are examnied. If they are part of a cluster within two boxes they are merged to one cluster. \relax }}{16}{figure.caption.16}}
+\newlabel{fig:db4_c}{{\relax 3.4}{16}{Step 4. After DBSCAN is done, all points witihin the borders of two clusters are examnied. If they are part of a cluster within two boxes they are merged to one cluster. \relax }{figure.caption.16}{}}
+\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 3.5}{\ignorespaces Step 5. Finally all remaning points are labeled with the global identified cluster and we are done. (red points are noise points). \relax }}{16}{figure.caption.16}}
+\newlabel{fig:db5_c}{{\relax 3.5}{16}{Step 5. Finally all remaning points are labeled with the global identified cluster and we are done. (red points are noise points). \relax }{figure.caption.16}{}}
 \@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {chapter}{\numberline {4}Evaluation}{17}{chapter.4}}
 \@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\defcounter {refsection}{0}\relax }\@writefile{lot}{\addvspace {10\p@ }}
 \@writefile{lol}{\defcounter {refsection}{0}\relax }\@writefile{lol}{\addvspace {10\p@ }}
 \newlabel{cha:evaluation}{{4}{17}{Evaluation}{chapter.4}{}}
-\newlabel{cha:bibliography}{{4}{19}{Evaluation}{chapter.4}{}}
-\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {chapter}{\nonumberline Bibliography}{19}{chapter*.16}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {section}{\numberline {4.1}Clustering algorithm}{17}{section.4.1}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.1}DBSCAN}{17}{subsection.4.1.1}}
+\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 4.1}{\ignorespaces  Clusters with good parameters \textit  {epsilon} = 110 meter, \textit  {minPts} = 5. Alexanderplatz (pink) has 85 data points in it. \relax }}{18}{figure.caption.17}}
+\newlabel{fig:0.001_5_gray}{{\relax 4.1}{18}{Clusters with good parameters \textit {epsilon} = 110 meter, \textit {minPts} = 5. Alexanderplatz (pink) has 85 data points in it. \relax }{figure.caption.17}{}}
+\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 4.2}{\ignorespaces  Example of a clusters with bad parameters, here \textit  {epsilon} = 220 meter is too large, \textit  {minPts} = 5. "Alexanderplatz" (light green) has 748 data points in it and stretches over the whole centre (Mitte) of Berlin. \relax }}{18}{figure.caption.18}}
+\newlabel{fig:002_5_gray}{{\relax 4.2}{18}{Example of a clusters with bad parameters, here \textit {epsilon} = 220 meter is too large, \textit {minPts} = 5. "Alexanderplatz" (light green) has 748 data points in it and stretches over the whole centre (Mitte) of Berlin. \relax }{figure.caption.18}{}}
+\newlabel{cha:bibliography}{{4.1.1}{19}{DBSCAN}{figure.caption.18}{}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {chapter}{\nonumberline Bibliography}{19}{chapter*.19}}
 \@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\defcounter {refsection}{0}\relax }\@writefile{lot}{\addvspace {10\p@ }}
 \@writefile{lol}{\defcounter {refsection}{0}\relax }\@writefile{lol}{\addvspace {10\p@ }}
-\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {chapter}{Appendices}{21}{section*.17}}
-\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {chapter}{\nonumberline Appendix 1}{23}{chapter*.18}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {chapter}{Appendices}{21}{section*.20}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {chapter}{\nonumberline Appendix 1}{23}{chapter*.21}}
 \@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\defcounter {refsection}{0}\relax }\@writefile{lot}{\addvspace {10\p@ }}
 \@writefile{lol}{\defcounter {refsection}{0}\relax }\@writefile{lol}{\addvspace {10\p@ }}
-\newlabel{appendix:add_example_1}{{4}{23}{Appendix 1}{chapter*.18}{}}
-\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 1}{\ignorespaces  Visualization of distances, speed and mobility indexes for example from \autoref  {fig:reco_ex_3b} with identified stop candidates \relax }}{23}{figure.caption.19}}
-\newlabel{fig:reco_ex_3a}{{\relax 1}{23}{Visualization of distances, speed and mobility indexes for example from \autoref {fig:reco_ex_3b} with identified stop candidates \relax }{figure.caption.19}{}}
-\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 2}{\ignorespaces  Movement example for one user in the period of 24h, with recorded locations due to the movement and annotated timestamps for detected stop candidates \relax }}{23}{figure.caption.20}}
-\newlabel{fig:reco_ex_3b}{{\relax 2}{23}{Movement example for one user in the period of 24h, with recorded locations due to the movement and annotated timestamps for detected stop candidates \relax }{figure.caption.20}{}}
+\newlabel{appendix:add_example_1}{{4.1.1}{23}{Appendix 1}{chapter*.21}{}}
+\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 1}{\ignorespaces  Visualization of distances, speed and mobility indexes for example from \autoref  {fig:reco_ex_3b} with identified stop candidates \relax }}{23}{figure.caption.22}}
+\newlabel{fig:reco_ex_3a}{{\relax 1}{23}{Visualization of distances, speed and mobility indexes for example from \autoref {fig:reco_ex_3b} with identified stop candidates \relax }{figure.caption.22}{}}
+\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 2}{\ignorespaces  Movement example for one user in the period of 24h, with recorded locations due to the movement and annotated timestamps for detected stop candidates \relax }}{23}{figure.caption.23}}
+\newlabel{fig:reco_ex_3b}{{\relax 2}{23}{Movement example for one user in the period of 24h, with recorded locations due to the movement and annotated timestamps for detected stop candidates \relax }{figure.caption.23}{}}
 \abx@aux@refcontextdefaultsdone
+\abx@aux@defaultrefcontext{0}{spark}{nty/global/}
+\abx@aux@defaultrefcontext{0}{dbscan_on_spark}{nty/global/}
+\abx@aux@defaultrefcontext{0}{vis_dbscan_on_spark}{nty/global/}
 \abx@aux@defaultrefcontext{0}{MobilityIndexGIS}{nty/global/}
 \abx@aux@defaultrefcontext{0}{HumanMobility1}{nty/global/}
 \abx@aux@defaultrefcontext{0}{HumanMobility2}{nty/global/}
-\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {chapter}{\nonumberline Appendix 2}{25}{chapter*.21}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {chapter}{\nonumberline Appendix 2}{25}{chapter*.24}}
 \@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\defcounter {refsection}{0}\relax }\@writefile{lot}{\addvspace {10\p@ }}
 \@writefile{lol}{\defcounter {refsection}{0}\relax }\@writefile{lol}{\addvspace {10\p@ }}
-\newlabel{appendix:add_example_2}{{4}{25}{Appendix 2}{chapter*.21}{}}
-\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 1}{\ignorespaces  Visualization of distances, speed and mobility indexes for example from \autoref  {fig:reco_ex_4b} with identified stop candidates \relax }}{25}{figure.caption.22}}
-\newlabel{fig:reco_ex_4a}{{\relax 1}{25}{Visualization of distances, speed and mobility indexes for example from \autoref {fig:reco_ex_4b} with identified stop candidates \relax }{figure.caption.22}{}}
-\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 2}{\ignorespaces  Movement example for one user in the period of 24h, with recorded locations due to the movement and annotated timestamps for detected stop candidates \relax }}{25}{figure.caption.23}}
-\newlabel{fig:reco_ex_4b}{{\relax 2}{25}{Movement example for one user in the period of 24h, with recorded locations due to the movement and annotated timestamps for detected stop candidates \relax }{figure.caption.23}{}}
+\newlabel{appendix:add_example_2}{{4.1.1}{25}{Appendix 2}{chapter*.24}{}}
+\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 1}{\ignorespaces  Visualization of distances, speed and mobility indexes for example from \autoref  {fig:reco_ex_4b} with identified stop candidates \relax }}{25}{figure.caption.25}}
+\newlabel{fig:reco_ex_4a}{{\relax 1}{25}{Visualization of distances, speed and mobility indexes for example from \autoref {fig:reco_ex_4b} with identified stop candidates \relax }{figure.caption.25}{}}
+\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 2}{\ignorespaces  Movement example for one user in the period of 24h, with recorded locations due to the movement and annotated timestamps for detected stop candidates \relax }}{25}{figure.caption.26}}
+\newlabel{fig:reco_ex_4b}{{\relax 2}{25}{Movement example for one user in the period of 24h, with recorded locations due to the movement and annotated timestamps for detected stop candidates \relax }{figure.caption.26}{}}

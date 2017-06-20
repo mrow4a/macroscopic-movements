@@ -17,8 +17,12 @@
 \BOOKMARK [1][-]{section.2.2}{Clustering of Stops}{chapter.2}% 17
 \BOOKMARK [1][-]{section.2.3}{City Movements Graph}{chapter.2}% 18
 \BOOKMARK [0][-]{chapter.3}{Implementation}{}% 19
-\BOOKMARK [0][-]{chapter.4}{Evaluation}{}% 20
-\BOOKMARK [0][-]{chapter*.16}{Bibliography}{}% 21
-\BOOKMARK [0][-]{section*.17}{Appendices}{}% 22
-\BOOKMARK [0][-]{chapter*.18}{Appendix 1}{}% 23
-\BOOKMARK [0][-]{chapter*.21}{Appendix 2}{}% 24
+\BOOKMARK [1][-]{section.3.1}{Clustering algorithm}{chapter.3}% 20
+\BOOKMARK [2][-]{subsection.3.1.1}{DBSCAN on Spark}{section.3.1}% 21
+\BOOKMARK [0][-]{chapter.4}{Evaluation}{}% 22
+\BOOKMARK [1][-]{section.4.1}{Clustering algorithm}{chapter.4}% 23
+\BOOKMARK [2][-]{subsection.4.1.1}{DBSCAN}{section.4.1}% 24
+\BOOKMARK [0][-]{chapter*.19}{Bibliography}{}% 25
+\BOOKMARK [0][-]{section*.20}{Appendices}{}% 26
+\BOOKMARK [0][-]{chapter*.21}{Appendix 1}{}% 27
+\BOOKMARK [0][-]{chapter*.24}{Appendix 2}{}% 28
