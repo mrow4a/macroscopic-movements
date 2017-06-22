@@ -1,28 +1,36 @@
 \BOOKMARK [0][-]{chapter.1}{Introduction}{}% 1
 \BOOKMARK [1][-]{section.1.1}{Macroscopic City Movements - problem definition}{chapter.1}% 2
-\BOOKMARK [1][-]{section.1.2}{Human Mobility within the city}{chapter.1}% 3
-\BOOKMARK [1][-]{section.1.3}{Methodology of obtaining location data}{chapter.1}% 4
-\BOOKMARK [1][-]{section.1.4}{Location data characteristics for Berlin area}{chapter.1}% 5
-\BOOKMARK [2][-]{subsection.1.4.1}{General overview}{section.1.4}% 6
-\BOOKMARK [2][-]{subsection.1.4.2}{Data analysis}{section.1.4}% 7
-\BOOKMARK [1][-]{section.1.5}{Approaches to stop detection for localization services}{chapter.1}% 8
-\BOOKMARK [2][-]{subsection.1.5.1}{Stop Detection analyzing repetitive appearance at location}{section.1.5}% 9
-\BOOKMARK [2][-]{subsection.1.5.2}{Stop Detection based on continuous localization}{section.1.5}% 10
-\BOOKMARK [2][-]{subsection.1.5.3}{Stop Detection based on mobility index}{section.1.5}% 11
-\BOOKMARK [0][-]{chapter.2}{Concept and Design}{}% 12
-\BOOKMARK [1][-]{section.2.1}{Stop Detection}{chapter.2}% 13
-\BOOKMARK [2][-]{subsection.2.1.1}{Identifying stop candidates}{section.2.1}% 14
-\BOOKMARK [2][-]{subsection.2.1.2}{Mobility Index Analysis}{section.2.1}% 15
-\BOOKMARK [2][-]{subsection.2.1.3}{Reconciliation of stop candidates}{section.2.1}% 16
-\BOOKMARK [1][-]{section.2.2}{Clustering of Stops}{chapter.2}% 17
-\BOOKMARK [1][-]{section.2.3}{City Movements Graph}{chapter.2}% 18
-\BOOKMARK [0][-]{chapter.3}{Implementation}{}% 19
-\BOOKMARK [1][-]{section.3.1}{Clustering algorithm}{chapter.3}% 20
-\BOOKMARK [2][-]{subsection.3.1.1}{DBSCAN on Spark}{section.3.1}% 21
-\BOOKMARK [0][-]{chapter.4}{Evaluation}{}% 22
-\BOOKMARK [1][-]{section.4.1}{Clustering algorithm}{chapter.4}% 23
-\BOOKMARK [2][-]{subsection.4.1.1}{DBSCAN}{section.4.1}% 24
-\BOOKMARK [0][-]{chapter*.19}{Bibliography}{}% 25
-\BOOKMARK [0][-]{section*.20}{Appendices}{}% 26
-\BOOKMARK [0][-]{chapter*.21}{Appendix 1}{}% 27
-\BOOKMARK [0][-]{chapter*.24}{Appendix 2}{}% 28
+\BOOKMARK [1][-]{section.1.2}{Localization-based services and positioning technologies}{chapter.1}% 3
+\BOOKMARK [2][-]{subsection.1.2.1}{Positioning technologies}{section.1.2}% 4
+\BOOKMARK [2][-]{subsection.1.2.2}{Localization-based services}{section.1.2}% 5
+\BOOKMARK [1][-]{section.1.3}{Human Mobility within the city}{chapter.1}% 6
+\BOOKMARK [0][-]{chapter.2}{Related Work}{}% 7
+\BOOKMARK [1][-]{section.2.1}{Approaches to stop detection for localization services}{chapter.2}% 8
+\BOOKMARK [2][-]{subsection.2.1.1}{Stop Detection analyzing repetitive appearance at location}{section.2.1}% 9
+\BOOKMARK [2][-]{subsection.2.1.2}{Stop Detection based on continuous localization}{section.2.1}% 10
+\BOOKMARK [2][-]{subsection.2.1.3}{Stop Detection based on mobility index}{section.2.1}% 11
+\BOOKMARK [0][-]{chapter.3}{Concept and Design}{}% 12
+\BOOKMARK [1][-]{section.3.1}{Stop Location Detection}{chapter.3}% 13
+\BOOKMARK [2][-]{subsection.3.1.1}{Stop Detection for proactive localization based services}{section.3.1}% 14
+\BOOKMARK [2][-]{subsection.3.1.2}{Mobility index based approach}{section.3.1}% 15
+\BOOKMARK [2][-]{subsection.3.1.3}{Human Behavior based approach}{section.3.1}% 16
+\BOOKMARK [1][-]{section.3.2}{Clustering of Stops}{chapter.3}% 17
+\BOOKMARK [1][-]{section.3.3}{City Movements Graph}{chapter.3}% 18
+\BOOKMARK [0][-]{chapter.4}{Implementation}{}% 19
+\BOOKMARK [1][-]{section.4.1}{Stop Location Identification - batch processing in Apache Spark}{chapter.4}% 20
+\BOOKMARK [1][-]{section.4.2}{Clustering algorithm}{chapter.4}% 21
+\BOOKMARK [2][-]{subsection.4.2.1}{DBSCAN on Spark}{section.4.2}% 22
+\BOOKMARK [0][-]{chapter.5}{Evaluation}{}% 23
+\BOOKMARK [1][-]{section.5.1}{Location data characteristics for Berlin area}{chapter.5}% 24
+\BOOKMARK [2][-]{subsection.5.1.1}{General overview}{section.5.1}% 25
+\BOOKMARK [2][-]{subsection.5.1.2}{Data analysis}{section.5.1}% 26
+\BOOKMARK [2][-]{subsection.5.1.3}{Pre-filtering of anomalies}{section.5.1}% 27
+\BOOKMARK [1][-]{section.5.2}{Stop Detection}{chapter.5}% 28
+\BOOKMARK [2][-]{subsection.5.2.1}{Identifying stop candidates}{section.5.2}% 29
+\BOOKMARK [2][-]{subsection.5.2.2}{Mobility Index Analysis}{section.5.2}% 30
+\BOOKMARK [2][-]{subsection.5.2.3}{Reconciliation of stop candidates}{section.5.2}% 31
+\BOOKMARK [1][-]{section.5.3}{Clustering algorithm}{chapter.5}% 32
+\BOOKMARK [2][-]{subsection.5.3.1}{DBSCAN}{section.5.3}% 33
+\BOOKMARK [0][-]{section*.19}{Appendices}{}% 34
+\BOOKMARK [0][-]{chapter*.20}{Appendix 1}{}% 35
+\BOOKMARK [0][-]{chapter*.23}{Appendix 2}{}% 36
