@@ -2151,6 +2151,9 @@
     <bcf:citekey order="5">MobilityIndexGIS</bcf:citekey>
     <bcf:citekey order="6">MobilityIndexGIS</bcf:citekey>
     <bcf:citekey order="7">clustering</bcf:citekey>
+    <bcf:citekey order="8">spark</bcf:citekey>
+    <bcf:citekey order="9">dbscan_on_spark</bcf:citekey>
+    <bcf:citekey order="10">vis_dbscan_on_spark</bcf:citekey>
   </bcf:section>
   <bcf:sortlist section="0" name="nty/global/" type="entry" sortscheme="nty" sortnamekeyscheme="global" labelprefix="">
   <bcf:sorting>
