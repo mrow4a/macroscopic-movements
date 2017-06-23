@@ -17,6 +17,8 @@
 
 package movements
 
+import java.util.Random
+
 import org.apache.spark.mllib.clustering.dbscan.DBSCAN
 import org.apache.spark.{SparkConf, SparkContext}
 import org.slf4j.LoggerFactory
@@ -75,7 +77,8 @@ object ClusterStopsJob {
 
     log.debug("Save points to the result file")
 
-    var filePath = "resources/cluster_stops_result"
+    val random = new Random()
+    var filePath = "resources/Locker/dbscan/" + eps + "_" + minPoints + "_" + random.nextInt()
     clusteredData.coalesce(1).saveAsTextFile(filePath)
 
     // clusteredData.foreach(clusteredPoint => println(clusteredPoint.toString()))

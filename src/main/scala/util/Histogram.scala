@@ -4,7 +4,7 @@ package util
   * Created by gabri on 2017-06-07.
   */
 
-import org.sameersingh.scalaplot.Implicits._
+//import org.sameersingh.scalaplot.Implicits._
 
 object Histogram {
 
@@ -22,7 +22,7 @@ object Histogram {
 
 
     val x = 0.0 until 2.0 * math.Pi by 0.1
-    output(ASCII, xyChart(x ->(math.sin(_), math.cos(_))))
+//    output(ASCII, xyChart(x ->(math.sin(_), math.cos(_))))
   }
 
 }

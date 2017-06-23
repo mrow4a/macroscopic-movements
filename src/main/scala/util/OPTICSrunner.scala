@@ -19,7 +19,7 @@ object OPTICSrunner {
 
     // setp 2: run ParalleOptics
     val minPts = 5
-    val radius = 10000
+    val maxEps = 10000
     val src = "resources\\Locker\\macroscopic-movement-01_areafilter.csv"
     val data = sc.textFile(src).map { (line: String) =>
       //do stuff with line like
@@ -36,7 +36,7 @@ object OPTICSrunner {
         //do stuff with line like
         line.concat("/")
       }*/
-    val opt = new ParallelOptics(minPts, radius)
+    val opt = new ParallelOptics(minPts, maxEps)
     val out = opt.run(data) // TODO: exception in thread "main" scala.MatchError: (MapPartitionsRDD[2] at map at OPTICSrunner.scala:24,0;04:27:13;0a27d60f42f88a40560270ba7291e4b3438c1a832f43aaf66144f0d8034d1e50; 52.55; 13.403/,EuclideanDistance)
 
   }
