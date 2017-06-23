@@ -57,10 +57,22 @@ Furthermore, majority of durations between points is within interval of 30 minut
 
 \section{Pre-filtering of anomalies}
 \label{cha:prefilter}
-\autoref{fig:ber_stats} shows that there is a fraction of points which duration or distance rapidly changed, thus resulting in very high speeds between the points. Furthermore, due to the methodology of obtaining points (movement triggered), there are some minimum distances and durations at which points can be collected, and values not matching stop or travel expectation according to gathered statistics, have to be filtered. Thus, the following predicates for filtered values have been set:
+\autoref{fig:ber_stats} shows that there is a fraction of points which duration or distance rapidly changed, thus resulting in very high speeds between the points. Points having speeds above 300 km/h and distances above 100km can be considered as flights, however the ones below 100km are anomalies. \autoref{fig:anom1} shows that number of flights in Germany has not been significant (around 100) compared to number of speed anomalies (over 25000).
+\\\\
+Furthermore, due to the methodology of obtaining points (movement triggered), there are some minimum distances and durations at which points can be collected, and values not matching stop or travel expectation according to gathered statistics, have to be filtered and considered as duplicates. 
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.6\textwidth]{images/anom1.png}\\
+	\caption{ Speeds and distances histogram of points having speeds above certain threshold }
+	\label{fig:anom1}
+\end{figure}
+\FloatBarrier
+
+Thus, the following predicates for filtered values have been set:
 \begin{description}
-	\item[Jumps] Points with speed over 83 m/s [300 km/h]
-	\item[Duplicates] Points with distance below 100m and at the same time duration below 10s
+	\item[Jumps] Points with speed over 83 m/s [300 km/h] and at the same time distance below 100 km/h
+	\item[Duplicates] Points with distance below 100m and at the same time duration below 100s
 \end{description}
 
 \section{Evaluation of stop detection algorithms}

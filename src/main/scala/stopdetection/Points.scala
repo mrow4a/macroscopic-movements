@@ -38,14 +38,11 @@ class StopCandidatePoint(vector: Vector[String]) extends DetectedPoint(vector){
 
   def this(point: DetectedPoint) = this(point.vector)
 
-  var speed: Double = -1
-  var distance: Double = -1
-  var duration: Double = -1
-  var mobilityIndex: Double = -1
-  var previousMobilityIndex: Double = -1
-  var nextMobilityIndex: Double = -1
+  var distance: Double = 0
+  var duration: Double = 0
+  var isStop: Boolean = false
 
   override def toString(): String = {
-    vector + " sp: " +speed + " dis: " + distance + "dur: " + duration
+    vector + " dis: " + distance + "dur: " + duration
   }
 }

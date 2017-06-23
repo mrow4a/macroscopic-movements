@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.5.29)  22 JUN 2017 15:45
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.5.29)  23 JUN 2017 14:43
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2151,49 +2151,57 @@ Package pdftex.def Info: images/snet/snet_footer.png used on input line 58.
 (pdftex.def)             Requested size: 81.94212pt x 18.43645pt.
 
 [16 <./images/berlin_stats_intro.png> <./images/berlin_speeds_distances.png>]
-LaTeX Font Info:    Font shape `T1/ppl/bx/it' in size <10.95> not available
-(Font)              Font shape `T1/ppl/b/it' tried instead on input line 62.
+Underfull \hbox (badness 10000) in paragraph at lines 60--63
 
-<images/reco_example_1a.png, id=304, 534.99875pt x 396.48125pt>
+ []
+
+<images/anom1.png, id=305, 833.1125pt x 469.755pt>
+File: images/anom1.png Graphic file (type png)
+ <use images/anom1.png>
+Package pdftex.def Info: images/anom1.png used on input line 66.
+(pdftex.def)             Requested size: 273.14923pt x 154.01613pt.
+LaTeX Font Info:    Font shape `T1/ppl/bx/it' in size <10.95> not available
+(Font)              Font shape `T1/ppl/b/it' tried instead on input line 74.
+
+<images/reco_example_1a.png, id=306, 534.99875pt x 396.48125pt>
 File: images/reco_example_1a.png Graphic file (type png)
 
 <use images/reco_example_1a.png>
-Package pdftex.def Info: images/reco_example_1a.png used on input line 70.
+Package pdftex.def Info: images/reco_example_1a.png used on input line 82.
 (pdftex.def)             Requested size: 273.14923pt x 202.43265pt.
 
-<images/reco_example_1b.png, id=307, 872.25874pt x 569.12625pt>
+<images/reco_example_1b.png, id=309, 872.25874pt x 569.12625pt>
 File: images/reco_example_1b.png Graphic file (type png)
 
 <use images/reco_example_1b.png>
-Package pdftex.def Info: images/reco_example_1b.png used on input line 76.
+Package pdftex.def Info: images/reco_example_1b.png used on input line 88.
 (pdftex.def)             Requested size: 273.14923pt x 178.21625pt.
- [17 <./images/reco_example_1a.png>]
+ [17 <./images/anom1.png>]
 File: images/snet/snet_footer.png Graphic file (type png)
 
 <use images/snet/snet_footer.png>
 Package pdftex.def Info: images/snet/snet_footer.png used on input line 106.
 (pdftex.def)             Requested size: 81.94212pt x 18.43645pt.
- [18 <./images/reco_example_1b.png>]
-<images/0,001_5_gray.png, id=322, 977.15062pt x 569.50266pt>
+ [18 <./images/reco_example_1a.png> <./images/reco_example_1b.png>]
+<images/0,001_5_gray.png, id=325, 977.15062pt x 569.50266pt>
 File: images/0,001_5_gray.png Graphic file (type png)
 
 <use images/0,001_5_gray.png>
-Package pdftex.def Info: images/0,001_5_gray.png used on input line 109.
+Package pdftex.def Info: images/0,001_5_gray.png used on input line 121.
 (pdftex.def)             Requested size: 455.24411pt x 265.32869pt.
 
-<images/0,002_5_gray.png, id=323, 978.65625pt x 572.5139pt>
+<images/0,002_5_gray.png, id=326, 978.65625pt x 572.5139pt>
 File: images/0,002_5_gray.png Graphic file (type png)
 
 <use images/0,002_5_gray.png>
-Package pdftex.def Info: images/0,002_5_gray.png used on input line 116.
+Package pdftex.def Info: images/0,002_5_gray.png used on input line 128.
 (pdftex.def)             Requested size: 455.24411pt x 266.32104pt.
-) [19 <./images/0,001_5_gray.png>]
+) [19]
 File: images/snet/snet_footer.png Graphic file (type png)
-
-<use images/snet/snet_footer.png>
+ <use images/snet/snet_footer.png>
 Package pdftex.def Info: images/snet/snet_footer.png used on input line 78.
 (pdftex.def)             Requested size: 81.94212pt x 18.43645pt.
- [20 <./images/0,002_5_gray.png>]
+ [20 <./images/0,001_5_gray.png> <./images/0,002_5_gray.png>]
 *geometry* verbose mode - [ newgeometry ] result:
 * driver: pdftex
 * paper: a4paper
@@ -2255,7 +2263,7 @@ Package atveryend Info: Empty hook `AfterLastShipout' on input line 99.
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 99.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 99.
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: FB91D88B3BCEF172D5A2E463FC29EB67;3090.
+(rerunfilecheck)             Checksum: A765CAB46C6759E44858209AA33930F8;3090.
 
 
 LaTeX Warning: There were undefined references.
@@ -2270,10 +2278,10 @@ Package logreq Info: Writing requests to 'main.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 30344 strings out of 494953
- 538804 string characters out of 6180977
- 1015017 words of memory out of 5000000
- 32930 multiletter control sequences out of 15000+600000
+ 30352 strings out of 494953
+ 538935 string characters out of 6180977
+ 1015133 words of memory out of 5000000
+ 32936 multiletter control sequences out of 15000+600000
  45127 words of font info for 72 fonts, out of 8000000 for 9000
  16 hyphenation exceptions out of 8191
  69i,16n,66p,2349b,1642s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -2285,10 +2293,10 @@ no/uplb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/palatino/uplbi8a.p
 fb></usr/share/texlive/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></usr/sha
 re/texlive/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></usr/share/texlive/t
 exmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on main.pdf (27 pages, 7504544 bytes).
+Output written on main.pdf (27 pages, 7528062 bytes).
 PDF statistics:
- 415 PDF objects out of 1000 (max. 8388607)
- 339 compressed objects within 4 object streams
- 86 named destinations out of 1000 (max. 500000)
- 438 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 418 PDF objects out of 1000 (max. 8388607)
+ 341 compressed objects within 4 object streams
+ 87 named destinations out of 1000 (max. 500000)
+ 443 words of extra memory for PDF output out of 10000 (max. 10000000)
 

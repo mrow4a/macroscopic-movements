@@ -54,26 +54,22 @@ object ClusterStopsJob {
     log.info("Filter Moves to obtain stops only")
 
     val durationsSlidingWindowSize = 2400.0 // By default 40 minutes
-    val stopCertaintyMaxDistance = 1500.0 // By default max walking distance for human
-    val stopCertaintyMaxSpeed = 0.833 // By default min human walking speed
-    val travelCertaintyMinSpeed = 1.4 // By default max human walking speed
     val mobilityIndexThreshold = 0.001 // Mobility Index Threshold used to determine mobility patterns
 
     // Parameters for anomaly filtering, -1 for ignoring the parameters
-    val filterSpeedThreshold = 70 // Filter all speeds above 250 km/h
-    val filterDistanceThreshold = 100 // Filter all points within distance of 100m, anomalies
-    val filterDurationThreshold = 5 // Filter all points within duration of 5s, anomalies
+    val minimumFlightSpeed = 83 // Filter all speeds above 300 km/h
+    val minimumFlightDistance = 100000 // Filter all speeds above 300 km/h with distances over 100km
+    val minimumAccuracyDistance = 100 // Filter all points within distance of 100m, anomalies
+    val minimumAccuracyDuration = 100 // Filter all points within duration of 100s, anomalies
 
     val detectedStops = StopDetection.filter(
       parsedData,
       durationsSlidingWindowSize,
-      stopCertaintyMaxDistance,
-      stopCertaintyMaxSpeed,
-      travelCertaintyMinSpeed,
       mobilityIndexThreshold,
-      filterSpeedThreshold,
-      filterDistanceThreshold,
-      filterDurationThreshold
+      minimumFlightSpeed,
+      minimumFlightDistance,
+      minimumAccuracyDistance,
+      minimumAccuracyDuration
     )
 
     detectedStops.foreach(u => println(u.toString()))
