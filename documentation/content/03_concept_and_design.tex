@@ -16,7 +16,7 @@ In related works about mobility index discussed in \autoref{cha:introduction_mob
 In case of the approach discussed in this paper (\autoref{cha:introduction_methodo}), the situation is similar, however instead of GSM cells we have artificially created area around the location, and while new location is obtained at some distance after movement, new area might need to be updated and points is being recorded.
 \\\\
 In a populated area, the user can move from one area to another after several seconds or only after minutes. Thus, if within a certain
-period of time (called mobility index time window) the user stays in the same area (mobility index is equal to 0) or changes the areas with small pace (mobility index is below certain threshold) it can be assumed that the user is immobile or having short stay at the location somewhere within that time window. 
+period of time (called mobility index time window) the user stays in the same area (mobility index is equal to 0) or changes the areas with small pace (mobility index is below certain threshold) it can be assumed that the user is immobile or approaching stop location and having stay somewhere within that time window. 
 \\\\
 Approach based on mobility index could precisely identify how mobile has been user within the certain time period and identify longer stop locations, however mobility index is not able to identify short stops at location where in the certain time window user been moving fast, stopped and moving fast again. 
 
@@ -24,7 +24,7 @@ Approach based on mobility index could precisely identify how mobile has been us
 
 This approach targets the condition for movement between two points, which has to be satisfied, so that it can be considered as a stay within the certain distance. 
 \\\\
-The \autoref{cha:introduction_hummob} discusses, that in average, walking human is covering a short distances with the speed of 4km/h. However for movement on long distances, user will most likely use city or private transport, and thus his speed can vary much in that time/distance period.
+The \autoref{cha:introduction_hummob} discusses, that in average, walking human is covering a short distances with the speed of over 3km/h up to 5km/h. However for movement on long distances, user will most likely use city or private transport, and thus his speed can vary much in that time/distance period.
 \\\\
 This means that stop detection based on speed of movement over long distance might not be effective, however, on small distances it might quite precisely identify short stays at certain locations, in between high mobility of the user.  
 
@@ -44,8 +44,6 @@ After our stop detection algorithm has detected the proper stops we want to perf
 	\caption{ Clustering applied to a dataset. }
 	\label{fig:clustering}
 \end{figure} 
-
-
 
 \FloatBarrier
 \section{City Movements Graph}

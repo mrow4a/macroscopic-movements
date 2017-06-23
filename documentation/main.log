@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.5.29)  22 JUN 2017 12:24
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.5.29)  22 JUN 2017 15:45
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1765,7 +1765,7 @@ LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <24.88> not available
 LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <12> not available
 (Font)              Font shape `T1/ppl/b/n' tried instead on input line 19.
 
-<images/snet/titlepage.pdf, id=151, 143.33551pt x 202.8378pt>
+<images/snet/titlepage.pdf, id=167, 143.33551pt x 202.8378pt>
 File: images/snet/titlepage.pdf Graphic file (type pdf)
 
 <use images/snet/titlepage.pdf>
@@ -1838,7 +1838,7 @@ Overfull \hbox (7.02722pt too wide) in paragraph at lines 24--25
 ttps://www.move-forward.com/gps-
  []
 
-<images/movement_update.png, id=165, 712.6625pt x 310.15875pt>
+<images/movement_update.png, id=181, 712.6625pt x 310.15875pt>
 File: images/movement_update.png Graphic file (type png)
 
 <use images/movement_update.png>
@@ -1864,7 +1864,7 @@ LaTeX Warning: Citation 'HumanMobility2' on page 2 undefined on input line 39.
 LaTeX Warning: Citation 'HumanMobility3' on page 2 undefined on input line 39.
 
 ) (./content/02_related_work.tex
-<images/snet/snet_footer.png, id=170, 281.05pt x 63.23625pt>
+<images/snet/snet_footer.png, id=186, 281.05pt x 63.23625pt>
 File: images/snet/snet_footer.png Graphic file (type png)
 
 <use images/snet/snet_footer.png>
@@ -1913,7 +1913,7 @@ chapter 2.
 LaTeX Warning: Citation 'MobilityIndexGIS' on page 3 undefined on input line 14
 .
 
-<images/intro_mobility_index.png, id=181, 614.295pt x 348.30125pt>
+<images/intro_mobility_index.png, id=198, 614.295pt x 348.30125pt>
 File: images/intro_mobility_index.png Graphic file (type png)
 
 <use images/intro_mobility_index.png>
@@ -1993,7 +1993,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 33--36
 
  []
 
-<images/clustering.png, id=203, 2007.5pt x 2160.07pt>
+<images/clustering.png, id=219, 2007.5pt x 2160.07pt>
 File: images/clustering.png Graphic file (type png)
 
 <use images/clustering.png>
@@ -2001,7 +2001,7 @@ Package pdftex.def Info: images/clustering.png used on input line 43.
 (pdftex.def)             Requested size: 273.14923pt x 293.90407pt.
 File: images/snet/snet_footer.png Graphic file (type png)
  <use images/snet/snet_footer.png>
-Package pdftex.def Info: images/snet/snet_footer.png used on input line 50.
+Package pdftex.def Info: images/snet/snet_footer.png used on input line 48.
 (pdftex.def)             Requested size: 81.94212pt x 18.43645pt.
  [6])
 (./content/04_implementation.tex [7 <./images/clustering.png>] [8
@@ -2010,80 +2010,115 @@ Package pdftex.def Info: images/snet/snet_footer.png used on input line 50.
 ]
 chapter 4.
 
-LaTeX Warning: Reference `chap:related_work' on page 9 undefined on input line 
-11.
+Underfull \hbox (badness 10000) in paragraph at lines 14--17
+
+ []
+
+<images/mob_calc1.png, id=235, 627.34375pt x 462.72874pt>
+File: images/mob_calc1.png Graphic file (type png)
+
+<use images/mob_calc1.png>
+Package pdftex.def Info: images/mob_calc1.png used on input line 22.
+(pdftex.def)             Requested size: 204.85846pt x 151.10524pt.
+
+<images/mob_calc2.png, id=236, 469.755pt x 124.465pt>
+File: images/mob_calc2.png Graphic file (type png)
+
+<use images/mob_calc2.png>
+Package pdftex.def Info: images/mob_calc2.png used on input line 27.
+(pdftex.def)             Requested size: 204.85846pt x 54.27856pt.
+ [9 <./images/mob_calc1.png> <./images/mob_calc2.png>]
+
+Package caption Warning: \label without proper reference on input line 28.
+See the caption package documentation for explanation.
 
 
-LaTeX Warning: Citation 'spark' on page 9 undefined on input line 15.
-
-
-LaTeX Warning: Citation 'dbscan_on_spark' on page 9 undefined on input line 15.
+LaTeX Warning: Reference `fig:mob_calc2' on page 10 undefined on input line 35.
 
 
 
-LaTeX Warning: Citation 'vis_dbscan_on_spark' on page 9 undefined on input line
- 15.
+Package caption Warning: \label without proper reference on input line 23.
+See the caption package documentation for explanation.
 
-<images/db1_c.png, id=219, 293.97328pt x 298.49016pt>
+
+LaTeX Warning: Reference `fig:mob_calc1' on page 10 undefined on input line 35.
+
+
+
+LaTeX Warning: Reference `chap:related_work' on page 10 undefined on input line
+ 43.
+
+
+LaTeX Warning: Citation 'spark' on page 10 undefined on input line 47.
+
+
+LaTeX Warning: Citation 'dbscan_on_spark' on page 10 undefined on input line 47
+.
+
+
+LaTeX Warning: Citation 'vis_dbscan_on_spark' on page 10 undefined on input lin
+e 47.
+
+<images/db1_c.png, id=245, 293.97328pt x 298.49016pt>
 File: images/db1_c.png Graphic file (type png)
  <use images/db1_c.png>
-Package pdftex.def Info: images/db1_c.png used on input line 21.
+Package pdftex.def Info: images/db1_c.png used on input line 53.
 (pdftex.def)             Requested size: 136.57462pt x 138.67351pt.
 
-<images/db2_c.png, id=220, 293.97328pt x 268.00125pt>
+<images/db2_c.png, id=246, 293.97328pt x 268.00125pt>
 File: images/db2_c.png Graphic file (type png)
  <use images/db2_c.png>
-Package pdftex.def Info: images/db2_c.png used on input line 27.
+Package pdftex.def Info: images/db2_c.png used on input line 59.
 (pdftex.def)             Requested size: 136.57462pt x 124.50887pt.
 LaTeX Font Info:    Font shape `T1/phv/m/it' in size <10> not available
-(Font)              Font shape `T1/phv/m/sl' tried instead on input line 28.
+(Font)              Font shape `T1/phv/m/sl' tried instead on input line 60.
 LaTeX Font Info:    Font shape `T1/phv/m/sl' will be
-(Font)              scaled to size 9.49997pt on input line 28.
+(Font)              scaled to size 9.49997pt on input line 60.
 
-<images/db3_c.png, id=221, 293.59688pt x 295.47891pt>
+<images/db3_c.png, id=247, 293.59688pt x 295.47891pt>
 File: images/db3_c.png Graphic file (type png)
  <use images/db3_c.png>
-Package pdftex.def Info: images/db3_c.png used on input line 33.
+Package pdftex.def Info: images/db3_c.png used on input line 65.
 (pdftex.def)             Requested size: 136.57462pt x 137.45036pt.
 
-<images/db4_c.png, id=222, 293.59688pt x 284.56313pt>
+<images/db4_c.png, id=248, 293.59688pt x 284.56313pt>
 File: images/db4_c.png Graphic file (type png)
  <use images/db4_c.png>
-Package pdftex.def Info: images/db4_c.png used on input line 39.
+Package pdftex.def Info: images/db4_c.png used on input line 71.
 (pdftex.def)             Requested size: 136.57462pt x 132.37259pt.
 
-<images/db5_c.png, id=223, 293.59688pt x 267.24844pt>
+<images/db5_c.png, id=249, 293.59688pt x 267.24844pt>
 File: images/db5_c.png Graphic file (type png)
  <use images/db5_c.png>
-Package pdftex.def Info: images/db5_c.png used on input line 45.
+Package pdftex.def Info: images/db5_c.png used on input line 77.
 (pdftex.def)             Requested size: 227.62206pt x 207.19287pt.
 )
-(./content/05_evaluation.tex [9]
+(./content/05_evaluation.tex
 File: images/snet/snet_footer.png Graphic file (type png)
  <use images/snet/snet_footer.png>
 Package pdftex.def Info: images/snet/snet_footer.png used on input line 1.
 (pdftex.def)             Requested size: 81.94212pt x 18.43645pt.
- [10 <./images/db1_c.png> <./images/db2_c.png> <./images/db3_c.png> <./images/d
-b4_c.png> <./images/db5_c.png>]
+ [10] [11 <./images/db1_c.png> <./images/db2_c.png> <./images/db3_c.png> <./ima
+ges/db4_c.png> <./images/db5_c.png>] [12
+
+
+]
 chapter 5.
-<images/points_germany.png, id=240, 351.3125pt x 432.61626pt>
+<images/points_germany.png, id=271, 351.3125pt x 432.61626pt>
 File: images/points_germany.png Graphic file (type png)
 
 <use images/points_germany.png>
 Package pdftex.def Info: images/points_germany.png used on input line 11.
 (pdftex.def)             Requested size: 136.57462pt x 168.18497pt.
 
-<images/germany_stats.png, id=241, 905.3825pt x 422.57875pt>
+<images/germany_stats.png, id=272, 905.3825pt x 422.57875pt>
 File: images/germany_stats.png Graphic file (type png)
 
 <use images/germany_stats.png>
 Package pdftex.def Info: images/germany_stats.png used on input line 20.
 (pdftex.def)             Requested size: 409.71692pt x 191.22905pt.
- [11
-
-
- <./images/points_germany.png>]
-<images/points_berlin_heatmap.png, id=249, 661.47125pt x 628.3475pt>
+ [13 <./images/points_germany.png>]
+<images/points_berlin_heatmap.png, id=279, 661.47125pt x 628.3475pt>
 File: images/points_berlin_heatmap.png Graphic file (type png)
 
 <use images/points_berlin_heatmap.png>
@@ -2095,15 +2130,15 @@ File: images/snet/snet_footer.png Graphic file (type png)
 Package pdftex.def Info: images/snet/snet_footer.png used on input line 33.
 (pdftex.def)             Requested size: 81.94212pt x 18.43645pt.
 
-[12 <./images/germany_stats.png>]
-<images/berlin_stats_intro.png, id=256, 780.9175pt x 528.97626pt>
+[14 <./images/germany_stats.png>]
+<images/berlin_stats_intro.png, id=286, 780.9175pt x 528.97626pt>
 File: images/berlin_stats_intro.png Graphic file (type png)
 
 <use images/berlin_stats_intro.png>
 Package pdftex.def Info: images/berlin_stats_intro.png used on input line 43.
 (pdftex.def)             Requested size: 273.14923pt x 185.02339pt.
- [13 <./images/points_berlin_heatmap.png>]
-<images/berlin_speeds_distances.png, id=264, 790.955pt x 430.60875pt>
+ [15 <./images/points_berlin_heatmap.png>]
+<images/berlin_speeds_distances.png, id=294, 790.955pt x 430.60875pt>
 File: images/berlin_speeds_distances.png Graphic file (type png)
 
 <use images/berlin_speeds_distances.png>
@@ -2115,153 +2150,50 @@ File: images/snet/snet_footer.png Graphic file (type png)
 Package pdftex.def Info: images/snet/snet_footer.png used on input line 58.
 (pdftex.def)             Requested size: 81.94212pt x 18.43645pt.
 
-[14 <./images/berlin_stats_intro.png> <./images/berlin_speeds_distances.png>]
+[16 <./images/berlin_stats_intro.png> <./images/berlin_speeds_distances.png>]
 LaTeX Font Info:    Font shape `T1/ppl/bx/it' in size <10.95> not available
 (Font)              Font shape `T1/ppl/b/it' tried instead on input line 62.
 
-Underfull \hbox (badness 10000) in paragraph at lines 68--72
+<images/reco_example_1a.png, id=304, 534.99875pt x 396.48125pt>
+File: images/reco_example_1a.png Graphic file (type png)
 
- []
+<use images/reco_example_1a.png>
+Package pdftex.def Info: images/reco_example_1a.png used on input line 70.
+(pdftex.def)             Requested size: 273.14923pt x 202.43265pt.
 
+<images/reco_example_1b.png, id=307, 872.25874pt x 569.12625pt>
+File: images/reco_example_1b.png Graphic file (type png)
 
-LaTeX Warning: Reference `cha:introduction_dataanaly' on page 15 undefined on i
-nput line 80.
-
-<images/stop_algorithm_1.png, id=280, 566.115pt x 399.4925pt>
-File: images/stop_algorithm_1.png Graphic file (type png)
-
-<use images/stop_algorithm_1.png>
-Package pdftex.def Info: images/stop_algorithm_1.png used on input line 87.
-(pdftex.def)             Requested size: 364.19667pt x 257.0093pt.
-
-Underfull \hbox (badness 10000) in paragraph at lines 78--91
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 78--91
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 78--91
-
- []
-
-[15]
-
-LaTeX Warning: Reference `cha:introduction_dataanaly' on page 16 undefined on i
-nput line 94.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 94--97
-
- []
-
-
-Overfull \hbox (7.47493pt too wide) in paragraph at lines 97--98
-[]\T1/ppl/m/n/10.95 - In av-er-age mo-bile de-vices col-
- []
-
-<images/reco_general.png, id=288, 1021.8175pt x 470.75874pt>
-File: images/reco_general.png Graphic file (type png)
-
-<use images/reco_general.png>
-Package pdftex.def Info: images/reco_general.png used on input line 103.
-(pdftex.def)             Requested size: 364.19667pt x 167.78496pt.
-
-<images/reco_example_1.png, id=291, 665.48625pt x 299.1175pt>
-File: images/reco_example_1.png Graphic file (type png)
-
-<use images/reco_example_1.png>
-Package pdftex.def Info: images/reco_example_1.png used on input line 110.
-(pdftex.def)             Requested size: 409.71692pt x 184.15927pt.
+<use images/reco_example_1b.png>
+Package pdftex.def Info: images/reco_example_1b.png used on input line 76.
+(pdftex.def)             Requested size: 273.14923pt x 178.21625pt.
+ [17 <./images/reco_example_1a.png>]
 File: images/snet/snet_footer.png Graphic file (type png)
- <use images/snet/snet_footer.png>
-Package pdftex.def Info: images/snet/snet_footer.png used on input line 116.
-(pdftex.def)             Requested size: 81.94212pt x 18.43645pt.
- [16 <./images/stop_algorithm_1.png>] [17 <./images/reco_general.png> <./images
-/reco_example_1.png>] <images/reco_example_2b.png, id=304, 725.71124pt x 401.5p
-t>
-File: images/reco_example_2b.png Graphic file (type png)
 
-<use images/reco_example_2b.png>
-Package pdftex.def Info: images/reco_example_2b.png used on input line 122.
-(pdftex.def)             Requested size: 273.14923pt x 151.11963pt.
-
-<images/reco_example_2a.png, id=305, 789.95125pt x 532.99126pt>
-File: images/reco_example_2a.png Graphic file (type png)
-
-<use images/reco_example_2a.png>
-Package pdftex.def Info: images/reco_example_2a.png used on input line 128.
-(pdftex.def)             Requested size: 273.14923pt x 184.29695pt.
-
-<images/reco_example_5a.png, id=310, 682.55pt x 358.33875pt>
-File: images/reco_example_5a.png Graphic file (type png)
-
-<use images/reco_example_5a.png>
-Package pdftex.def Info: images/reco_example_5a.png used on input line 141.
-(pdftex.def)             Requested size: 273.14923pt x 143.40404pt.
-
-<images/reco_example_5b.png, id=313, 632.3625pt x 463.7325pt>
-File: images/reco_example_5b.png Graphic file (type png)
-
-<use images/reco_example_5b.png>
-Package pdftex.def Info: images/reco_example_5b.png used on input line 147.
-(pdftex.def)             Requested size: 273.14923pt x 200.31387pt.
-
-Underfull \hbox (badness 10000) in paragraph at lines 132--161
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 132--161
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 132--161
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 132--161
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 132--161
-
- []
-
-File: images/snet/snet_footer.png Graphic file (type png)
 <use images/snet/snet_footer.png>
-Package pdftex.def Info: images/snet/snet_footer.png used on input line 161.
+Package pdftex.def Info: images/snet/snet_footer.png used on input line 106.
 (pdftex.def)             Requested size: 81.94212pt x 18.43645pt.
- [18 <./images/reco_example_2b.png> <./images/reco_example_2a.png>] [19 <./imag
-es/reco_example_5a.png> <./images/reco_example_5b.png>] <images/0,001_5_gray.pn
-g, id=332, 977.15062pt x 569.50266pt>
+ [18 <./images/reco_example_1b.png>]
+<images/0,001_5_gray.png, id=322, 977.15062pt x 569.50266pt>
 File: images/0,001_5_gray.png Graphic file (type png)
 
 <use images/0,001_5_gray.png>
-Package pdftex.def Info: images/0,001_5_gray.png used on input line 173.
+Package pdftex.def Info: images/0,001_5_gray.png used on input line 109.
 (pdftex.def)             Requested size: 455.24411pt x 265.32869pt.
 
-<images/0,002_5_gray.png, id=333, 978.65625pt x 572.5139pt>
+<images/0,002_5_gray.png, id=323, 978.65625pt x 572.5139pt>
 File: images/0,002_5_gray.png Graphic file (type png)
 
 <use images/0,002_5_gray.png>
-Package pdftex.def Info: images/0,002_5_gray.png used on input line 180.
+Package pdftex.def Info: images/0,002_5_gray.png used on input line 116.
 (pdftex.def)             Requested size: 455.24411pt x 266.32104pt.
-)
+) [19 <./images/0,001_5_gray.png>]
 File: images/snet/snet_footer.png Graphic file (type png)
- <use images/snet/snet_footer.png>
+
+<use images/snet/snet_footer.png>
 Package pdftex.def Info: images/snet/snet_footer.png used on input line 78.
 (pdftex.def)             Requested size: 81.94212pt x 18.43645pt.
- [20] [21 <./images/0,001_5_gray.png> <./images/0,002_5_gray.png>] [22
-
-
-]
+ [20 <./images/0,002_5_gray.png>]
 *geometry* verbose mode - [ newgeometry ] result:
 * driver: pdftex
 * paper: a4paper
@@ -2298,57 +2230,32 @@ Package pdftex.def Info: images/snet/snet_footer.png used on input line 78.
 
 LaTeX Warning: Empty bibliography on input line 88.
 
-[23
+[21
 
 
 
 
 
-] [24] (./content/99_appendices/a01_listings.tex
+
+
+] [22] (./content/99_appendices/a01_listings.tex
 chapter without number
-<images/reco_example_3a.png, id=360, 532.99126pt x 135.50626pt>
-File: images/reco_example_3a.png Graphic file (type png)
-
-<use images/reco_example_3a.png>
-Package pdftex.def Info: images/reco_example_3a.png used on input line 6.
-(pdftex.def)             Requested size: 290.22107pt x 73.78636pt.
-
-<images/reco_example_3b.png, id=363, 632.3625pt x 467.7475pt>
-File: images/reco_example_3b.png Graphic file (type png)
-
-<use images/reco_example_3b.png>
-Package pdftex.def Info: images/reco_example_3b.png used on input line 12.
-(pdftex.def)             Requested size: 290.22107pt x 214.67398pt.
-) (./content/99_appendices/a02_listings.tex
-[25
+) (./content/99_appendices/a02_listings.tex [23
 
 
- <./images/reco_example_3a.png> <./images/reco_example_3b.png>] [26
+] [24
 
 
 ]
 chapter without number
-<images/reco_example_4a.png, id=374, 610.28pt x 332.24126pt>
-File: images/reco_example_4a.png Graphic file (type png)
-
-<use images/reco_example_4a.png>
-Package pdftex.def Info: images/reco_example_4a.png used on input line 6.
-(pdftex.def)             Requested size: 290.22107pt x 158.0038pt.
-
-<images/reco_example_4b.png, id=377, 629.35126pt x 465.74pt>
-File: images/reco_example_4b.png Graphic file (type png)
-
-<use images/reco_example_4b.png>
-Package pdftex.def Info: images/reco_example_4b.png used on input line 12.
-(pdftex.def)             Requested size: 290.22107pt x 214.76889pt.
-) [27 <./images/reco_example_4a.png> <./images/reco_example_4b.png>]
+) [25]
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 99.
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 99.
  (./main.aux)
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 99.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 99.
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: B548C7A3113224385D7F5F92D2719B55;2687.
+(rerunfilecheck)             Checksum: FB91D88B3BCEF172D5A2E463FC29EB67;3090.
 
 
 LaTeX Warning: There were undefined references.
@@ -2363,13 +2270,13 @@ Package logreq Info: Writing requests to 'main.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 30384 strings out of 494953
- 539923 string characters out of 6180977
- 1016611 words of memory out of 5000000
- 32961 multiletter control sequences out of 15000+600000
+ 30344 strings out of 494953
+ 538804 string characters out of 6180977
+ 1015017 words of memory out of 5000000
+ 32930 multiletter control sequences out of 15000+600000
  45127 words of font info for 72 fonts, out of 8000000 for 9000
  16 hyphenation exceptions out of 8191
- 69i,16n,66p,2349b,1710s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 69i,16n,66p,2349b,1642s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texliv
 e/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/share/texlive/texmf-dist
 /fonts/type1/urw/helvetic/uhvr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1
@@ -2378,10 +2285,10 @@ no/uplb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/palatino/uplbi8a.p
 fb></usr/share/texlive/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></usr/sha
 re/texlive/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></usr/share/texlive/t
 exmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on main.pdf (29 pages, 8564659 bytes).
+Output written on main.pdf (27 pages, 7504544 bytes).
 PDF statistics:
- 434 PDF objects out of 1000 (max. 8388607)
- 348 compressed objects within 4 object streams
- 88 named destinations out of 1000 (max. 500000)
- 441 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 415 PDF objects out of 1000 (max. 8388607)
+ 339 compressed objects within 4 object streams
+ 86 named destinations out of 1000 (max. 500000)
+ 438 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -1,10 +1,42 @@
 \chapter{Implementation}
 \label{cha:implementation}
 
+\section{Scripts for data analysis - usage}
+
+TODO: 
 
 \section{Stop Location Identification - batch processing in Apache Spark}
 
 TODO: final implementation and algorithm should be discussed here
+
+\subsection{Calculation of mobility index}
+
+Firstly, for a single user, minimum and maximum timestamp of sorted sequence is being found. Having value of MobilityIndexWindow (e.g. 30 minutes), function is creating equaly spaced bins of that value within maximum and minimum timestamps. 
+\\\\
+Secondly, each point is being visited and is assigned to the proper timestamp bin according to its own timestamp and duration to the previous point. 
+
+\begin{figure}
+	\centering
+	\begin{minipage}{.5\textwidth}
+		\centering
+		\includegraphics[width=.9\linewidth]{images/mob_calc1.png}
+		\label{fig:mob_calc1}
+	\end{minipage}%
+	\begin{minipage}{.5\textwidth}
+		\centering
+		\includegraphics[width=.9\linewidth]{images/mob_calc2.png}
+		\label{fig:mob_calc2}
+	\end{minipage}
+	\captionof{figure}{Mobility Index values in different time windows (left) and fragment of duration values (in seconds) over which mobility index has been calculated (right) - window of 30 minutes}
+\end{figure}
+
+\FloatBarrier
+
+At the end, mobility index, as defined in \autoref{cha:introduction_mob_index_sect}, is being calculated over the assigned values - \autoref{fig:mob_calc2}, and assigning mobility index to each of the bins - \autoref{fig:mob_calc1}.
+
+\subsection{Algorithm for stop detection}
+
+TODO
 
 \section{Clustering algorithm}
 

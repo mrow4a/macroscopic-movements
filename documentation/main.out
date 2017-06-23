@@ -17,20 +17,24 @@
 \BOOKMARK [1][-]{section.3.2}{Clustering of Stops}{chapter.3}% 17
 \BOOKMARK [1][-]{section.3.3}{City Movements Graph}{chapter.3}% 18
 \BOOKMARK [0][-]{chapter.4}{Implementation}{}% 19
-\BOOKMARK [1][-]{section.4.1}{Stop Location Identification - batch processing in Apache Spark}{chapter.4}% 20
-\BOOKMARK [1][-]{section.4.2}{Clustering algorithm}{chapter.4}% 21
-\BOOKMARK [2][-]{subsection.4.2.1}{DBSCAN on Spark}{section.4.2}% 22
-\BOOKMARK [0][-]{chapter.5}{Evaluation}{}% 23
-\BOOKMARK [1][-]{section.5.1}{Location data characteristics for Berlin area}{chapter.5}% 24
-\BOOKMARK [2][-]{subsection.5.1.1}{General overview}{section.5.1}% 25
-\BOOKMARK [2][-]{subsection.5.1.2}{Data analysis}{section.5.1}% 26
-\BOOKMARK [2][-]{subsection.5.1.3}{Pre-filtering of anomalies}{section.5.1}% 27
-\BOOKMARK [1][-]{section.5.2}{Stop Detection}{chapter.5}% 28
-\BOOKMARK [2][-]{subsection.5.2.1}{Identifying stop candidates}{section.5.2}% 29
-\BOOKMARK [2][-]{subsection.5.2.2}{Mobility Index Analysis}{section.5.2}% 30
-\BOOKMARK [2][-]{subsection.5.2.3}{Reconciliation of stop candidates}{section.5.2}% 31
-\BOOKMARK [1][-]{section.5.3}{Clustering algorithm}{chapter.5}% 32
-\BOOKMARK [2][-]{subsection.5.3.1}{DBSCAN}{section.5.3}% 33
-\BOOKMARK [0][-]{section*.19}{Appendices}{}% 34
-\BOOKMARK [0][-]{chapter*.20}{Appendix 1}{}% 35
-\BOOKMARK [0][-]{chapter*.23}{Appendix 2}{}% 36
+\BOOKMARK [1][-]{section.4.1}{Scripts for data analysis - usage}{chapter.4}% 20
+\BOOKMARK [1][-]{section.4.2}{Stop Location Identification - batch processing in Apache Spark}{chapter.4}% 21
+\BOOKMARK [2][-]{subsection.4.2.1}{Calculation of mobility index}{section.4.2}% 22
+\BOOKMARK [2][-]{subsection.4.2.2}{Algorithm for stop detection}{section.4.2}% 23
+\BOOKMARK [1][-]{section.4.3}{Clustering algorithm}{chapter.4}% 24
+\BOOKMARK [2][-]{subsection.4.3.1}{DBSCAN on Spark}{section.4.3}% 25
+\BOOKMARK [0][-]{chapter.5}{Evaluation}{}% 26
+\BOOKMARK [1][-]{section.5.1}{Location data characteristics for Berlin area}{chapter.5}% 27
+\BOOKMARK [2][-]{subsection.5.1.1}{General overview}{section.5.1}% 28
+\BOOKMARK [2][-]{subsection.5.1.2}{Data analysis}{section.5.1}% 29
+\BOOKMARK [1][-]{section.5.2}{Pre-filtering of anomalies}{chapter.5}% 30
+\BOOKMARK [1][-]{section.5.3}{Evaluation of stop detection algorithms}{chapter.5}% 31
+\BOOKMARK [2][-]{subsection.5.3.1}{Mobility Index approach with varying time window}{section.5.3}% 32
+\BOOKMARK [2][-]{subsection.5.3.2}{Mobility Index approach with varying threshold}{section.5.3}% 33
+\BOOKMARK [2][-]{subsection.5.3.3}{Human Mobility approach for long/short distances}{section.5.3}% 34
+\BOOKMARK [2][-]{subsection.5.3.4}{Effectiveness of approaches}{section.5.3}% 35
+\BOOKMARK [1][-]{section.5.4}{Clustering algorithm}{chapter.5}% 36
+\BOOKMARK [2][-]{subsection.5.4.1}{DBSCAN}{section.5.4}% 37
+\BOOKMARK [0][-]{section*.15}{Appendices}{}% 38
+\BOOKMARK [0][-]{chapter*.16}{Appendix 1}{}% 39
+\BOOKMARK [0][-]{chapter*.19}{Appendix 2}{}% 40
