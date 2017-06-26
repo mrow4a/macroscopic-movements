@@ -160,7 +160,7 @@ On the other hand, for distances below 1km, speed detection has not only been ab
 \end{table}
 \FloatBarrier 
 
-\autoref{tab:alg_comp_table} shows comparison of two approaches to stop detection. It occurs, that for short distances it is more efficient to use speed/distance algorithm to be able not only capture longer stays at short distance, but also very slow movements in the limited area. For longer distances it is preferable to use mobility index to be able distinguishing travels from stops better using mobility index, which preserves mobility history for the certain past time window. MobilityIndexWindow becomes a duration threshold at which mobility window with multiple points is being accepted, and MobilityIndexThreshold is defining at which multiple points or single point cannot be classified as a stop and be a series of movements/movement. 
+\autoref{tab:alg_comp_table} shows comparison of two approaches to stop detection. It occurs, that for short distances it is more efficient to use speed/distance algorithm to be able not only capture longer stays at short distance, but also very slow movements in the limited area. For longer distances it is preferable to use mobility index to be able distinguishing travels from stops better using mobility index, which preserves mobility history for the certain past time window. MobilityIndexWindow becomes a duration threshold at which mobility window with multiple points are being accepted, and MobilityIndexThreshold is defining which multiple points or single points cannot be classified as a stop and be a series of movements/movement. 
 
 \section{Clustering algorithm}
 
