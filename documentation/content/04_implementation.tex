@@ -9,30 +9,31 @@ TODO:
 
 TODO: final implementation and algorithm should be discussed here
 
-\subsection{Calculation of mobility index}
+\subsection{Calculation of the index for verification of mobility index approach - python implementation}
 
-Firstly, for a single user, minimum and maximum timestamp of sorted sequence is being found. Having value of MobilityIndexWindow (e.g. 30 minutes), function is creating equaly spaced bins of that value within maximum and minimum timestamps. 
+There are two approaches to calculate mobility index, having equally spaced windows in time, or sliding window.
 \\\\
-Secondly, each point is being visited and is assigned to the proper timestamp bin according to its own timestamp and duration to the previous point. 
+In the first approach, for a single user, minimum and maximum timestamp of sorted sequence is being found. Having value of MobilityIndexWindow (e.g. 30 minutes), function is creating equaly spaced bins of that value within maximum and minimum timestamps. Each point is being visited and is assigned to the proper timestamp bin according to its own timestamp and duration to the previous point. 
+\\\\
+In the second approach, for a single user, each point is being visited and temporarly marked as "current position". For each current position, all points which are distant in time by MobilityIndexWindow in the past, are assigned to the sliding window.
 
 \begin{figure}
 	\centering
 	\begin{minipage}{.5\textwidth}
 		\centering
 		\includegraphics[width=.9\linewidth]{images/mob_calc1.png}
-		\label{fig:mob_calc1}
 	\end{minipage}%
 	\begin{minipage}{.5\textwidth}
 		\centering
 		\includegraphics[width=.9\linewidth]{images/mob_calc2.png}
-		\label{fig:mob_calc2}
 	\end{minipage}
-	\captionof{figure}{Mobility Index values in different time windows (left) and fragment of duration values (in seconds) over which mobility index has been calculated (right) - window of 30 minutes}
+	\captionof{figure}{Mobility Index calculation using equally spaced windows in time (left) and using sliding window over time (right). Time Window of 30 minutes using the same data set for one unique user}
+	\label{fig:mob_calc}
 \end{figure}
 
 \FloatBarrier
 
-At the end, mobility index, as defined in \autoref{cha:introduction_mob_index_sect}, is being calculated over the assigned values - \autoref{fig:mob_calc2}, and assigning mobility index to each of the bins - \autoref{fig:mob_calc1}.
+At the end, mobility index, as defined in \autoref{cha:introduction_mob_index_sect}, is being calculated over the assigned values - \autoref{fig:mob_calc}. 
 
 \subsection{Algorithm for stop detection}
 

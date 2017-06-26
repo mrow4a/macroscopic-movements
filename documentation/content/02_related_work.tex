@@ -1,6 +1,13 @@
 \chapter{Related Work}
 \label{cha:relatedwork}
 
+\section{Human Mobility within the city}
+\label{cha:introduction_hummob}
+
+According to research \cite{HumanMobility1}\cite{HumanMobility2}\cite{HumanMobility3}, the average walking speed in the city for man aged 40 is 1.4 m/s (5 km/h), and slowest one is for elderly (with walking impairment) below 1 m/s (3.6 km/h). 
+
+TODO: elaborate a bit more
+
 \section{Approaches to stop detection for localization services}
 \label{cha:introduction_appr_stopdet}
 
@@ -21,10 +28,6 @@ In the paper \cite{MobilityIndexGIS}, movement of mobile devices between cells (
 \\
 In a populated area, with many GSM cells, the mobile
 terminal can change from one cell to another within
-seconds or after several minutes. Given a set of consecutive records, the mobility of a user can be estimated by calculating the Mobility Index over a pre-defined time period (sliding window). 
+seconds or after several minutes. Given a set of consecutive records, the mobility of a user can be estimated by calculating the Mobility Index over a pre-defined time period (sliding window). The Mobility Index is defined as the sum of the "distances" between each record and the previous ones, where the "distance" is the inverse of the time spent on each cell. If the value of MI is below certain threshold, it is assumed that the object stopped or moved slowly. In the publication, sliding window of 10 minutes and a mobility index threshold value of 6 has been used for certain area. The obtained results were in agreement with actual movements during more than 90\% of the time. 
 \\\\
-The Mobility Index is defined as the sum of the "distances" between each record and the previous ones, where the "distance" is the inverse of the time spent on each cell. If the value of MI is below certain threshold, it is assumed that the object stopped or moved slowly. 
-\\\\
-In the publication, sliding window of 10 minutes and a mobility index threshold value of 6 has been used for certain area. The obtained results were in agreement with actual movements during more than 90\% of the time. 
-\\\\
-High mobility index tells that user have been moving from checkpoint to checkpoint within very small time distance. Rapid drop in mobility index represents very long duration at the last point, and slight decrease in mobility index means that user changed position, but within longer duration.
+Rapid drop in mobility index represents a set of points (restricted area) in which user has been moving slowly or stopped. Slight decrease in mobility index means that user changed position from restricted area and is moving.

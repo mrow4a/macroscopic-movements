@@ -53,10 +53,12 @@ object ClusterStopsJob {
 
     log.info("Filter Moves to obtain stops only")
 
-    val durationsSlidingWindowSize = 2400.0 // By default 40 minutes
-    val mobilityIndexThreshold = 0.001 // Mobility Index Threshold used to determine mobility patterns
+    val durationsSlidingWindowSize = 1800.0 // By default 20 minutes
+    val mobilityIndexThreshold = 0.0017 // Mobility Index Threshold used to determine mobility patterns
+    val stopAccuracyDistance = 1000 // meters
+    val stopAccuracySpeed = 1.4 // m/s
 
-    // Parameters for anomaly filtering, -1 for ignoring the parameters
+    // Parameters for anomaly filtering
     val minimumFlightSpeed = 83 // Filter all speeds above 300 km/h
     val minimumFlightDistance = 100000 // Filter all speeds above 300 km/h with distances over 100km
     val minimumAccuracyDistance = 100 // Filter all points within distance of 100m, anomalies
@@ -66,30 +68,32 @@ object ClusterStopsJob {
       parsedData,
       durationsSlidingWindowSize,
       mobilityIndexThreshold,
+      stopAccuracyDistance,
+      stopAccuracySpeed,
       minimumFlightSpeed,
       minimumFlightDistance,
       minimumAccuracyDistance,
       minimumAccuracyDuration
     )
 
-    detectedStops.foreach(u => println(u.toString()))
+    // detectedStops.collect()
     log.debug("Cluster Points")
 
-//    val dbScanModel = DBSCAN.train(
-//       detectedStops,
-//       eps,
-//       minPoints,
-//       maxPointsPerPartition)
+    val dbScanModel = DBSCAN.train(
+       detectedStops,
+       eps,
+       minPoints,
+       maxPointsPerPartition)
 
-    // val clusteredData = dbScanModel.labeledPoints.map(p => s"${p.id},${p.x},${p.y},${p.cluster}")
+     val clusteredData = dbScanModel.labeledPoints.map(p => s"${p.id},${p.x},${p.y},${p.cluster}")
 
     log.debug("Save points to the result file")
 
-    // val random = new Random()
-    // var filePath = "resources/Locker/dbscan/" + eps + "_" + minPoints + "_" + random.nextInt()
-    // clusteredData.coalesce(1).saveAsTextFile(filePath)
+     val random = new Random()
+     var filePath = "resources/Locker/dbscan/" + eps + "_" + minPoints + "_" + random.nextInt()
+     clusteredData.coalesce(1).saveAsTextFile(filePath)
 
-    // clusteredData.foreach(clusteredPoint => println(clusteredPoint.toString()))
+     // clusteredData.foreach(clusteredPoint => println(clusteredPoint.toString()))
 
     log.info("Stopping Spark Context...")
     sc.stop()

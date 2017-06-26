@@ -34,15 +34,55 @@ case class DetectedPoint(vector: Vector[String]){
 
 }
 
-class StopCandidatePoint(vector: Vector[String]) extends DetectedPoint(vector){
+class Movement(start: DetectedPoint, end: DetectedPoint){
 
-  def this(point: DetectedPoint) = this(point.vector)
+  def this() = this(DetectedPoint(Vector()), DetectedPoint(Vector()))
 
-  var distance: Double = 0
-  var duration: Double = 0
-  var isStop: Boolean = false
+  /* Constants */
+  def minDuration: Double = 0.0001 // default to very small number in seconds
+  def maxDuration: Double = 86400 // default to 24h in seconds
+
+  def startPoint: DetectedPoint = start
+  def endPoint: DetectedPoint = end
+
+  private var distance: Double = -1
 
   override def toString(): String = {
-    vector + " dis: " + distance + "dur: " + duration
+    "START: " + startPoint + " END: " + endPoint + " DIS: " + distance + " DUR: " + getDuration
+  }
+
+  def getDistance: Double = {
+    if (distance == -1) {
+      distance =
+        determineDistance(startPoint.lat, startPoint.long, endPoint.lat, endPoint.long)
+    }
+    distance
+  }
+
+  def getDuration: Double = {
+    var pointsDuration = (endPoint.timestamp - startPoint.timestamp).toDouble
+    if (pointsDuration == 0) {
+      minDuration
+    } else {
+      pointsDuration
+    }
+  }
+
+  def getSpeed: Double = {
+    getDistance/getDuration
+  }
+
+  private def determineDistance(lat1: Double, lng1: Double,
+                                lat2: Double, lng2: Double): Double = {
+    val earthRadius = 6371000
+    val dLat = Math.toRadians(lat2 - lat1)
+    val dLng = Math.toRadians(lng2 - lng1)
+
+    val a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+        Math.sin(dLng / 2) * Math.sin(dLng / 2)
+
+    val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+    (earthRadius * c).toFloat
   }
 }
