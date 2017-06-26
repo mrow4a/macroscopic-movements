@@ -1,32 +1,33 @@
 \chapter{Concept and Design}
 \label{cha:conceptanddesign}
 
-\textbf{We need to describe here what do we want to achieve, what do we mean by modelling and visualizing macroscopic movements etc - thus general architecture that we have 3 components, Stop Detection from telekom data based on movements and updates of "areas" in your mobile phone, Clustering of Stops to find most popular "stops" in the city, Graph Generation to find where do the people move and in what amount
-}
 \section{Stop Location Detection}
 
 \subsection{Stop Detection for proactive localization based services}
+\label{cha:stopdet_proactive}
 
-Analyzing different approaches for stop detection based on localization data (ref. \autoref{cha:introduction_appr_stopdet}), we decided to design algorithm based on human behavior regarding mobility within the cities (ref. \autoref{cha:introduction_hummob}) and reusing the concept of Mobility Index (ref. \autoref{cha:introduction_mob_index_sect})). Stop Location Detection Algorithm have to be able not only identify the time of start stop, but also the stop location.
+Analyzing different approaches for stop detection based on localization data (ref. \autoref{cha:introduction_appr_stopdet}), we decided to test and verify algorithms based on human behavior regarding mobility within the cities (ref. \autoref{cha:introduction_hummob}) and reusing the concept of Mobility Index (ref. \autoref{cha:introduction_mob_index_sect})). Stop Location Detection Algorithm have to be able not only identify the time of start stop, but also the stop location.
+\\\\
+The approaches also need to consider that because of the method of receiving data in proactive localization services, if human will enter a urban canyon, building or move underground his signal might need to be re-obtained after a movement to new area and this can take certain period of time, where points possibly can be spanned over mid-range/long distances. On the other hand, points received over a short distance might mean that person has been already moving with a good reception of signal.
 
 \subsection{Mobility index based approach}
+\label{cha:stopdet_mi}
 
-In related works about mobility index discussed in \autoref{cha:introduction_mob_index_sect}, the approach to stop detection using mobility index is bound to the way the data is being sampled (handover from one GSM cell to another). The data is recorded whenever mobile device changes its GSM cell. 
-\\\\
-In case of the approach discussed in this paper (\autoref{cha:introduction_methodo}), the situation is similar, however instead of GSM cells we have artificially created area around the location, and while new location is obtained at some distance after movement, new area might need to be updated and points is being recorded.
+In related works about mobility index discussed in \autoref{cha:introduction_mob_index_sect}, the approach to stop detection using mobility index is bound to the way the data is being sampled (handover from one GSM cell to another). The data is recorded whenever mobile device changes its GSM cell. In case of the approach discussed in this paper the situation is similar, however instead of GSM cells we have artificially created area around the location, and while new location is obtained at some distance after movement, new area might need to be updated and point is being recorded.
 \\\\
 In a populated area, the user can move from one area to another after several seconds or only after minutes. Thus, if within a certain
-period of time (called mobility index time window) the user stays in the same area (mobility index is equal to 0) or changes the areas with small pace (mobility index is below certain threshold) it can be assumed that the user is immobile or approaching stop location and having stay somewhere within that time window. 
-\\\\
-Approach based on mobility index could precisely identify how mobile has been user within the certain time period and identify longer stop locations, however mobility index is not able to identify short stops at location where in the certain time window user been moving fast, stopped and moving fast again. 
+period of time (called mobility index time window) the user stays in the same area or changes the areas with small pace (mobility index is below certain threshold) it can be assumed that the user is immobile or approaching stop location and having stay somewhere within that time window (restricted area). 
 
 \subsection{Human Behavior based approach}
+\label{cha:stopdet_bh}
 
 This approach targets the condition for movement between two points, which has to be satisfied, so that it can be considered as a stay within the certain distance. 
 \\\\
-The \autoref{cha:introduction_hummob} discusses, that in average, walking human is covering a short distances with the speed of over 3km/h up to 5km/h. However for movement on long distances, user will most likely use city or private transport, and thus his speed can vary much in that time/distance period.
+The \autoref{cha:introduction_hummob} discusses, that in average, walking human is traveling with the speed of over 3km/h up to 5km/h. However for movement on long distances, user will most likely use city or private transport, and thus his speed can vary much in that time/distance period.
 \\\\
-This means that stop detection based on speed of movement over long distance might not be effective, however, on small distances it might quite precisely identify short stays at certain locations, in between high mobility of the user.  
+This approach states, that if movement between two points has been recorded in very short distance - as described in \autoref{cha:stopdet_proactive}, and movement of speed is below a certain threshold, it might mean that user has stopped or has been moving very slowly within a restricted area, which is called possible stop for that location between these points. 
+\\\\
+For movements between points over mid/long distances recorded, user might have stopped at first location, moved with different speeds between points and continuing movement (proactive localization is used). As an example, movement over 6km, might require up to 10 minutes with transportation. If the user stopped at previous location for 20 minutes, thus, total movement between point took 30 minutes, which in average is around 12 km/h. Universal speed threshold is not able to detect stops in these kind of examples, since with travels over higher speeds with stop at previous location would result in relatively high average speed. 
 
 \section{Clustering of Stops}
 
