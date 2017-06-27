@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.5.29)  27 JUN 2017 01:45
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.5.29)  27 JUN 2017 11:16
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2014,62 +2014,74 @@ File: images/mob_calc1.png Graphic file (type png)
 
 <use images/mob_calc1.png>
 Package pdftex.def Info: images/mob_calc1.png used on input line 24.
-(pdftex.def)             Requested size: 204.85846pt x 151.10524pt.
+(pdftex.def)             Requested size: 184.37135pt x 135.98836pt.
 
 <images/mob_calc2.png, id=233, 621.32124pt x 469.755pt>
 File: images/mob_calc2.png Graphic file (type png)
 
 <use images/mob_calc2.png>
 Package pdftex.def Info: images/mob_calc2.png used on input line 28.
-(pdftex.def)             Requested size: 204.85846pt x 154.88344pt.
+(pdftex.def)             Requested size: 184.37135pt x 139.39366pt.
  [9]
+<images/stop_algo.png, id=240, 484.81125pt x 471.7625pt>
+File: images/stop_algo.png Graphic file (type png)
 
-LaTeX Warning: Reference `chap:related_work' on page 10 undefined on input line
- 44.
+<use images/stop_algo.png>
+Package pdftex.def Info: images/stop_algo.png used on input line 42.
+(pdftex.def)             Requested size: 432.48051pt x 420.86069pt.
+File: images/snet/snet_footer.png Graphic file (type png)
+ <use images/snet/snet_footer.png>
+Package pdftex.def Info: images/snet/snet_footer.png used on input line 47.
+(pdftex.def)             Requested size: 81.94212pt x 18.43645pt.
+ [10 <./images/mob_calc1.png> <./images/mob_calc2.png>]
+
+LaTeX Warning: Reference `chap:related_work' on page 11 undefined on input line
+ 51.
 
 
-LaTeX Warning: Citation 'spark' on page 10 undefined on input line 48.
+LaTeX Warning: Citation 'spark' on page 11 undefined on input line 55.
 
 
-LaTeX Warning: Citation 'dbscan_on_spark' on page 10 undefined on input line 48
+LaTeX Warning: Citation 'dbscan_on_spark' on page 11 undefined on input line 55
 .
 
 
-LaTeX Warning: Citation 'vis_dbscan_on_spark' on page 10 undefined on input lin
-e 48.
+LaTeX Warning: Citation 'vis_dbscan_on_spark' on page 11 undefined on input lin
+e 55.
 
-<images/db1_c.png, id=240, 293.97328pt x 298.49016pt>
+[11 <./images/stop_algo.png>]
+<images/db1_c.png, id=252, 293.97328pt x 298.49016pt>
 File: images/db1_c.png Graphic file (type png)
  <use images/db1_c.png>
-Package pdftex.def Info: images/db1_c.png used on input line 54.
+Package pdftex.def Info: images/db1_c.png used on input line 61.
 (pdftex.def)             Requested size: 136.57462pt x 138.67351pt.
 
-<images/db2_c.png, id=241, 293.97328pt x 268.00125pt>
+<images/db2_c.png, id=253, 293.97328pt x 268.00125pt>
 File: images/db2_c.png Graphic file (type png)
  <use images/db2_c.png>
-Package pdftex.def Info: images/db2_c.png used on input line 60.
+Package pdftex.def Info: images/db2_c.png used on input line 67.
 (pdftex.def)             Requested size: 136.57462pt x 124.50887pt.
 LaTeX Font Info:    Font shape `T1/phv/m/it' in size <10> not available
-(Font)              Font shape `T1/phv/m/sl' tried instead on input line 61.
+(Font)              Font shape `T1/phv/m/sl' tried instead on input line 68.
 LaTeX Font Info:    Font shape `T1/phv/m/sl' will be
-(Font)              scaled to size 9.49997pt on input line 61.
+(Font)              scaled to size 9.49997pt on input line 68.
 
-<images/db3_c.png, id=242, 293.59688pt x 295.47891pt>
+<images/db3_c.png, id=254, 293.59688pt x 295.47891pt>
 File: images/db3_c.png Graphic file (type png)
  <use images/db3_c.png>
-Package pdftex.def Info: images/db3_c.png used on input line 66.
+Package pdftex.def Info: images/db3_c.png used on input line 73.
 (pdftex.def)             Requested size: 136.57462pt x 137.45036pt.
 
-<images/db4_c.png, id=243, 293.59688pt x 284.56313pt>
+<images/db4_c.png, id=255, 293.59688pt x 284.56313pt>
 File: images/db4_c.png Graphic file (type png)
  <use images/db4_c.png>
-Package pdftex.def Info: images/db4_c.png used on input line 72.
+Package pdftex.def Info: images/db4_c.png used on input line 79.
 (pdftex.def)             Requested size: 136.57462pt x 132.37259pt.
 
-<images/db5_c.png, id=244, 293.59688pt x 267.24844pt>
+<images/db5_c.png, id=256, 293.59688pt x 267.24844pt>
 File: images/db5_c.png Graphic file (type png)
  <use images/db5_c.png>
-Package pdftex.def Info: images/db5_c.png used on input line 78.
+Package pdftex.def Info: images/db5_c.png used on input line 85.
 (pdftex.def)             Requested size: 227.62206pt x 207.19287pt.
 )
 (./content/05_evaluation.tex
@@ -2077,28 +2089,27 @@ File: images/snet/snet_footer.png Graphic file (type png)
  <use images/snet/snet_footer.png>
 Package pdftex.def Info: images/snet/snet_footer.png used on input line 3.
 (pdftex.def)             Requested size: 81.94212pt x 18.43645pt.
- [10 <./images/mob_calc1.png> <./images/mob_calc2.png>] [11 <./images/db1_c.png
-> <./images/db2_c.png> <./images/db3_c.png> <./images/db4_c.png> <./images/db5_
-c.png>] [12
+ [12] [13 <./images/db1_c.png> <./images/db2_c.png> <./images/db3_c.png> <./ima
+ges/db4_c.png> <./images/db5_c.png>] [14
 
 
 ]
 chapter 5.
-<images/points_germany.png, id=267, 351.3125pt x 432.61626pt>
+<images/points_germany.png, id=277, 351.3125pt x 432.61626pt>
 File: images/points_germany.png Graphic file (type png)
 
 <use images/points_germany.png>
 Package pdftex.def Info: images/points_germany.png used on input line 13.
 (pdftex.def)             Requested size: 136.57462pt x 168.18497pt.
 
-<images/germany_stats.png, id=268, 905.3825pt x 422.57875pt>
+<images/germany_stats.png, id=278, 905.3825pt x 422.57875pt>
 File: images/germany_stats.png Graphic file (type png)
 
 <use images/germany_stats.png>
 Package pdftex.def Info: images/germany_stats.png used on input line 22.
 (pdftex.def)             Requested size: 409.71692pt x 191.22905pt.
- [13 <./images/points_germany.png>]
-<images/points_berlin_heatmap.png, id=275, 661.47125pt x 628.3475pt>
+ [15 <./images/points_germany.png>]
+<images/points_berlin_heatmap.png, id=285, 661.47125pt x 628.3475pt>
 File: images/points_berlin_heatmap.png Graphic file (type png)
 
 <use images/points_berlin_heatmap.png>
@@ -2110,15 +2121,15 @@ File: images/snet/snet_footer.png Graphic file (type png)
 Package pdftex.def Info: images/snet/snet_footer.png used on input line 35.
 (pdftex.def)             Requested size: 81.94212pt x 18.43645pt.
 
-[14 <./images/germany_stats.png>]
-<images/berlin_stats_intro.png, id=282, 780.9175pt x 528.97626pt>
+[16 <./images/germany_stats.png>]
+<images/berlin_stats_intro.png, id=292, 780.9175pt x 528.97626pt>
 File: images/berlin_stats_intro.png Graphic file (type png)
 
 <use images/berlin_stats_intro.png>
 Package pdftex.def Info: images/berlin_stats_intro.png used on input line 45.
 (pdftex.def)             Requested size: 273.14923pt x 185.02339pt.
- [15 <./images/points_berlin_heatmap.png>]
-<images/berlin_speeds_distances.png, id=290, 790.955pt x 430.60875pt>
+ [17 <./images/points_berlin_heatmap.png>]
+<images/berlin_speeds_distances.png, id=301, 790.955pt x 430.60875pt>
 File: images/berlin_speeds_distances.png Graphic file (type png)
 
 <use images/berlin_speeds_distances.png>
@@ -2130,12 +2141,12 @@ File: images/snet/snet_footer.png Graphic file (type png)
 Package pdftex.def Info: images/snet/snet_footer.png used on input line 60.
 (pdftex.def)             Requested size: 81.94212pt x 18.43645pt.
 
-[16 <./images/berlin_stats_intro.png> <./images/berlin_speeds_distances.png>]
+[18 <./images/berlin_stats_intro.png> <./images/berlin_speeds_distances.png>]
 Underfull \hbox (badness 10000) in paragraph at lines 62--65
 
  []
 
-<images/anom1.png, id=301, 833.1125pt x 469.755pt>
+<images/anom1.png, id=312, 833.1125pt x 469.755pt>
 File: images/anom1.png Graphic file (type png)
  <use images/anom1.png>
 Package pdftex.def Info: images/anom1.png used on input line 68.
@@ -2152,8 +2163,8 @@ Underfull \hbox (badness 10000) in paragraph at lines 84--89
 
  []
 
-[17 <./images/anom1.png>]
-<images/mob_index_analy1.png, id=309, 950.55125pt x 580.1675pt>
+[19 <./images/anom1.png>]
+<images/mob_index_analy1.png, id=320, 950.55125pt x 580.1675pt>
 File: images/mob_index_analy1.png Graphic file (type png)
 
 <use images/mob_index_analy1.png>
@@ -2183,8 +2194,8 @@ File: images/snet/snet_footer.png Graphic file (type png)
 <use images/snet/snet_footer.png>
 Package pdftex.def Info: images/snet/snet_footer.png used on input line 107.
 (pdftex.def)             Requested size: 81.94212pt x 18.43645pt.
- [18 <./images/mob_index_analy1.png>]
-<images/mob_index_analy2.png, id=318, 780.9175pt x 585.18625pt>
+ [20 <./images/mob_index_analy1.png>]
+<images/mob_index_analy2.png, id=328, 780.9175pt x 585.18625pt>
 File: images/mob_index_analy2.png Graphic file (type png)
 
 <use images/mob_index_analy2.png>
@@ -2216,8 +2227,8 @@ Underfull \hbox (badness 10000) in paragraph at lines 116--125
 
  []
 
-[19 <./images/mob_index_analy2.png>]
-<images/speed_dist_analy1.png, id=327, 804.00375pt x 445.665pt>
+[21 <./images/mob_index_analy2.png>]
+<images/speed_dist_analy1.png, id=337, 804.00375pt x 445.665pt>
 File: images/speed_dist_analy1.png Graphic file (type png)
 
 <use images/speed_dist_analy1.png>
@@ -2227,7 +2238,7 @@ File: images/snet/snet_footer.png Graphic file (type png)
  <use images/snet/snet_footer.png>
 Package pdftex.def Info: images/snet/snet_footer.png used on input line 136.
 (pdftex.def)             Requested size: 81.94212pt x 18.43645pt.
- [20]
+ [22]
 Underfull \hbox (badness 10000) in paragraph at lines 138--143
 
  []
@@ -2240,15 +2251,15 @@ Underfull \hbox (badness 10000) in paragraph at lines 138--143
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[21 <./images/speed_dist_analy1.png>]
-<images/0,001_5_gray.png, id=340, 977.15062pt x 569.50266pt>
+[23 <./images/speed_dist_analy1.png>]
+<images/0,001_5_gray.png, id=351, 977.15062pt x 569.50266pt>
 File: images/0,001_5_gray.png Graphic file (type png)
 
 <use images/0,001_5_gray.png>
 Package pdftex.def Info: images/0,001_5_gray.png used on input line 176.
 (pdftex.def)             Requested size: 455.24411pt x 265.32869pt.
 
-<images/0,002_5_gray.png, id=341, 978.65625pt x 572.5139pt>
+<images/0,002_5_gray.png, id=352, 978.65625pt x 572.5139pt>
 File: images/0,002_5_gray.png Graphic file (type png)
 
 <use images/0,002_5_gray.png>
@@ -2259,7 +2270,7 @@ File: images/snet/snet_footer.png Graphic file (type png)
  <use images/snet/snet_footer.png>
 Package pdftex.def Info: images/snet/snet_footer.png used on input line 78.
 (pdftex.def)             Requested size: 81.94212pt x 18.43645pt.
- [22] [23 <./images/0,001_5_gray.png> <./images/0,002_5_gray.png>] [24
+ [24] [25 <./images/0,001_5_gray.png> <./images/0,002_5_gray.png>] [26
 
 
 ]
@@ -2299,31 +2310,32 @@ Package pdftex.def Info: images/snet/snet_footer.png used on input line 78.
 
 LaTeX Warning: Empty bibliography on input line 88.
 
-[25
+[27
 
 
 
 
 
-] [26] (./content/99_appendices/a01_listings.tex
+] [28] (./content/99_appendices/a01_listings.tex
 chapter without number
-) (./content/99_appendices/a02_listings.tex [27
-
-
-] [28
+) [29
 
 
 ]
-chapter without number
-) [29]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 99.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 99.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 98.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 98.
  (./main.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 99.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 99.
-Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: E7E9DBD5B7553F6E93C22F345C5A6CAA;3012.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 98.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 98.
 
+
+Package rerunfilecheck Warning: File `main.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `main.out':
+(rerunfilecheck)             Before: FE28D898F3EFE80705225836729FDFD4;3012
+(rerunfilecheck)             After:  B35BC8FAF1800BBBC1CABA0BB035FC4B;2964.
 
 LaTeX Warning: There were undefined references.
 
@@ -2337,25 +2349,28 @@ Package logreq Info: Writing requests to 'main.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 30372 strings out of 494953
- 539337 string characters out of 6180977
- 1017216 words of memory out of 5000000
+ 30369 strings out of 494953
+ 539192 string characters out of 6180977
+ 1017315 words of memory out of 5000000
  32950 multiletter control sequences out of 15000+600000
  45127 words of font info for 72 fonts, out of 8000000 for 9000
  16 hyphenation exceptions out of 8191
- 69i,16n,66p,2349b,1642s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texliv
-e/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/share/texlive/texmf-dist
-/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1
-/urw/helvetic/uhvro8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/palati
-no/uplb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/palatino/uplbi8a.p
-fb></usr/share/texlive/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></usr/sha
-re/texlive/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></usr/share/texlive/t
-exmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on main.pdf (31 pages, 7292232 bytes).
+ 69i,16n,66p,2349b,1644s stack positions out of 5000i,500n,10000p,200000b,80000s
+pdfTeX warning (dest): name{chapter*.23} has been referenced but does not exi
+st, replaced by a fixed one
+
+{/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texlive/
+texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/share/texlive/texmf-dist/f
+onts/type1/urw/helvetic/uhvr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/u
+rw/helvetic/uhvro8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/palatino
+/uplb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/palatino/uplbi8a.pfb
+></usr/share/texlive/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></usr/share
+/texlive/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></usr/share/texlive/tex
+mf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
+Output written on main.pdf (31 pages, 7316434 bytes).
 PDF statistics:
- 440 PDF objects out of 1000 (max. 8388607)
- 360 compressed objects within 4 object streams
- 92 named destinations out of 1000 (max. 500000)
- 440 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 438 PDF objects out of 1000 (max. 8388607)
+ 358 compressed objects within 4 object streams
+ 91 named destinations out of 1000 (max. 500000)
+ 445 words of extra memory for PDF output out of 10000 (max. 10000000)
 
