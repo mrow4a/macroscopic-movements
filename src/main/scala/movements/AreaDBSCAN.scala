@@ -5,19 +5,18 @@ import java.util.Random
 import org.apache.spark.mllib.clustering.dbscan.{DBSCAN, DBSCANPoint, DBSCANRectangle}
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
-import org.slf4j.LoggerFactory
+import org.slf4j.{Logger, LoggerFactory}
 import stopdetection.StopDetection
 
 /**
-  * Runs area version of DBSCAN.
+  * Runs area version of DBSCAN. Input parameter is one file, rest is hardcoded.
   *
   * Created by gabri on 2017-06-01.
   *
   */
 object AreaDBSCAN {
 
-  val log = LoggerFactory.getLogger(ClusterStopsJob.getClass)
-
+  val log: Logger = LoggerFactory.getLogger(ClusterStopsJob.getClass)
 
   def main(args: Array[String]) {
     log.info("Create Spark Context")
@@ -52,31 +51,32 @@ object AreaDBSCAN {
 
     log.debug("Cluster Points")
 
+    // Hardcoded areas for inner and outer Berlin
     val innerArea: DBSCANRectangle = DBSCANRectangle(52.4425, 13.2582, 52.5647, 13.4818)
     val middleArea: DBSCANRectangle = DBSCANRectangle(52.3446, 13.0168, 52.6375, 13.6603)
 
-    val innerStops = detectedStops.filter(p => innerArea.contains(DBSCANPoint(p)))
-    // inner
-    val outerStops = detectedStops.filter(p => !middleArea.contains(DBSCANPoint(p)))
-    // outer
+    val innerStops = detectedStops.filter(p => innerArea.contains(DBSCANPoint(p)))    // inner
+    val outerStops = detectedStops.filter(p => !middleArea.contains(DBSCANPoint(p)))    // outer
     val middleStops = detectedStops.subtract(outerStops).subtract(innerStops) // middle = detected - outer - inner
 
     log.debug("Cluster Points")
+
+    // hardcoded parameters
     var maxPointsPerPartition = 10000
     var eps = 0.001
     var minPoints = 5
-    var areaId = 1
 
-    val clusteredData = runDBSCAN(innerStops, 0.001, minPoints, maxPointsPerPartition, 1) ++
-      runDBSCAN(middleStops, 0.003, minPoints, maxPointsPerPartition, 2) ++
-      runDBSCAN(outerStops, 0.005, minPoints, maxPointsPerPartition, 3)
+    // run areaDBSCAN and merge
+    val innerDBSCAN = runDBSCAN(innerStops, 0.001, minPoints, maxPointsPerPartition, 1)
+    val middleDBSCAN = runDBSCAN(middleStops, 0.003, minPoints, maxPointsPerPartition, 2)
+    val outerDBSCAN =  runDBSCAN(middleStops, 0.005, minPoints, maxPointsPerPartition, 3)
 
-    writeToFile(clusteredData, eps, minPoints)
+    // merge results and write to file
+    writeToFile(innerDBSCAN ++ middleDBSCAN ++ outerDBSCAN, eps, minPoints)
 
     log.info("Stopping Spark Context...")
     sc.stop()
   }
-
 
   private def runDBSCAN(innerStops: RDD[Vector[String]], eps: Double, minPoints: Int, maxPointsPerPartition: Int, areaID: Int)
   : RDD[String] = {
@@ -86,11 +86,11 @@ object AreaDBSCAN {
     }")
   }
 
+  val random = new Random()
+
   private def writeToFile(clusteredData: RDD[String], eps: Double, minPoints: Int) = {
     log.debug("Save points to the result file")
 
-    val random = new Random()
-    //val clusteredData = dbScanModel.labeledPoints.map(p => s"${p.id},${p.x},${p.y},${p.cluster}")
     val filePath = "resources/Locker/dbscan/v2/" + eps + "_" + minPoints + "_" + random.nextInt()
     clusteredData.coalesce(1).saveAsTextFile(filePath)
 
