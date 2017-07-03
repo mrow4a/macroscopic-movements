@@ -19,29 +19,32 @@ package movements
 
 import java.util.Random
 
-import org.apache.spark.mllib.clustering.dbscan.DBSCAN
+import org.apache.spark.mllib.clustering.dbscan.{DBSCAN, DBSCANPoint, DBSCANRectangle}
+import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
-import org.slf4j.LoggerFactory
+import org.slf4j.{Logger, LoggerFactory}
 import stopdetection.StopDetection
+import util.Config
 
 object ClusterStopsJob {
 
-  val log = LoggerFactory.getLogger(ClusterStopsJob.getClass)
+  val log: Logger = LoggerFactory.getLogger(ClusterStopsJob.getClass)
 
   def main(args: Array[String]) {
-    if (args.length < 3) {
-      System.err.println("You must pass the arguments: " +
-        "<src file> <max points per partition> <eps> <min points per partition>")
+
+    var maxPointsPerPartition: Int = Config.maxPointsPerPartition
+    var eps: Double = Config.eps
+    var minPoints: Int = Config.minPoints
+
+    if(args.length < 1) {
+      log.error("Error: No input file given")
       System.exit(1)
     }
-
-    log.info("Parse arguments of the function")
-    val (src, maxPointsPerPartition, eps, minPoints) =
-      (args(0), args(1).toInt, args(2).toFloat, args(3).toInt)
+    var src = args(0) // need to pass file as arg
 
     log.info("Create Spark Context")
     val conf = new SparkConf()
-    conf.setAppName(s"DBSCAN(eps=$eps, min=$minPoints, max=$maxPointsPerPartition)")
+    conf.setAppName(s"DBSCAN")
     conf.set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
     conf.setMaster("local[2]").set("spark.executor.memory", "1g")
     val sc = new SparkContext(conf)
@@ -76,26 +79,53 @@ object ClusterStopsJob {
       minimumAccuracyDuration
     )
 
-    // detectedStops.collect()
+    // hardcoded areas for inner and outer berlin
+    val innerArea: DBSCANRectangle = DBSCANRectangle(Config.innerBerlin.xMin,
+      Config.innerBerlin.xMax,
+      Config.innerBerlin.yMin,
+      Config.innerBerlin.yMax)
+
+    val middleArea: DBSCANRectangle =
+      DBSCANRectangle(Config.middleBerlin.xMin,
+        Config.middleBerlin.xMax,
+        Config.middleBerlin.yMin,
+        Config.middleBerlin.yMax)
+
+    val innerStops = detectedStops.filter(p => innerArea.contains(DBSCANPoint(p)))    // inner
+    val outerStops = detectedStops.filter(p => !middleArea.contains(DBSCANPoint(p)))    // outer
+    val middleStops = detectedStops.subtract(outerStops).subtract(innerStops) // middle = detected - outer - inner
+
     log.debug("Cluster Points")
 
-    val dbScanModel = DBSCAN.train(
-       detectedStops,
-       eps,
-       minPoints,
-       maxPointsPerPartition)
+    // run DBSCAN for 3 areas with hardcoded parameters and merge
+    val innerDBSCAN = runDBSCAN(innerStops, 0.001, minPoints, maxPointsPerPartition, 1)
+    val middleDBSCAN = runDBSCAN(middleStops, 0.003, minPoints, maxPointsPerPartition, 2)
+    val outerDBSCAN =  runDBSCAN(outerStops, 0.005, minPoints, maxPointsPerPartition, 3)
 
-     val clusteredData = dbScanModel.labeledPoints.map(p => s"${p.id},${p.x},${p.y},${p.cluster}")
+    // merge results and write to file
+    writeToFile(innerDBSCAN ++ middleDBSCAN ++ outerDBSCAN, eps, minPoints)
 
+    log.info("Stopping Spark Context...")
+    sc.stop()
+  }
+
+  private def runDBSCAN(innerStops: RDD[Vector[String]],
+                        eps: Double, minPoints: Int,
+                        maxPointsPerPartition: Int,
+                        areaID: Int)
+  : RDD[String] = {
+    DBSCAN.train(innerStops, eps, minPoints, maxPointsPerPartition)
+      .labeledPoints.map(p => s"${p.id},${p.x},${p.y},${
+      if (p.cluster == 0) 0 else areaID + "" + p.cluster
+    }")
+  }
+
+
+  private def writeToFile(clusteredData: RDD[String], eps: Double, minPoints: Int) = {
     log.debug("Save points to the result file")
 
      val random = new Random()
      var filePath = "resources/Locker/dbscan/" + eps + "_" + minPoints + "_" + random.nextInt()
      clusteredData.coalesce(1).saveAsTextFile(filePath)
-
-     // clusteredData.foreach(clusteredPoint => println(clusteredPoint.toString()))
-
-    log.info("Stopping Spark Context...")
-    sc.stop()
   }
 }
