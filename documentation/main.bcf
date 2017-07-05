@@ -2056,11 +2056,17 @@
     <bcf:citekey order="4">MobilityIndexGIS</bcf:citekey>
     <bcf:citekey order="5">MobilityIndexGIS</bcf:citekey>
     <bcf:citekey order="6">MobilityIndexGIS</bcf:citekey>
-    <bcf:citekey order="7">clustering</bcf:citekey>
-    <bcf:citekey order="8">kelly2008mathematics</bcf:citekey>
-    <bcf:citekey order="9">spark</bcf:citekey>
-    <bcf:citekey order="10">dbscan_on_spark</bcf:citekey>
-    <bcf:citekey order="11">vis_dbscan_on_spark</bcf:citekey>
+    <bcf:citekey order="7">kelly2008mathematics</bcf:citekey>
+    <bcf:citekey order="8">djidjev2011graph</bcf:citekey>
+    <bcf:citekey order="9">deri2013graph</bcf:citekey>
+    <bcf:citekey order="10">djidjev2011graph</bcf:citekey>
+    <bcf:citekey order="11">deri2013graph</bcf:citekey>
+    <bcf:citekey order="12">marzuoli2011two</bcf:citekey>
+    <bcf:citekey order="13">clustering</bcf:citekey>
+    <bcf:citekey order="14">kelly2008mathematics</bcf:citekey>
+    <bcf:citekey order="15">spark</bcf:citekey>
+    <bcf:citekey order="16">dbscan_on_spark</bcf:citekey>
+    <bcf:citekey order="17">vis_dbscan_on_spark</bcf:citekey>
   </bcf:section>
   <bcf:sortlist section="0" name="nty/global" type="entry" sortscheme="nty" sortnamekeyscheme="global">
   <bcf:sorting>
