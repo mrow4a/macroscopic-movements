@@ -13,17 +13,17 @@ TODO: final implementation and algorithm should be discussed here
 
 There are two approaches to calculate mobility index, having equally spaced windows in time, or sliding window.
 \\\\
-In the first approach, for a single user, minimum and maximum timestamp of sorted sequence is being found. Having value of MobilityIndexWindow (e.g. 30 minutes), function is creating equaly spaced bins of that value within maximum and minimum timestamps. Each point is being visited and is assigned to the proper timestamp bin according to its own timestamp and duration to the previous point. 
+In the first approach, for a single user, minimum and maximum timestamp of sorted sequence is being found. Having value of MobilityIndexWindow (e.g. 30 minutes), function is creating equaly spaced bins of that value within maximum and minimum timestamps. Each point is being visited and is assigned to the proper timestamp bin according to its own timestamp and duration to the previous point. However, danger of this approach is that points and their duration are randomly placed in bins and could lead to represent mobility of fixed window, instead of mobility history for points.  
 \\\\
-In the second approach, for a single user, each point is being visited and temporarly marked as "current position". For each current position, all points which are distant in time by MobilityIndexWindow in the past, are assigned to the sliding window.
+In the second approach, for a single user, each point is being visited and temporarly marked as "current position". For each current position, all points which are distant in time by MobilityIndexWindow in the past, are assigned to the sliding window. This approach represents mobility history in the past time window for each point. 
 
 \begin{figure}
 	\centering
-	\begin{minipage}{.5\textwidth}
+	\begin{minipage}{.45\textwidth}
 		\centering
 		\includegraphics[width=.9\linewidth]{images/mob_calc1.png}
 	\end{minipage}%
-	\begin{minipage}{.5\textwidth}
+	\begin{minipage}{.45\textwidth}
 		\centering
 		\includegraphics[width=.9\linewidth]{images/mob_calc2.png}
 	\end{minipage}
@@ -37,7 +37,14 @@ At the end, mobility index, as defined in \autoref{cha:introduction_mob_index_se
 
 \subsection{Algorithm for stop detection}
 
-TODO
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.95\textwidth]{images/stop_algo.png}
+	\caption{ Stop detection algorithm for proactive localization services. }
+	\label{fig:stop_algo}
+\end{figure} 
+
+\FloatBarrier
 
 \section{Clustering algorithm}
 
