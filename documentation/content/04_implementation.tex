@@ -88,6 +88,26 @@ We wanted a scalable implementation of DBSCAN that could handle large data sets,
 	\end{minipage}%
 \end{figure}
 
+\pagebreak
+
+
+\section{Graph Analysis}
+\subsection{Data Preparation}
+
+ For our analysis we had to first consider cleaning the data and structuring it in a suitable format. The output of the clustering algorithm forms the basis for this step. The clustering algorithm identifies many stop points as outliers with cluster id=0. These outliers are filtered out from the main data set. It is to be noted however, that the outliers are useful in analyzing the quality ?? of the data to be used for the graphical analysis process.
+ 
+After removing the outliers, the list of all remaining valid clusters are considered as the set of vertices and are denoted as V.
+The next task is to construct the set of edges. This task has been achieved in two steps. At first, data for each user has been processed and edges constructed between clusters - as described in \autoref{cha:movementsGraph} Next, a list of all edges was made, and the number of times an edge repeats in the list was taken as the weight of the edge.
+This list of edges and vertices forms the basic information for the graphical analysis phase.
+
+\subsection{Analysis}
+We have used both GraphX and Python for the graphical analysis.
+We use GraphX to create the Graph using list of edges. Using built-in graph analysis methods provided GraphX we can extract the distribution of in-degrees and out-degrees, list of strongly and weakly connected components . We can obtain a list of most important Vertices using the PageRank method. <Need to add more here>
+We are using the NetworkX library of Python to verify and plot results.
+
+
+
+
 
 
 

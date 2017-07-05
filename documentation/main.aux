@@ -82,9 +82,14 @@
 \newlabel{cha:stopdet_bh}{{3.1.3}{5}{Human Behavior based approach}{subsection.3.1.3}{}}
 \abx@aux@cite{clustering}
 \@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {section}{\numberline {3.2}Clustering of Stops}{6}{section.3.2}}
+\abx@aux@cite{kelly2008mathematics}
 \@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 3.1}{\ignorespaces  Clustering applied to a dataset. \relax }}{7}{figure.caption.3}}
 \newlabel{fig:clustering}{{\relax 3.1}{7}{Clustering applied to a dataset. \relax }{figure.caption.3}{}}
 \@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {section}{\numberline {3.3}City Movements Graph}{7}{section.3.3}}
+\newlabel{cha:movementsGraph}{{3.3}{7}{City Movements Graph}{section.3.3}{}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {subsection}{\numberline {3.3.1}Graphical Representation and Analysis}{7}{subsection.3.3.1}}
+\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 3.2}{\ignorespaces  Example: Matrix representation of a Directed Graph\relax }}{8}{figure.caption.4}}
+\newlabel{fig:Graph}{{\relax 3.2}{8}{Example: Matrix representation of a Directed Graph\relax }{figure.caption.4}{}}
 \@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {chapter}{\numberline {4}Implementation}{9}{chapter.4}}
 \@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\defcounter {refsection}{0}\relax }\@writefile{lot}{\addvspace {10\p@ }}
@@ -93,6 +98,7 @@
 \@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {section}{\numberline {4.1}Scripts for data analysis - usage}{9}{section.4.1}}
 \@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {section}{\numberline {4.2}Stop Location Identification - batch processing in Apache Spark}{9}{section.4.2}}
 \@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.1}Calculation of the index for verification of mobility index approach - python implementation}{9}{subsection.4.2.1}}
+<<<<<<< 58752f239e15143f2f2cb4c05f5300ae3841e24b
 \@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 4.1}{\ignorespaces Mobility Index calculation using equally spaced windows in time (left) and using sliding window over time (right). Time Window of 30 minutes using the same data set for one unique user\relax }}{10}{figure.caption.4}}
 \newlabel{fig:mob_calc}{{\relax 4.1}{10}{Mobility Index calculation using equally spaced windows in time (left) and using sliding window over time (right). Time Window of 30 minutes using the same data set for one unique user\relax }{figure.caption.4}{}}
 \@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.2}Algorithm for stop detection}{10}{subsection.4.2.2}}
@@ -165,3 +171,92 @@
 \newlabel{fig:reco_ex_3a}{{\relax 1}{29}{Visualization of distances, speed and mobility indexes for example from \autoref {fig:reco_ex_3b} with identified stop candidates \relax }{figure.caption.21}{}}
 \@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 2}{\ignorespaces  Movement example for one user in the period of 24h, with recorded locations due to the movement and annotated timestamps for detected stop candidates \relax }}{29}{figure.caption.22}}
 \newlabel{fig:reco_ex_3b}{{\relax 2}{29}{Movement example for one user in the period of 24h, with recorded locations due to the movement and annotated timestamps for detected stop candidates \relax }{figure.caption.22}{}}
+=======
+\abx@aux@cite{spark}
+\abx@aux@cite{dbscan_on_spark}
+\abx@aux@cite{vis_dbscan_on_spark}
+\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 4.1}{\ignorespaces Mobility Index calculation using equally spaced windows in time (left) and using sliding window over time (right). Time Window of 30 minutes using the same data set for one unique user\relax }}{10}{figure.caption.5}}
+\newlabel{fig:mob_calc}{{\relax 4.1}{10}{Mobility Index calculation using equally spaced windows in time (left) and using sliding window over time (right). Time Window of 30 minutes using the same data set for one unique user\relax }{figure.caption.5}{}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.2}Algorithm for stop detection}{10}{subsection.4.2.2}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {section}{\numberline {4.3}Clustering algorithm}{10}{section.4.3}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.1}DBSCAN on Spark}{10}{subsection.4.3.1}}
+\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 4.2}{\ignorespaces Step 1. DBSCAN on Spark assign the data space into boxes.\relax }}{11}{figure.caption.6}}
+\newlabel{fig:db1_c}{{\relax 4.2}{11}{Step 1. DBSCAN on Spark assign the data space into boxes.\relax }{figure.caption.6}{}}
+\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 4.3}{\ignorespaces Step 2. Each box grows to include the points that are within one \textit  {eps} of it.\relax }}{11}{figure.caption.6}}
+\newlabel{fig:db2_c}{{\relax 4.3}{11}{Step 2. Each box grows to include the points that are within one \textit {eps} of it.\relax }{figure.caption.6}{}}
+\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 4.4}{\ignorespaces Step 3. Traditional DBScan algorithm is applied in parallel for each box. Each different color represents a different cluster. \relax }}{11}{figure.caption.6}}
+\newlabel{fig:db3_c}{{\relax 4.4}{11}{Step 3. Traditional DBScan algorithm is applied in parallel for each box. Each different color represents a different cluster. \relax }{figure.caption.6}{}}
+\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 4.5}{\ignorespaces Step 4. After DBSCAN is done, all points witihin the borders of two clusters are examnied. If they are part of a cluster within two boxes they are merged to one cluster. \relax }}{11}{figure.caption.6}}
+\newlabel{fig:db4_c}{{\relax 4.5}{11}{Step 4. After DBSCAN is done, all points witihin the borders of two clusters are examnied. If they are part of a cluster within two boxes they are merged to one cluster. \relax }{figure.caption.6}{}}
+\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 4.6}{\ignorespaces Step 5. Finally all remaning points are labeled with the global identified cluster and we are done. (red points are noise points). \relax }}{11}{figure.caption.6}}
+\newlabel{fig:db5_c}{{\relax 4.6}{11}{Step 5. Finally all remaning points are labeled with the global identified cluster and we are done. (red points are noise points). \relax }{figure.caption.6}{}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {section}{\numberline {4.4}Graph Analysis}{12}{section.4.4}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.1}Data Preparation}{12}{subsection.4.4.1}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.2}Analysis}{12}{subsection.4.4.2}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {chapter}{\numberline {5}Evaluation}{13}{chapter.5}}
+\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\defcounter {refsection}{0}\relax }\@writefile{lot}{\addvspace {10\p@ }}
+\@writefile{lol}{\defcounter {refsection}{0}\relax }\@writefile{lol}{\addvspace {10\p@ }}
+\newlabel{cha:evaluation}{{5}{13}{Evaluation}{chapter.5}{}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {section}{\numberline {5.1}Location data characteristics for Berlin area}{13}{section.5.1}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {subsection}{\numberline {5.1.1}General overview}{13}{subsection.5.1.1}}
+\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 5.1}{\ignorespaces Visualisation of data points location in the geographical map of Germany\relax }}{13}{figure.caption.7}}
+\newlabel{fig:ger_points}{{\relax 5.1}{13}{Visualisation of data points location in the geographical map of Germany\relax }{figure.caption.7}{}}
+\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 5.2}{\ignorespaces Histograms of durations and distances between consecutive points under and cumulatively over 100 km for the area of Germany\relax }}{14}{figure.caption.8}}
+\newlabel{fig:ger_stats}{{\relax 5.2}{14}{Histograms of durations and distances between consecutive points under and cumulatively over 100 km for the area of Germany\relax }{figure.caption.8}{}}
+\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 5.3}{\ignorespaces Heatmap of data point densities within the area of Berlin\relax }}{15}{figure.caption.9}}
+\newlabel{fig:ber_heat}{{\relax 5.3}{15}{Heatmap of data point densities within the area of Berlin\relax }{figure.caption.9}{}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {subsection}{\numberline {5.1.2}Data analysis}{15}{subsection.5.1.2}}
+\newlabel{cha:dataanaly}{{5.1.2}{15}{Data analysis}{subsection.5.1.2}{}}
+\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 5.4}{\ignorespaces Histograms of durations and distances between consecutive points under 5 km and under durations of 2h for the area of Berlin\relax }}{16}{figure.caption.10}}
+\newlabel{fig:ber_stats}{{\relax 5.4}{16}{Histograms of durations and distances between consecutive points under 5 km and under durations of 2h for the area of Berlin\relax }{figure.caption.10}{}}
+\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 5.5}{\ignorespaces Histogram of speed between points with corresponding distance above or below 1.5 km\relax }}{16}{figure.caption.11}}
+\newlabel{fig:ber_sp_dis}{{\relax 5.5}{16}{Histogram of speed between points with corresponding distance above or below 1.5 km\relax }{figure.caption.11}{}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {section}{\numberline {5.2}Pre-filtering of anomalies}{17}{section.5.2}}
+\newlabel{cha:prefilter}{{5.2}{17}{Pre-filtering of anomalies}{section.5.2}{}}
+\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 5.6}{\ignorespaces  Speeds and distances histogram of points having speeds above certain threshold \relax }}{17}{figure.caption.12}}
+\newlabel{fig:anom1}{{\relax 5.6}{17}{Speeds and distances histogram of points having speeds above certain threshold \relax }{figure.caption.12}{}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {section}{\numberline {5.3}Evaluation of stop detection algorithms}{17}{section.5.3}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.1}Mobility Index approach}{17}{subsection.5.3.1}}
+\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 5.7}{\ignorespaces  Analysis of detected stops for varying MobilityIndexThreshold for time window of 20 minutes. Cumulative distribution of inverted mobility index (top left). Histogram of window sizes (top right). Cumulative distributions of total distances between points in the window of size 1 (bottom left) and above 1 (bottom right). \relax }}{18}{figure.caption.13}}
+\newlabel{fig:mob_index_analy1}{{\relax 5.7}{18}{Analysis of detected stops for varying MobilityIndexThreshold for time window of 20 minutes. Cumulative distribution of inverted mobility index (top left). Histogram of window sizes (top right). Cumulative distributions of total distances between points in the window of size 1 (bottom left) and above 1 (bottom right). \relax }{figure.caption.13}{}}
+\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 5.8}{\ignorespaces  Analysis of detected stops for varying MobilityIndexThreshold-MobilityIndexWindow(seconds), correspondingly as in the label of measurement. Cumulative distribution of duration for detected stops (top left). Histogram of window sizes (top right). Cumulative distributions of speed between point for distance below 1km (bottom left) and above 1km (bottom right). \relax }}{19}{figure.caption.14}}
+\newlabel{fig:mob_index_analy2}{{\relax 5.8}{19}{Analysis of detected stops for varying MobilityIndexThreshold-MobilityIndexWindow(seconds), correspondingly as in the label of measurement. Cumulative distribution of duration for detected stops (top left). Histogram of window sizes (top right). Cumulative distributions of speed between point for distance below 1km (bottom left) and above 1km (bottom right). \relax }{figure.caption.14}{}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.2}Human Mobility approach for long/short distances}{20}{subsection.5.3.2}}
+\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 5.9}{\ignorespaces  Speed/Distance detection with StopCertaintyMaxDistance, StopCertaintyMaxSpeed and TravelCertaintyMinSpeed thresholds. Cumulative distribution of duration for detected stops below and above distance StopCertaintyMaxDistance of 1km for different TravelCertaintyMinSpeed thresholds. \relax }}{21}{figure.caption.15}}
+\newlabel{fig:speed_dist_analy1}{{\relax 5.9}{21}{Speed/Distance detection with StopCertaintyMaxDistance, StopCertaintyMaxSpeed and TravelCertaintyMinSpeed thresholds. Cumulative distribution of duration for detected stops below and above distance StopCertaintyMaxDistance of 1km for different TravelCertaintyMinSpeed thresholds. \relax }{figure.caption.15}{}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.3}Conclusions}{21}{subsection.5.3.3}}
+\@writefile{lot}{\defcounter {refsection}{0}\relax }\@writefile{lot}{\contentsline {table}{\numberline {\relax 5.1}{\ignorespaces Comparison of two analyzed stop detection algorithms for proactive localization\relax }}{22}{table.caption.16}}
+\newlabel{tab:alg_comp_table}{{\relax 5.1}{22}{Comparison of two analyzed stop detection algorithms for proactive localization\relax }{table.caption.16}{}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {section}{\numberline {5.4}Clustering algorithm}{22}{section.5.4}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.1}DBSCAN}{22}{subsection.5.4.1}}
+\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 5.10}{\ignorespaces  Clusters with good parameters \textit  {epsilon} = 110 meter, \textit  {minPts} = 5. Alexanderplatz (pink) has 85 data points in it. \relax }}{23}{figure.caption.17}}
+\newlabel{fig:0.001_5_gray}{{\relax 5.10}{23}{Clusters with good parameters \textit {epsilon} = 110 meter, \textit {minPts} = 5. Alexanderplatz (pink) has 85 data points in it. \relax }{figure.caption.17}{}}
+\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 5.11}{\ignorespaces  Example of a clusters with bad parameters, here \textit  {epsilon} = 220 meter is too large, \textit  {minPts} = 5. "Alexanderplatz" (light green) has 748 data points in it and stretches over the whole centre (Mitte) of Berlin. \relax }}{23}{figure.caption.18}}
+\newlabel{fig:002_5_gray}{{\relax 5.11}{23}{Example of a clusters with bad parameters, here \textit {epsilon} = 220 meter is too large, \textit {minPts} = 5. "Alexanderplatz" (light green) has 748 data points in it and stretches over the whole centre (Mitte) of Berlin. \relax }{figure.caption.18}{}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {section}{\numberline {5.5}Graph Analysis}{24}{section.5.5}}
+\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 5.12}{\ignorespaces  Example: Plot of clusters across Berlin. \relax }}{24}{figure.caption.19}}
+\newlabel{fig:Vertex Plot}{{\relax 5.12}{24}{Example: Plot of clusters across Berlin. \relax }{figure.caption.19}{}}
+\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 5.13}{\ignorespaces  Example: Plot of edges across Berlin. \relax }}{24}{figure.caption.20}}
+\newlabel{fig:Edge Plot}{{\relax 5.13}{24}{Example: Plot of edges across Berlin. \relax }{figure.caption.20}{}}
+\newlabel{cha:bibliography}{{5.5}{25}{Graph Analysis}{figure.caption.20}{}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {chapter}{Appendices}{25}{section*.21}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {chapter}{\nonumberline Appendix 1}{27}{chapter*.22}}
+\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\defcounter {refsection}{0}\relax }\@writefile{lot}{\addvspace {10\p@ }}
+\@writefile{lol}{\defcounter {refsection}{0}\relax }\@writefile{lol}{\addvspace {10\p@ }}
+\newlabel{appendix:add_example_1}{{5.5}{27}{Appendix 1}{chapter*.22}{}}
+\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 1}{\ignorespaces  Visualization of distances, speed and mobility indexes for example from \autoref  {fig:reco_ex_3b} with identified stop candidates \relax }}{27}{figure.caption.23}}
+\newlabel{fig:reco_ex_3a}{{\relax 1}{27}{Visualization of distances, speed and mobility indexes for example from \autoref {fig:reco_ex_3b} with identified stop candidates \relax }{figure.caption.23}{}}
+\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 2}{\ignorespaces  Movement example for one user in the period of 24h, with recorded locations due to the movement and annotated timestamps for detected stop candidates \relax }}{27}{figure.caption.24}}
+\newlabel{fig:reco_ex_3b}{{\relax 2}{27}{Movement example for one user in the period of 24h, with recorded locations due to the movement and annotated timestamps for detected stop candidates \relax }{figure.caption.24}{}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {chapter}{\nonumberline Appendix 2}{29}{chapter*.25}}
+\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\defcounter {refsection}{0}\relax }\@writefile{lot}{\addvspace {10\p@ }}
+\@writefile{lol}{\defcounter {refsection}{0}\relax }\@writefile{lol}{\addvspace {10\p@ }}
+\newlabel{appendix:add_example_2}{{5.5}{29}{Appendix 2}{chapter*.25}{}}
+\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 1}{\ignorespaces  Visualization of distances, speed and mobility indexes for example from \autoref  {fig:reco_ex_4b} with identified stop candidates \relax }}{29}{figure.caption.26}}
+\newlabel{fig:reco_ex_4a}{{\relax 1}{29}{Visualization of distances, speed and mobility indexes for example from \autoref {fig:reco_ex_4b} with identified stop candidates \relax }{figure.caption.26}{}}
+\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 2}{\ignorespaces  Movement example for one user in the period of 24h, with recorded locations due to the movement and annotated timestamps for detected stop candidates \relax }}{29}{figure.caption.27}}
+\newlabel{fig:reco_ex_4b}{{\relax 2}{29}{Movement example for one user in the period of 24h, with recorded locations due to the movement and annotated timestamps for detected stop candidates \relax }{figure.caption.27}{}}
+>>>>>>> Updated Documentation
