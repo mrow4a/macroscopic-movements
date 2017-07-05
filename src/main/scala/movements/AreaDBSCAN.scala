@@ -1,3 +1,20 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package movements
 
 import java.util.Random
@@ -34,20 +51,28 @@ object AreaDBSCAN {
 
     log.info("Filter Moves to obtain stops only")
 
-    val durationsSlidingWindowSize = 2400.0
-    // By default 40 minutes
-    val stopCertaintyMaxDistance = 1500.0
-    // By default max walking distance for human
-    val stopCertaintyMaxSpeed = 0.833
-    // By default min human walking speed
-    val travelCertaintyMinSpeed = 1.4 // By default max human walking speed
+    val durationsSlidingWindowSize = 1800.0 // By default 20 minutes
+    val mobilityIndexThreshold = 0.0017 // Mobility Index Threshold used to determine mobility patterns
+    val stopAccuracyDistance = 1000 // meters
+    val stopAccuracySpeed = 1.4 // m/s
+
+    // Parameters for anomaly filtering
+    val minimumFlightSpeed = 83 // Filter all speeds above 300 km/h
+    val minimumFlightDistance = 100000 // Filter all speeds above 300 km/h with distances over 100km
+    val minimumAccuracyDistance = 100 // Filter all points within distance of 100m, anomalies
+    val minimumAccuracyDuration = 100 // Filter all points within duration of 100s, anomalies
 
     val detectedStops = StopDetection.filter(
       parsedData,
       durationsSlidingWindowSize,
-      stopCertaintyMaxDistance,
-      stopCertaintyMaxSpeed,
-      travelCertaintyMinSpeed)
+      mobilityIndexThreshold,
+      stopAccuracyDistance,
+      stopAccuracySpeed,
+      minimumFlightSpeed,
+      minimumFlightDistance,
+      minimumAccuracyDistance,
+      minimumAccuracyDuration
+    )
 
     log.debug("Cluster Points")
 
@@ -78,7 +103,10 @@ object AreaDBSCAN {
     sc.stop()
   }
 
-  private def runDBSCAN(innerStops: RDD[Vector[String]], eps: Double, minPoints: Int, maxPointsPerPartition: Int, areaID: Int)
+  private def runDBSCAN(innerStops: RDD[Vector[String]],
+                        eps: Double, minPoints: Int,
+                        maxPointsPerPartition: Int,
+                        areaID: Int)
   : RDD[String] = {
     DBSCAN.train(innerStops, eps, minPoints, maxPointsPerPartition)
       .labeledPoints.map(p => s"${p.id},${p.x},${p.y},${
