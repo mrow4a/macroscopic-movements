@@ -21,13 +21,23 @@ package util
   */
 object Config {
 
-  val durationsSlidingWindowSize = 2400.0
-  // By default 40 minutes
-  val stopCertaintyMaxDistance = 1500.0
-  // By default max walking distance for human
-  val stopCertaintyMaxSpeed = 0.833
-  // By default min human walking speed
-  val travelCertaintyMinSpeed = 1.4
+  val durationsSlidingWindowSize = 1800.0
+  // By default 20 minutes
+  val mobilityIndexThreshold = 0.0017
+  // Mobility Index Threshold used to determine mobility patterns
+  val stopAccuracyDistance = 1000
+  // meters
+  val stopAccuracySpeed = 1.4 // m/s
+
+  // Parameters for anomaly filtering
+  val minimumFlightSpeed = 83
+  // Filter all speeds above 300 km/h
+  val minimumFlightDistance = 100000
+  // Filter all speeds above 300 km/h with distances over 100km
+  val minimumAccuracyDistance = 100
+  // Filter all points within distance of 100m, anomalies
+  val minimumAccuracyDuration = 100 // Filter all points within duration of 100s, anomalies
+
   val maxPointsPerPartition = 10000
   val eps = 0.001
   val minPoints = 5

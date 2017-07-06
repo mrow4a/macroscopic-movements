@@ -56,33 +56,16 @@ object ClusterStopsJob {
 
     log.info("Filter Moves to obtain stops only")
 
-    val durationsSlidingWindowSize = 1800.0
-    // By default 20 minutes
-    val mobilityIndexThreshold = 0.0017
-    // Mobility Index Threshold used to determine mobility patterns
-    val stopAccuracyDistance = 1000
-    // meters
-    val stopAccuracySpeed = 1.4 // m/s
-
-    // Parameters for anomaly filtering
-    val minimumFlightSpeed = 83
-    // Filter all speeds above 300 km/h
-    val minimumFlightDistance = 100000
-    // Filter all speeds above 300 km/h with distances over 100km
-    val minimumAccuracyDistance = 100
-    // Filter all points within distance of 100m, anomalies
-    val minimumAccuracyDuration = 100 // Filter all points within duration of 100s, anomalies
-
     val detectedStops = StopDetection.filter(
       parsedData,
-      durationsSlidingWindowSize,
-      mobilityIndexThreshold,
-      stopAccuracyDistance,
-      stopAccuracySpeed,
-      minimumFlightSpeed,
-      minimumFlightDistance,
-      minimumAccuracyDistance,
-      minimumAccuracyDuration
+      Config.durationsSlidingWindowSize,
+      Config.mobilityIndexThreshold,
+      Config.stopAccuracyDistance,
+      Config.stopAccuracySpeed,
+      Config.minimumFlightSpeed,
+      Config.minimumFlightDistance,
+      Config.minimumAccuracyDistance,
+      Config.minimumAccuracyDuration
     )
 
     // hardcoded areas for inner and outer berlin
