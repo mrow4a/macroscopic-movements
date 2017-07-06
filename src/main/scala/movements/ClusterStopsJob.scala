@@ -36,7 +36,7 @@ object ClusterStopsJob {
     var eps: Double = Config.eps
     var minPoints: Int = Config.minPoints
 
-    if(args.length < 1) {
+    if (args.length < 1) {
       log.error("Error: No input file given")
       System.exit(1)
     }
@@ -56,15 +56,21 @@ object ClusterStopsJob {
 
     log.info("Filter Moves to obtain stops only")
 
-    val durationsSlidingWindowSize = 1800.0 // By default 20 minutes
-    val mobilityIndexThreshold = 0.0017 // Mobility Index Threshold used to determine mobility patterns
-    val stopAccuracyDistance = 1000 // meters
+    val durationsSlidingWindowSize = 1800.0
+    // By default 20 minutes
+    val mobilityIndexThreshold = 0.0017
+    // Mobility Index Threshold used to determine mobility patterns
+    val stopAccuracyDistance = 1000
+    // meters
     val stopAccuracySpeed = 1.4 // m/s
 
     // Parameters for anomaly filtering
-    val minimumFlightSpeed = 83 // Filter all speeds above 300 km/h
-    val minimumFlightDistance = 100000 // Filter all speeds above 300 km/h with distances over 100km
-    val minimumAccuracyDistance = 100 // Filter all points within distance of 100m, anomalies
+    val minimumFlightSpeed = 83
+    // Filter all speeds above 300 km/h
+    val minimumFlightDistance = 100000
+    // Filter all speeds above 300 km/h with distances over 100km
+    val minimumAccuracyDistance = 100
+    // Filter all points within distance of 100m, anomalies
     val minimumAccuracyDuration = 100 // Filter all points within duration of 100s, anomalies
 
     val detectedStops = StopDetection.filter(
@@ -91,8 +97,10 @@ object ClusterStopsJob {
         Config.middleBerlin.yMin,
         Config.middleBerlin.yMax)
 
-    val innerStops = detectedStops.filter(p => innerArea.contains(DBSCANPoint(p)))    // inner
-    val outerStops = detectedStops.filter(p => !middleArea.contains(DBSCANPoint(p)))    // outer
+    val innerStops = detectedStops.filter(p => innerArea.contains(DBSCANPoint(p)))
+    // inner
+    val outerStops = detectedStops.filter(p => !middleArea.contains(DBSCANPoint(p)))
+    // outer
     val middleStops = detectedStops.subtract(outerStops).subtract(innerStops) // middle = detected - outer - inner
 
     log.debug("Cluster Points")
@@ -124,8 +132,9 @@ object ClusterStopsJob {
   private def writeToFile(clusteredData: RDD[String], eps: Double, minPoints: Int) = {
     log.debug("Save points to the result file")
 
-     val random = new Random()
-     var filePath = "resources/Locker/dbscan/" + eps + "_" + minPoints + "_" + random.nextInt()
-     clusteredData.coalesce(1).saveAsTextFile(filePath)
+    val random = new Random()
+    var filePath = "resources/Locker/dbscan/" + eps + "_" + minPoints + "_" + random.nextInt()
+    clusteredData.coalesce(1).saveAsTextFile(filePath)
+    println("Wrote result to " + filePath)
   }
 }
