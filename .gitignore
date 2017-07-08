@@ -4,4 +4,11 @@ target/
 .classpath
 .settings
 .project
+.idea
 /bin/
+stopdetection/.idea
+frontend/.idea
+frontend/velocity.log
+documentation/.idea
+backend/.idea
+*.imp
