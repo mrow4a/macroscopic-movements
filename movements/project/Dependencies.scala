@@ -25,7 +25,7 @@ object Dependencies {
   val excludeNettyIo = ExclusionRule(organization = "org.jboss.netty")
 
   lazy val sparkDeps = Seq(
-    "org.apache.spark" %% "spark-core" % spark % "provided" excludeAll (excludeNettyIo),
+    "org.apache.spark" %% "spark-core" % spark,// % "provided" excludeAll (excludeNettyIo),
     // Force netty version.  This avoids some Spark netty dependency problem.
     "io.netty" % "netty-all" % netty
   )
@@ -36,8 +36,8 @@ object Dependencies {
   )
 
   lazy val jobserverDeps = Seq(
-    "spark.jobserver" % "job-server-api_2.11" % jobServer % "provided",
-    "spark.jobserver" % "job-server-extras_2.11" % jobServer % "provided"
+    "spark.jobserver" % "job-server-api_2.11" % jobServer, // % "provided",
+    "spark.jobserver" % "job-server-extras_2.11" % jobServer // % "provided"
   )
 
   // This is needed or else some dependency will resolve to 1.3.1 which is in jdk-8

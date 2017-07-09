@@ -93,7 +93,6 @@ $(document).ready( function () {
                 } else {
                     // OK
                     $('#file_run_label').text(data);
-                    alert(data);
                 }
             },
             error: function(xhr) { // if error occured

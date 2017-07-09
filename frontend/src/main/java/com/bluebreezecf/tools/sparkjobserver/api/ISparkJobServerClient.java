@@ -97,18 +97,31 @@ public interface ISparkJobServerClient {
 	 */
 	List<String> getContexts() throws SparkJobServerClientException;
 
-//	/**
-//	 * Lists all the contexts available in the Spark Job Server.
-//	 *
-//	 * <p>
-//	 * This method implements obtaining the contexts and checking if
-//	 * the desired context exists
-//	 *
-//	 * @return boolean
-//	 * @throws SparkJobServerClientException error occurs when trying to get
-//	 *         information of contexts
-//	 */
-//	List<String> hasContext() throws SparkJobServerClientException;
+	/**
+	 * Check if the context is available in the Spark Job Server.
+	 *
+	 * <p>
+	 * This method implements obtaining the contexts and checking if
+	 * the desired context exists
+	 *
+	 * @return true if context exists and false if not
+	 * @throws SparkJobServerClientException error occurs when trying to get
+	 *         information of contexts
+	 */
+	Boolean hasContext(String contextName) throws SparkJobServerClientException;
+
+    /**
+     * Check if the app is available in the Spark Job Server.
+     *
+     * <p>
+     * This method implements obtaining the apps and checking if
+     * the desired app exists
+     *
+     * @return true if context exists and false if not
+     * @throws SparkJobServerClientException error occurs when trying to get
+     *         information of contexts
+     */
+    Boolean hasApp(String appName) throws SparkJobServerClientException;
 
 	/**
 	 * Creates a new context in the Spark Job Server with the given context name.
@@ -128,7 +141,24 @@ public interface ISparkJobServerClient {
 	 *        or I/O error occurs while trying to create context in spark job server.
 	 */
 	boolean createContext(String contextName, Map<String, String> params) throws SparkJobServerClientException;
-	
+
+    /**
+     * Creates a new file resource in the Spark Job Server with the given filename.
+     *
+     * <p>
+     * This method implements the Rest API <code>'POST /data/&lt;name&gt;' </code>
+     * of the Spark Job Server.
+     *
+     * @param fileName the name of the new file to be created, it should be not null
+     *        and should begin with letter.
+     * @param appName the name of the app under which file will be created, it should be not null
+     *        and should begin with letter.
+     * @return path of temporary file on spark job server
+     * @throws SparkJobServerClientException when the given fileName is null or empty string,
+     *        or I/O error occurs while trying to create resource in spark job server.
+     */
+    String uploadInputFile(String fileName, String appName) throws SparkJobServerClientException;
+
 	/**
 	 * Delete a context with the given name in the Spark Job Server.
 	 * All the jobs running in it will be stopped consequently.

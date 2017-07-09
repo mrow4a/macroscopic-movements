@@ -48,7 +48,7 @@ lazy val root = (project in file("."))
   .settings(
     commonSettings,
     rootSettings,
-    name := "stopdetection",
+    name := "movements",
     libraryDependencies ++= sparkDeps ++ typeSafeConfigDeps ++ sparkExtraDeps ++ coreTestDeps
       ++ jobserverDeps,
     test in assembly := {},

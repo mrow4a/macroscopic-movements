@@ -14,13 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package spark.jobserver.stopdetection
+package spark.jobserver.movements
 
-import com.typesafe.config.Config
+import com.typesafe.config.{Config, ConfigFactory}
 import org.apache.spark._
 import spark.jobserver.api.{SparkJob => NewSparkJob}
 import spark.jobserver.{SparkJob, SparkJobInvalid, SparkJobValid, SparkJobValidation}
-import spark.jobserver.stopdetection.StopDetection
 
 import scala.util.Try
 
@@ -32,19 +31,24 @@ import scala.util.Try
  *
  * validate() returns SparkJobInvalid if there is no input.string
  */
-object StopDetectionJob extends SparkJob {
+object WordCountExampleJob extends SparkJob {
+
+  def main(args: Array[String]) {
+    val conf = new SparkConf().setMaster("local[*]").setAppName("WordCountExample")
+    val sc = new SparkContext(conf)
+    val config = ConfigFactory.parseString("input.path = a b s d aaa a a")
+    val results = runJob(sc, config)
+    println("Result is " + results)
+  }
 
   override def validate(sc: SparkContext, config: Config): SparkJobValidation = {
     Try(config.getString("input.path"))
       .map(x => SparkJobValid)
-      .getOrElse(SparkJobInvalid("No inputpath config param"))
+      .getOrElse(SparkJobInvalid("No input.path config param"))
   }
 
   override def runJob(sc: SparkContext, config: Config): Any = {
-    val sourcePath = config.getString("input.path")
-    val data = sc.textFile(sourcePath)
-
-    data.map(s => s.toString).countByValue
+    sc.parallelize(config.getString("input.path").split(" ").toSeq).countByValue
   }
 }
 

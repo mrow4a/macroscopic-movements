@@ -12,11 +12,9 @@ import java.io.File;
  * The response for an ICRoute is rendered in an after-filter.
  */
 public class MainPage {
-    private static final String defaultSparkJobHost = "localhost";
-    private static final String defaultSparkJobPort = "8090";
     private static final String appName = "movements";
     private static final String contextName = "movements";
-    private static String endpoint = String.format("http://%s:%s/", defaultSparkJobHost, defaultSparkJobPort);
+    private static final String heatDetectionJobPath = "spark.jobserver.movements.HeatSpotsDetectionJob";
 
     public static void main(String[] args) {
 
@@ -34,9 +32,24 @@ public class MainPage {
                 File file = new File(filePath);
                 if(file.exists() && !file.isDirectory()) {
                     ISparkJobServerClient client = SparkJobServerClientFactory.getInstance().createSparkJobServerClient(sparkAddress);
-                    List<String> contexts = client.getContexts();
+                    if (!client.hasApp(appName)) {
+                        //POST /jars/<appName>
+                        InputStream jarFileStream = ClassLoader.getSystemResourceAsStream("movements.jar");
+                        if (!client.uploadSparkJobJar(jarFileStream, appName)) {
+                            return "Error: Problem uploading job JAR file";
+                        }
+                    }
 
-                    return "OK";
+                    if (!client.hasContext(contextName)) {
+                        //CREATE CONTEXT
+                        Map<String, String> params = new HashMap<String, String>();
+                        params.put(ISparkJobServerClientConstants.PARAM_MEM_PER_NODE, "5000m");
+                        params.put(ISparkJobServerClientConstants.PARAM_NUM_CPU_CORES, "10");
+                        if (!client.createContext(contextName, params)) {
+                            return "Error: Problem creating context";
+                        }
+                    }
+                    return "Spark job server ready";
                 }
                 return "Error: File does not exists";
             }
@@ -54,32 +67,25 @@ public class MainPage {
                     try {
                         ISparkJobServerClient client = SparkJobServerClientFactory.getInstance().createSparkJobServerClient(sparkAddress);
 
-                        //POST /jars/<appName>
-                        InputStream jarFileStream = ClassLoader.getSystemResourceAsStream("stopdetection.jar");
-
-                        String appName = "spark-test";
-                        boolean isUploaded = client.uploadSparkJobJar(jarFileStream, appName);
-                        System.out.println("Uploaded: " + isUploaded);
-
                         //POST /contexts/<name>--Create context with parameters
                         Map<String, String> params = new HashMap<String, String>();
-                        params.put(ISparkJobServerClientConstants.PARAM_MEM_PER_NODE, "512m");
-                        params.put(ISparkJobServerClientConstants.PARAM_NUM_CPU_CORES, "10");
-                        client.createContext("ctxTest", params);
-                        params.put(ISparkJobServerClientConstants.PARAM_APP_NAME, "spark-test");
-                        params.put(ISparkJobServerClientConstants.PARAM_CLASS_PATH, "spark.jobserver.stopdetection.StopDetectionJob");
-                        params.put(ISparkJobServerClientConstants.PARAM_CONTEXT, "ctxTest");
+                        params.put(ISparkJobServerClientConstants.PARAM_APP_NAME, appName);
+                        params.put(ISparkJobServerClientConstants.PARAM_CLASS_PATH, heatDetectionJobPath);
+                        params.put(ISparkJobServerClientConstants.PARAM_CONTEXT, contextName);
                         params.put(ISparkJobServerClientConstants.PARAM_SYNC, "true");
+                        params.put(ISparkJobServerClientConstants.PARAM_TIMEOUT, "1000000");
 
-                        String inputData = "input.path=" + filePath;
+                        String jobServFileInputPath = client.uploadInputFile(filePath, appName);
+                        String inputData = "input.path=" + jobServFileInputPath;
+                        // return inputData;
                         SparkJobResult result = client.startJob(inputData, params);
                         return result.toString();
-                    } catch (SparkJobServerClientException e1) {
-                        e1.printStackTrace();
-                        return "Error: SparkJobServerClientException";
+                    } catch (SparkJobServerClientException e) {
+                        e.printStackTrace();
+                        return "Error: SparkJobServerClientException - " + e.toString();
                     } catch (Exception e) {
                         e.printStackTrace();
-                        return "Error: Exception during spark execution";
+                        return "Error: Exception during spark execution - " + e.toString();
                     }
                 } else {
                     return "Error: File does not exists";
@@ -89,12 +95,6 @@ public class MainPage {
                 return "Error: " + e.getMessage();
             }
         });
-//        after((req, res) -> {
-//            if (res.body() == null) { // if we didn't try to return a rendered response
-//                res.body(renderMap(req));
-//            }
-//        });
-
     }
 
     private static String renderMap(Request req) {

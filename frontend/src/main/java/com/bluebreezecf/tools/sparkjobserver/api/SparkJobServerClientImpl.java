@@ -230,6 +230,58 @@ class SparkJobServerClientImpl implements ISparkJobServerClient {
 	/**
 	 * {@inheritDoc}
 	 */
+	public String uploadInputFile(String fileName, String appName) throws SparkJobServerClientException {
+        if (fileName == null || fileName.trim().length() == 0
+                || appName == null || appName.trim().length() == 0) {
+            throw new SparkJobServerClientException("Invalid parameters.");
+        }
+        InputStream jarIn = null;
+        String tmpPathOnSparkJobServer = "";
+        try {
+            jarIn = new FileInputStream(fileName);
+        } catch (FileNotFoundException fnfe) {
+            String errorMsg = "Error occurs when getting stream of the given input file";
+            logger.error(errorMsg, fnfe);
+            throw new SparkJobServerClientException(errorMsg, fnfe);
+        }
+
+        HttpPost postMethod = new HttpPost(jobServerUrl + "data/" + appName);
+
+        final CloseableHttpClient httpClient = buildClient();
+        try {
+            ByteArrayEntity entity = new ByteArrayEntity(IOUtils.toByteArray(jarIn));
+            postMethod.setEntity(entity);
+            HttpResponse response = httpClient.execute(postMethod);
+            int statusCode = response.getStatusLine().getStatusCode();
+            String resContent = getResponseContent(response.getEntity());
+            if (statusCode != HttpStatus.SC_OK) {
+                throw new SparkJobServerClientException("Invalid parameters.");
+            }
+
+            JSONObject jsonObj = JSONObject.fromObject(resContent);
+            if(!jsonObj.has(SparkJobBaseInfo.INFO_KEY_RESULT)) {
+                throw new SparkJobServerClientException("Error occurs when getting stream of the given input file");
+            }
+
+            JSONObject jsonObjResult = JSONObject.fromObject(jsonObj.getString(SparkJobInfo.INFO_KEY_RESULT));
+            if(!jsonObjResult.has(SparkJobBaseInfo.INFO_KEY_FILENAME)) {
+                throw new SparkJobServerClientException("Error occurs when getting stream of the given input file");
+            }
+
+            return jsonObjResult.getString(SparkJobInfo.INFO_KEY_FILENAME);
+        } catch (Exception e) {
+            logger.error("Error occurs when uploading spark job jars:", e);
+        } finally {
+            close(httpClient);
+            closeStream(jarIn);
+        }
+
+        return tmpPathOnSparkJobServer;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean deleteContext(String contextName) 
 		throws SparkJobServerClientException {
 		final CloseableHttpClient httpClient = buildClient();
@@ -254,6 +306,31 @@ class SparkJobServerClientImpl implements ISparkJobServerClient {
 			processException("Error occurs when trying to delete the target context:", e);
 		} finally {
 			close(httpClient);
+		}
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Boolean hasContext(String contextName) throws SparkJobServerClientException {
+		List<String> contexts = getContexts();
+		for(String str: contexts) {
+			if(str.trim().contains(contextName.trim()))
+				return true;
+		}
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Boolean hasApp(String appName) throws SparkJobServerClientException {
+		List<SparkJobJarInfo> contexts = getJars();
+		for(SparkJobJarInfo info: contexts) {
+			String jarAppName = info.getJarName();
+			if(jarAppName.trim().contains(appName.trim()))
+				return true;
 		}
 		return false;
 	}

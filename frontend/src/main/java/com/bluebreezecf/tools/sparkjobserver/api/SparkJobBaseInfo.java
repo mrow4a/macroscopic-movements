@@ -69,6 +69,11 @@ class SparkJobBaseInfo {
 	 * Key of result information in the Spark Job Server's json response.
 	 */
 	static final String INFO_KEY_RESULT = "result";
+
+	/**
+	 * Key of filename information in the Spark Job Server's json response.
+	 */
+	static final String INFO_KEY_FILENAME = "filename";
 	
 	/**
 	 * Key of message information of a result item in the Spark Job Server's json response.
