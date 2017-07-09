@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package spark.jobserver.stopdetection
+package stopdetection
 
 import org.apache.spark.rdd.RDD
 

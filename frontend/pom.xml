@@ -120,6 +120,11 @@
             <artifactId>ezmorph</artifactId>
             <version>1.0.6</version>
         </dependency>
+        <dependency>
+            <groupId>com.spotify</groupId>
+            <artifactId>docker-client</artifactId>
+            <version>8.8.0</version>
+        </dependency>
     </dependencies>
 
     <build>

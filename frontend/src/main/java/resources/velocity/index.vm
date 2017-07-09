@@ -19,19 +19,31 @@
 
 <div class="blockMe" style="position: static;" >
     <div id="file_input_div" style="width: 100%; height: 60px; margin-right: auto; margin-left: auto;">
-        <label for="file_input">File Input: </label>
+        <label for="file_input">File Input for ETL: </label>
         <input id="file_input" type="text" style="width: 100%; height: 25px"
-               value="  /home/mrow4a/Projects/MacroMovements/resources/Locker/macroscopic-movement-01_areafilter.csv">
+               value="  /home/mrow4a/Projects/MacroMovements/resources/Locker/input/macroscopic-movement-01_areafilter.csv">
+
+    </div>
+    <div id="jar_input_div" style="width: 100%; height: 60px; margin-right: auto; margin-left: auto;">
+        <label for="jar_input">Movements Jar for ETL: </label>
+        <input id="jar_input" type="text" style="width: 100%; height: 25px"
+               value="  /home/mrow4a/Projects/MacroMovements/resources/jars/movements.jar">
 
     </div>
     <div id="spark_input_div" style="width: 100%; height: 60px; margin-right: auto; margin-left: auto;">
-        <label for="spark_input">Spark Job Server URL: </label>
+        <label for="spark_input">Spark Master with shared volume url(WebUI localhost:8080): </label>
         <input id="spark_input" type="text" style="width: 100%; height: 25px"
-               value=" http://localhost:8090">
+               value=" spark://172.20.0.2:7077">
     </div>
 
+    <div style="width: 100%; height: auto; margin-bottom: 5px; margin-right: auto; margin-left: auto;">
+        <span>Clean, extract, transform and load: </span>
+    </div>
     <div id="file_div" style="width: 100%; height: auto; margin-bottom: 20px; margin-right: auto; margin-left: auto;">
-        <button id="file_run">Run hot spots detection</button><span style="margin-left: 10px;" id="file_run_label">Spark not ready</span>
+        <button id="file_run"> Detection Job</button><span style="margin-left: 10px;" id="file_run_label">Spark not ready</span>
+    </div>
+    <div id="read_div" style="width: 100%; height: auto; margin-bottom: 20px; margin-right: auto; margin-left: auto;">
+        <button id="read_run"> Display Job</button>
     </div>
 
     <div id="mapid" style="width: 100%; height: 600px; margin-right: auto; margin-left: auto;"></div>

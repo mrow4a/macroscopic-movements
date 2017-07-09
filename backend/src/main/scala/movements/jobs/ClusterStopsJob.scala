@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package movements
+package movements.jobs
 
 import java.util.Random
 

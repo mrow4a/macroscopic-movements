@@ -15,26 +15,35 @@
  * limitations under the License.
  */
 
-package movements
-
-import java.util.Random
+package movements.jobs
 
 import org.apache.spark.mllib.clustering.dbscan.DBSCAN
-import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
-import org.slf4j.{Logger, LoggerFactory}
-import spark.jobserver.stopdetection.StopDetection
+import stopdetection.StopDetection
+import scala.collection.mutable.ArrayBuffer;
 
 object ClusterStopsJob {
 
   def main(args: Array[String]) {
-    var src = "/data/macroscopic-movement-01_areafilter.csv"
+    if (args.length < 2) {
+      println("Error: No input or output file given")
+      println("Example: " +
+        "/home/mrow4a/Projects/MacroMovements/resources/Locker/input.csv " +
+        "/home/mrow4a/Projects/MacroMovements/resources/Locker/dbscan")
+      System.exit(1)
+    }
+    var src = args(0) // need to pass file as arg
+    var dst = args(1) // need to pass file as arg
 
     println("Create Spark Context")
-    val conf = new SparkConf()
-    conf.setAppName(s"MOVEMENTS")
-    conf.set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
-    conf.setMaster("local[*]").set("spark.executor.memory", "1g")
+    val conf = new SparkConf().setAppName(s"MOVEMENTS")
+
+    // NOTE: Without below lines, if spark cluster consists only of master node,
+    // it will not run:
+    //
+    //  conf.set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
+    //  conf.setMaster("local[*]").set("spark.executor.memory", "1g")
+    //
     val sc = new SparkContext(conf)
 
     println("Parse Input File to StopPoint class instances")
@@ -54,20 +63,44 @@ object ClusterStopsJob {
       Parameters.minimumFlightDistance,
       Parameters.minimumAccuracyDistance,
       Parameters.minimumAccuracyDuration
-    )
+    ).collect()
+
+    val detectedStopsParal = sc.parallelize(detectedStops)
 
     val dbScanModel = DBSCAN.train(
-      detectedStops,
+      detectedStopsParal,
       Parameters.eps,
       Parameters.minPoints,
       Parameters.maxPointsPerPartition)
 
-    val clusteredData = dbScanModel.labeledPoints.collect().map(p => s"${p.id},${p.x},${p.y},${p.cluster}")
+    val clusteredData = dbScanModel.labeledPoints
+      .filter(_.cluster != 0)
+      .map(p => (p.x, p.y, p.cluster))
+      .groupBy(a=> (a._3)).values
+      .map(p => avgLatLong(p))
 
-    clusteredData.map(p => println(p))
-    //detectedStops.map(p => println(p))
+
+    clusteredData.saveAsTextFile(dst)
     println("Stopping Spark Context...")
     sc.stop()
   }
+
+  private def avgLatLong(data : Iterable[(Double,Double,Int)]) :
+  String = {
+    var countVal = 0
+    var Lat = 0.0
+    var Long = 0.0
+    val resultAvg = data.foldLeft(ArrayBuffer[(Double,Double,Int)]()) { (result, c) => {
+      countVal += 1
+      Lat += c._1
+      Long += c._2
+      val temp = ((Lat/countVal) , (Long/countVal) , c._3)
+      result += temp
+    }
+    }.last      // end of foldLeft
+    val resultFinal = resultAvg._1.toString + "," + resultAvg._2.toString + "," + resultAvg._3.toString;
+    resultFinal
+  }
+
 
 }

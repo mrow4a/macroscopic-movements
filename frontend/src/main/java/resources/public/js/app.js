@@ -10,8 +10,8 @@ $(document).ready( function () {
         id: 'mapbox.streets'
     }).addTo(mymap);
 
-    L.marker([52.51476, 13.34981]).addTo(mymap)
-        .bindPopup("<b>Grosser Stern</b>").openPopup();
+    // L.marker([52.51476, 13.34981]).addTo(mymap)
+    //     .bindPopup("<b>Grosser Stern</b>").openPopup();
 
     var popup = L.popup();
 
@@ -46,9 +46,9 @@ $(document).ready( function () {
 
     function checkInputFile() {
         var filePath = $( "#file_input" ).val();
-        var sparkAddress = $( "#spark_input" ).val();
+        var jarPath = $( "#jar_input" ).val();
         $.ajax({
-            url: '/api/check_file?file='+filePath + '&spark='+sparkAddress,
+            url: '/api/check_file?file='+filePath + '&jar='+jarPath,
             beforeSend: function() {
                 // setting a timeout
                 block('Preparing Spark...');
@@ -77,22 +77,79 @@ $(document).ready( function () {
         checkInputFile();
     });
 
-    $( "#file_run" ).click(function() {
-        var filePath = $( "#file_input" ).val();
-        var sparkAddress = $( "#spark_input" ).val();
+    function etlHeatSpots(filePath, jarPath, sparkAddress) {
         $.ajax({
-            url: '/api/get_hotspots?file=' + filePath + '&spark='+sparkAddress,
+            url: '/api/extract?file=' + filePath + '&jar='+jarPath,
             beforeSend: function() {
                 // setting a timeout
-                block('Processing...');
+                block('Extracting...');
             },
             success: function(data) {
+                $('#file_run_label').text(data);
                 if( data.indexOf('Error:') >= 0){
                     // ERROR
-                    $('#file_run_label').text(data);
+                    unblock();
                 } else {
                     // OK
-                    $('#file_run_label').text(data);
+                    unblock();
+                    tlHeatSpots(filePath, jarPath, sparkAddress);
+                }
+            },
+            error: function(xhr) { // if error occured
+                alert("Error occured - please try again");
+                unblock();
+            }
+        });
+    }
+
+    function tlHeatSpots(filePath, jarPath, sparkAddress) {
+        $.ajax({
+            url: '/api/tl_hotspots?spark=' + sparkAddress + '&file=' + filePath + '&jar='+jarPath,
+            beforeSend: function() {
+                // setting a timeout
+                block('Transforming...');
+            },
+            success: function(data) {
+                if( data.indexOf('0') >= 0){
+                    // OK
+                    getHeatSpots()
+                } else {
+                    // ERROR - exit code non-zero
+                    unblock();
+                }
+            },
+            error: function(xhr) { // if error occured
+                alert("Error occured - please try again");
+                unblock();
+            }
+        });
+    }
+
+    var mapMarkers = []
+    function getHeatSpots() {
+        $.ajax({
+            url: '/api/get_hotspots',
+            beforeSend: function() {
+                // setting a timeout
+                block('Loading...');
+            },
+            success: function(data) {
+                try {
+                    var jsonArray = JSON.parse(data);
+                    $('#file_run_label').text("Job Finished");
+
+                    for(var i = 0; i < mapMarkers.length; i++){
+                        mymap.removeLayer(mapMarkers[i]);
+                    }
+
+                    for(var i = 0; i < jsonArray.length; i++) {
+                        var obj = jsonArray[i];
+                        var marker = L.marker([obj.lat, obj.long]).addTo(mymap)
+                            .bindPopup("<b>"+obj.id+"</b>");
+                        mapMarkers.push(marker);
+                    }
+                } catch (e) {
+                    $('#file_run_label').text("Received wrong content");
                 }
             },
             error: function(xhr) { // if error occured
@@ -102,6 +159,22 @@ $(document).ready( function () {
                 unblock();
             }
         });
+    }
+
+    $( "#file_run" ).click(function() {
+        var filePath = $( "#file_input" ).val();
+        var jarPath = $( "#jar_input" ).val();
+        var sparkAddress = $( "#spark_input" ).val();
+
+        etlHeatSpots(filePath, jarPath, sparkAddress);
+    });
+
+    $( "#read_run" ).click(function() {
+        var filePath = $( "#file_input" ).val();
+        var jarPath = $( "#jar_input" ).val();
+        var sparkAddress = $( "#spark_input" ).val();
+
+        getHeatSpots();
     });
 
 })

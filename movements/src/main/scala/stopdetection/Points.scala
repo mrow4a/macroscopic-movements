@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package spark.jobserver.stopdetection
+package stopdetection
 
 case class DetectedPoint(vector: Vector[String]){
 
