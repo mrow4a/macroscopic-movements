@@ -7,15 +7,16 @@ target/
 .idea
 /bin/
 
-movements/.idea
-frontend/.idea
+jobs/.idea
+server/.idea
 documentation/.idea
-backend/.idea
+prototypes/.idea
 
 frontend/velocity.log
 
-backend/*.imp
-movements/*.imp
-frontend/*.imp
+jobs/*.imp
+server/*.imp
+documentation/*.imp
+prototypes/*.imp
 
 *.imp
