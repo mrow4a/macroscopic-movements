@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package movements.jobs
 
 import java.util.Random
@@ -92,7 +91,7 @@ object ClusterStopsJob {
 
     log.debug("Cluster Points")
 
-    // run DBSCAN for 3 areas with hardcoded parameters and merge
+    // run DBSCAN for 3 areas with hardcoded parameters
     val innerDBSCAN = runDBSCAN(innerStops, 0.001, minPoints, maxPointsPerPartition, 1)
     val middleDBSCAN = runDBSCAN(middleStops, 0.003, minPoints, maxPointsPerPartition, 2)
     val outerDBSCAN =  runDBSCAN(outerStops, 0.005, minPoints, maxPointsPerPartition, 3)
@@ -104,22 +103,27 @@ object ClusterStopsJob {
     sc.stop()
   }
 
-  private def runDBSCAN(innerStops: RDD[Vector[String]],
+  /**
+    * Run DBSCAN implementation with given params and map points to string
+    */
+  private def runDBSCAN(stops: RDD[Vector[String]],
                         eps: Double, minPoints: Int,
                         maxPointsPerPartition: Int,
                         areaID: Int)
   : RDD[String] = {
-    DBSCAN.train(innerStops, eps, minPoints, maxPointsPerPartition)
-      .labeledPoints.map(p => s"${p.id},${p.x},${p.y},${
-      if (p.cluster == 0) 0 else areaID + "" + p.cluster
-    }")
+    DBSCAN.train(stops, eps, minPoints, maxPointsPerPartition)
+      .labeledPoints.map(p => s"${p.id},${p.x},${p.y},${clusterId(p)},${p.duration}")
   }
 
+  private def clusterId(id:Int): String = {
+    if (p.cluster == 0) 0 else areaID + "" + p.cluster
+  }
+
+  val random = new Random()
 
   private def writeToFile(clusteredData: RDD[String], eps: Double, minPoints: Int, dst: String) = {
     log.debug("Save points to the result file")
 
-    val random = new Random()
     var filePath = dst + eps + "_" + minPoints + "_" + random.nextInt()
     clusteredData.coalesce(1).saveAsTextFile(filePath)
     println("Wrote result to " + filePath)

@@ -109,7 +109,7 @@ class StopDetection private(
       .filter(filterMovements)
       // In this version, stop point is in movement starting point
       .map(stop => Vector(stop._1.startPoint.lat.toString, stop._1.startPoint.long.toString,
-          stop._1.startPoint.id.toString, stop._1.startPoint.timestamp.toString)
+          stop._1.startPoint.id.toString, stop._1.startPoint.timestamp.toString, stop._1.getDuration)
       )
   }
 
