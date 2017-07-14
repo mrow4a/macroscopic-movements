@@ -18,34 +18,37 @@
 <body>
 
 <div class="blockMe" style="position: static;" >
+    <span>S3 Storage URL: </span>
+    <div id="s3_input_div" style="width: 100%; height: 60px; margin-right: auto; margin-left: auto;">
+        <span>http://s3url </span>
+        <input id="s3_input" type="text" style="width: 100%; height: 25px"
+               value="http://172.20.0.6:9000">
+
+    </div>
+    <span>S3 Input File for ETL: </span>
     <div id="file_input_div" style="width: 100%; height: 60px; margin-right: auto; margin-left: auto;">
-        <label for="file_input">File Input for ETL: </label>
+        <span>s3a://key:secret@bucket/file.extension </span>
         <input id="file_input" type="text" style="width: 100%; height: 25px"
-               value="  /home/mrow4a/Projects/MacroMovements/resources/Locker/input/macroscopic-movement-01_areafilter.csv">
+               value="s3a://movements:movements@movements/macroscopic-movement-01_areafilter.csv">
 
     </div>
     <div id="spark_input_div" style="width: 100%; height: 60px; margin-right: auto; margin-left: auto;">
-        <label for="spark_input">Spark Master with shared volume url(WebUI localhost:8080): </label>
+        <label for="spark_input">Spark master address: </label>
         <input id="spark_input" type="text" style="width: 100%; height: 25px; margin-bottom: 5px;"
                value=" spark://172.20.0.2:7077">
     </div>
 
+
     <div id="spark_div" style="width: 100%; height: auto; margin-bottom: 20px; margin-right: auto; margin-left: auto;">
-        <button id="spark_run"> Init spark cluster</button>  <button id="spark_stop"> Stop spark cluster</button>
-        <span style="margin-left: 10px;" id="spark_run_label">Spark not ready</span>
+        <button id="spark_run"> Check setup</button>
+        <span style="margin-left: 10px;" id="spark_run_label">Setup not ready</span>
     </div>
 
     <div style="width: 100%; height: auto; margin-bottom: 5px; margin-right: auto; margin-left: auto;">
-        <span>Clean, extract, transform and load to DB: </span>
-    </div>
-    <div id="file_div" style="width: 100%; height: auto; margin-bottom: 20px; margin-right: auto; margin-left: auto;">
-        <button id="file_run"> Detection Job</button><span style="margin-left: 10px;" id="file_run_label">Idle</span>
-    </div>
-    <div style="width: 100%; height: auto; margin-bottom: 5px; margin-right: auto; margin-left: auto;">
-        <span>Load detected hotspots from DB: </span>
+        <span>Clean, extract, transform and load: </span>
     </div>
     <div id="read_div" style="width: 100%; height: auto; margin-bottom: 20px; margin-right: auto; margin-left: auto;">
-        <button id="read_run"> Display Job</button><span style="margin-left: 10px;" id="read_run_label">Idle</span>
+        <button id="read_run"> Get hotspots</button><span style="margin-left: 10px;" id="read_run_label">Idle</span>
     </div>
 
     <div id="mapid" style="width: 100%; height: 600px; margin-right: auto; margin-left: auto;"></div>

@@ -1,37 +1,50 @@
 # PROJECT STRUCTURE:
 
-- jobs: spark jobs which are dockerised with base image spark-submit
+<pre>
 
-- server: user interface handling dockerised spark
-
-- prototypes: all the source files used to write spark jobs
-
-- documentation: project documentation
+   smashbox
+   ├── jobs/                          
+   │   ├── clustering.dbscan      : Modified implementation of Irving's DBScan on Spark
+   │   ├── stopdetection          : Stop detection algorithm implementation on Spark
+   │   └── movements.jobs         : Spark-submit compatible jobs                      
+   │
+   ├── server/	                                 
+   │   ├── ServerMain.java        : Entry Point of the Web Server                            
+   │   ├── utils	              : Utilities for web server               
+   │   ├── resources              : HTML, Javascript and CSS files               
+   │   ├── api	                   
+   │   │    ├── ApiHandler.java	  : Api Interface		
+   │   │    └── SparkClient.java  : Api Implementation for Spark-submit	
+   │   ├── sparkjobserver	      : <Not Used> Created for low-latency jobs, but not used in the project	
+   │   └── movements.docker       : <Not Used> Creating as proof of concept for spawning dockers to hadle spark-submit                
+   │
+   ├── prototypes                 : Prototypes for testing of spark-submit jobs 		        
+   │
+   ├── spark-s3/                  : Dockerfile for mocking Spark Cluster             
+   │
+   ├── documentation/                                  
+   │   └── smashbox/utilities                  
+   │
+   ├── preparedockers.sh          : Script to spawn Minio S3 
+   │                                and Spark Master/Workers dockers       
+   │   
+   ├── run.sh                     : Script used to build the docker 
+   │                                containing jobs and server
+   │
+   ├── Dockerfile                 : Dockerfile used to build server and jobs mobule,
+   │                                configure and deploy the docker
+   └── README                                   
+   
+</pre>
 
 # HOW TO RUN:
 
-Build spark jobs and create a docker image:
+All project is dockerised, and the only requirement is Docker. 
 
-`./buildjob.sh`  
+Spawn dockerised Spark Cluster and Minio S3:
 
-Build and run server:
+`./preparedockers.sh`  
+
+Build and run server docker containing all the jobs:
 
 `./run.sh`
-
-# Hint
-
-To run above commands, you would need SBT for jobs and Maven for server 
-(It is done on purpose for educational purposes)
-
-# Installing SBT
-
-```
-echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
-sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 642AC823
-sudo apt-get update
-sudo apt-get install sbt
-```
-
-# Installing Maven
-
-`sudo apt-get install maven`

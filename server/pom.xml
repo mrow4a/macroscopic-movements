@@ -125,6 +125,12 @@
             <artifactId>docker-client</artifactId>
             <version>8.8.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-launcher_2.11</artifactId>
+            <version>2.1.1</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -160,7 +166,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>MainPage</mainClass>
+                            <mainClass>ServerMain</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
