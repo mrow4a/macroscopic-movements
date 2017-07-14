@@ -25,17 +25,6 @@ import scala.collection.mutable.ArrayBuffer;
 object ClusterStopsJob {
 
   def main(args: Array[String]) {
-    if (args.length < 2) {
-      println("Error: No input or output file given")
-      println("Example: " +
-        "/home/mrow4a/Projects/MacroMovements/resources/Locker/input.csv " +
-        "/home/mrow4a/Projects/MacroMovements/resources/Locker/dbscan")
-      System.exit(1)
-    }
-    var src = args(0) // need to pass file as arg
-    var dst = args(1) // need to pass file as arg
-
-    println("Create Spark Context")
     val conf = new SparkConf().setAppName(s"MOVEMENTS")
 
     // NOTE: Without below lines, if spark cluster consists only of master node,
@@ -46,12 +35,18 @@ object ClusterStopsJob {
     //
     val sc = new SparkContext(conf)
 
-    println("Parse Input File to StopPoint class instances")
+    if (args.length < 2) {
+      throw new Exception("No s3 endpoint or s3a:// path given. "
+        + "Example: http://localhost:9000 s3a://movements:movements@movements/macroscopic-movement-01_areafilter.csv")
+    }
+    var endpoint = args(0) // need to pass endpoint as arg
+    var src = args(1) // need to pass file as arg
+    var dst = args(2) // need to pass dst as arg
+
+    sc.hadoopConfiguration.set("fs.s3a.endpoint", endpoint)
     val data = sc.textFile(src)
 
     val parsedData = data.map(s => s.split(';').toVector)
-
-    println("Filter Moves to obtain stops only")
 
     val detectedStops = StopDetection.filter(
       parsedData,
@@ -79,9 +74,8 @@ object ClusterStopsJob {
       .groupBy(a=> (a._3)).values
       .map(p => getMetadata(p))
 
+    clusteredData.collect().foreach(stop => println(stop))
 
-    clusteredData.saveAsTextFile(dst)
-    println("Stopping Spark Context...")
     sc.stop()
   }
 

@@ -44,26 +44,40 @@ $(document).ready( function () {
         $('div.blockMe').unblock();
     }
 
+    function toGreen(data) {
+        return '<span style="color:green;">'+data+'</span>';
+    }
+    function toRed(data) {
+        return '<span style="color:red;">'+data+'</span>';
+    }
+
     function checkInputFile() {
+        var endpoint = $( "#s3_input" ).val();
         var filePath = $( "#file_input" ).val();
-        var jarPath = $( "#jar_input" ).val();
+        var spark = $( "#spark_input" ).val();
         $.ajax({
-            url: '/api/check_file?file='+filePath + '&jar='+jarPath,
+            url: '/api/check_file?file='+filePath + '&spark='+spark + '&endpoint='+endpoint,
             beforeSend: function() {
                 // setting a timeout
+                $('#spark_run_label').html("Setup not ready");
                 block('Checking...');
             },
             success: function(data) {
-                if( data.indexOf('Error:') >= 0){
+                if( data.indexOf('Exception') >= 0) {
+                    // EXCEPTION
+                    var highlinded = data.replace(/Exception/g, toRed("Exception"));
+                    $('#spark_run_label').html(highlinded);
+                } else if( data.indexOf('Error:') >= 0){
                     // ERROR
-                    $('#spark_run_label').text(data);
+                    var highlinded = toRed(data);
+                    $('#spark_run_label').html(highlinded);
                 } else {
                     // OK
-                    $('#spark_run_label').text(data);
+                    $('#spark_run_label').html(toGreen("Setup ready"));
                 }
             },
             error: function(xhr) { // if error occured
-                $('#spark_run_label').text("Please reupload");
+                $('#spark_run_label').html(toRed("Please reupload"));
                 alert("Error occured - please try again");
             },
             complete: function() {
@@ -72,132 +86,34 @@ $(document).ready( function () {
         });
     }
 
-    checkInputFile();
-    $('#file_input').on('input',function(e){
+    $('#spark_run').click(function(e){
         checkInputFile();
     });
 
-    function initSpark() {
-        $.ajax({
-            url: '/api/init_spark',
-            beforeSend: function() {
-                // setting a timeout
-                block('Preparing Spark...');
-            },
-            success: function(data) {
-                if( data.indexOf('Error:') >= 0){
-                    // ERROR
-                    $('#spark_run_label').text(data);
-                } else {
-                    // OK
-                    $('#spark_run_label').text(data);
-                }
-            },
-            error: function(xhr) { // if error occured
-                $('#spark_run_label').text("Please reupload");
-                alert("Error occured - please try again");
-            },
-            complete: function() {
-                unblock();
-            }
-        });
-    }
-
-    function removeSpark() {
-        $.ajax({
-            url: '/api/stop_spark',
-            beforeSend: function() {
-                // setting a timeout
-                block('Removing Spark...');
-            },
-            success: function(data) {
-                if( data.indexOf('Error:') >= 0){
-                    // ERROR
-                    $('#spark_run_label').text(data);
-                } else {
-                    // OK
-                    $('#spark_run_label').text(data);
-                }
-            },
-            error: function(xhr) { // if error occured
-                $('#spark_run_label').text("Error");
-                alert("Error occured - please try again");
-            },
-            complete: function() {
-                unblock();
-            }
-        });
-    }
-
-    function etlHeatSpots(filePath, jarPath, sparkAddress) {
-        $.ajax({
-            url: '/api/extract?file=' + filePath + '&jar='+jarPath,
-            beforeSend: function() {
-                // setting a timeout
-                block('Extracting...');
-            },
-            success: function(data) {
-                $('#file_run_label').text(data);
-                if( data.indexOf('Error:') >= 0){
-                    // ERROR
-                    unblock();
-                } else {
-                    // OK
-                    unblock();
-                    tlHeatSpots(filePath, jarPath, sparkAddress);
-                }
-            },
-            error: function(xhr) { // if error occured
-                alert("Error occured - please try again");
-                $('#file_run_label').text("Error");
-                unblock();
-            }
-        });
-    }
-
-    function tlHeatSpots(filePath, jarPath, sparkAddress) {
-        $.ajax({
-            url: '/api/tl_hotspots?spark=' + sparkAddress + '&file=' + filePath + '&jar='+jarPath,
-            beforeSend: function() {
-                // setting a timeout
-                block('Transforming...');
-            },
-            success: function(data) {
-                if( data.indexOf('0') >= 0){
-                    // OK
-                    $('#file_run_label').text("Job Finished");
-                    getHeatSpots()
-                } else {
-                    // ERROR - exit code non-zero
-                    $('#file_run_label').text("Error, finished with non-zero code");
-                    unblock();
-                }
-            },
-            error: function(xhr) { // if error occured
-                alert("Error occured - please try again");
-                $('#file_run_label').text("Error");
-                unblock();
-            }
-        });
-    }
-
     var mapMarkers = []
-    function getHeatSpots() {
+    function removeMarkers() {
+        for(var i = 0; i < mapMarkers.length; i++){
+            mymap.removeLayer(mapMarkers[i]);
+        }
+    }
+
+    function getHotspots() {
+        var endpoint = $( "#s3_input" ).val();
+        var filePath = $( "#file_input" ).val();
+        var spark = $( "#spark_input" ).val();
         $.ajax({
-            url: '/api/get_hotspots',
+            url: '/api/get_hotspots?file='+filePath + '&spark='+spark + '&endpoint='+endpoint,
             beforeSend: function() {
                 // setting a timeout
+                mapMarkers = [];
                 block('Loading hotspots...');
             },
             success: function(data) {
                 try {
                     var jsonArray = JSON.parse(data);
-                    $('#read_run_label').text("Job Finished");
+                    $('#read_run_label').html(toGreen("Job Finished"));
 
-                    for(var i = 0; i < mapMarkers.length; i++){
-                        mymap.removeLayer(mapMarkers[i]);
-                    }
-
+                    removeMarkers();
                     for(var i = 0; i < jsonArray.length; i++) {
                         var obj = jsonArray[i];
                         var marker = L.marker([obj.lat, obj.long]).addTo(mymap)
@@ -205,12 +121,12 @@ $(document).ready( function () {
                         mapMarkers.push(marker);
                     }
                 } catch (e) {
-                    $('#read_run_label').text("Received wrong content");
+                    $('#read_run_label').html(toRed("Received wrong content"));
                 }
             },
             error: function(xhr) { // if error occured
                 alert("Error occured - please try again");
-                $('#read_run_label').text("Error");
+                $('#read_run_label').text(toRed("Error"));
             },
             complete: function() {
                 unblock();
@@ -218,23 +134,67 @@ $(document).ready( function () {
         });
     }
 
-    $( "#file_run" ).click(function() {
-        var filePath = $( "#file_input" ).val();
-        var jarPath = $( "#jar_input" ).val();
-        var sparkAddress = $( "#spark_input" ).val();
-
-        etlHeatSpots(filePath, jarPath, sparkAddress);
-    });
-
     $( "#read_run" ).click(function() {
-        getHeatSpots();
+        getHotspots();
     });
 
-    $( "#spark_stop" ).click(function() {
-        removeSpark();
-    });
-
-    $( "#spark_run" ).click(function() {
-        initSpark();
-    });
+    // $( "#file_run" ).click(function() {
+    //     var filePath = $( "#file_input" ).val();
+    //     var jarPath = $( "#jar_input" ).val();
+    //     var sparkAddress = $( "#spark_input" ).val();
+    //
+    //     etlHeatSpots(filePath, jarPath, sparkAddress);
+    // });
+    //
+    // function etlHeatSpots(filePath, jarPath, sparkAddress) {
+    //     $.ajax({
+    //         url: '/api/extract?file=' + filePath + '&jar='+jarPath,
+    //         beforeSend: function() {
+    //             // setting a timeout
+    //             block('Extracting...');
+    //         },
+    //         success: function(data) {
+    //             $('#file_run_label').text(data);
+    //             if( data.indexOf('Error:') >= 0){
+    //                 // ERROR
+    //                 unblock();
+    //             } else {
+    //                 // OK
+    //                 unblock();
+    //                 tlHeatSpots(filePath, jarPath, sparkAddress);
+    //             }
+    //         },
+    //         error: function(xhr) { // if error occured
+    //             alert("Error occured - please try again");
+    //             $('#file_run_label').text("Error");
+    //             unblock();
+    //         }
+    //     });
+    // }
+    //
+    // function tlHeatSpots(filePath, jarPath, sparkAddress) {
+    //     $.ajax({
+    //         url: '/api/tl_hotspots?spark=' + sparkAddress + '&file=' + filePath + '&jar='+jarPath,
+    //         beforeSend: function() {
+    //             // setting a timeout
+    //             block('Transforming...');
+    //         },
+    //         success: function(data) {
+    //             if( data.indexOf('0') >= 0){
+    //                 // OK
+    //                 $('#file_run_label').text("Job Finished");
+    //                 getHeatSpots()
+    //             } else {
+    //                 // ERROR - exit code non-zero
+    //                 $('#file_run_label').text("Error, finished with non-zero code");
+    //                 unblock();
+    //             }
+    //         },
+    //         error: function(xhr) { // if error occured
+    //             alert("Error occured - please try again");
+    //             $('#file_run_label').text("Error");
+    //             unblock();
+    //         }
+    //     });
+    // }
 })
