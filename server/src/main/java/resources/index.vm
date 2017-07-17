@@ -40,7 +40,7 @@
 
 
     <div id="spark_div" style="width: 100%; height: auto; margin-bottom: 20px; margin-right: auto; margin-left: auto;">
-        <button id="spark_run"> Check setup</button>
+        <button id="spark_run"> Setup</button>
         <span style="margin-left: 10px;" id="spark_run_label">Setup not ready</span>
     </div>
 
@@ -48,7 +48,7 @@
         <span>Clean, extract, transform and load: </span>
     </div>
     <div id="read_div" style="width: 100%; height: auto; margin-bottom: 20px; margin-right: auto; margin-left: auto;">
-        <button id="read_run"> Get hotspots</button><span style="margin-left: 10px;" id="read_run_label">Idle</span>
+        <button id="read_run"> Run</button><span style="margin-left: 10px;" id="read_run_label">Idle</span>
     </div>
 
     <div id="mapid" style="width: 100%; height: 600px; margin-right: auto; margin-left: auto;"></div>
