@@ -18,18 +18,22 @@ package movements.jobs
 
 import java.util.Random
 
-import org.apache.spark.mllib.clustering.dbscan.{DBSCAN, DBSCANPoint, DBSCANRectangle}
+import org.apache.spark.ml.feature.LabeledPoint
+import org.apache.spark.mllib.clustering.dbscan.{DBSCAN, DBSCANLabeledPoint, DBSCANPoint, DBSCANRectangle}
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
 import org.slf4j.{Logger, LoggerFactory}
 import stopdetection.StopDetection
 import util.Config
 
+import org.apache.log4j.BasicConfigurator
+
 object ClusterStopsJob {
 
   val log: Logger = LoggerFactory.getLogger(ClusterStopsJob.getClass)
 
   def main(args: Array[String]) {
+    BasicConfigurator.configure()
 
     var maxPointsPerPartition: Int = Config.maxPointsPerPartition
     var eps: Double = Config.eps
@@ -42,6 +46,7 @@ object ClusterStopsJob {
         "/home/mrow4a/Projects/MacroMovements/resources/Locker/dbscan")
       System.exit(1)
     }
+
     var src = args(0) // need to pass file as arg
     var dst = args(1) // need to pass file as arg
 
@@ -112,17 +117,18 @@ object ClusterStopsJob {
                         areaID: Int)
   : RDD[String] = {
     DBSCAN.train(stops, eps, minPoints, maxPointsPerPartition)
-      .labeledPoints.map(p => s"${p.id},${p.x},${p.y},${clusterId(p)},${p.duration}")
+      .labeledPoints.map(p => s"${p.id},${p.x},${p.y},${clusterId(p, areaID)},${p.duration}") //  TODO crashes on p.duration
   }
 
-  private def clusterId(id:Int): String = {
-    if (p.cluster == 0) 0 else areaID + "" + p.cluster
+  private def clusterId(p: DBSCANLabeledPoint, areaID : Int): String = {
+    if (p.cluster == 0) "0" else areaID + "" + p.cluster
   }
 
   val random = new Random()
 
   private def writeToFile(clusteredData: RDD[String], eps: Double, minPoints: Int, dst: String) = {
     log.debug("Save points to the result file")
+    log.debug(clusteredData.toDebugString)
 
     var filePath = dst + eps + "_" + minPoints + "_" + random.nextInt()
     clusteredData.coalesce(1).saveAsTextFile(filePath)

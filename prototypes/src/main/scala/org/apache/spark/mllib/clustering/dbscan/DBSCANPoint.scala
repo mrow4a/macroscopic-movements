@@ -16,13 +16,13 @@
  */
 package org.apache.spark.mllib.clustering.dbscan
 
-case class DBSCANPoint(val vector: Vector[String]) {
+case class DBSCANPoint(vector: Vector[String]) {
 
   def x: Double = vector(0).toDouble // lat
   def y: Double = vector(1).toDouble // long
   def id: String = vector(2) // user id
   def timestamp: Int = vector(3).toInt // seconds
-  def duration: Int = vector(4).toInt // seconds
+  def duration: Double = vector(4).toDouble // seconds
 
   def distanceSquared(other: DBSCANPoint): Double = {
     val dx = other.x - x

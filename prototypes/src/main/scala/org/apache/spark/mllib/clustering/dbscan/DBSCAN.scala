@@ -310,7 +310,7 @@ class DBSCAN private(
   private def toMinimumBoundingRectangle(vector: Vector[String]): DBSCANRectangle = {
     val point = DBSCANPoint(vector)
     val x = corner(point.x)
-    val y = corner(point.y)P
+    val y = corner(point.y)
     DBSCANRectangle(x, y, x + minimumRectangleSize, y + minimumRectangleSize)
   }
 

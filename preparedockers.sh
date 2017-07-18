@@ -13,13 +13,13 @@ docker rm -f slave2
 
 echo
 echo "# Create master and 2 slaves"
-docker run -d --name master -p 8080:8080 -p 7077:7077 movements/spark-s3 ./start-master
-docker run -d --link master --name slave1 movements/spark-s3 ./start-worker
-docker run -d --link master --name slave2 movements/spark-s3 ./start-worker
+docker run --restart unless-stopped -d --name master -p 8080:8080 -p 7077:7077 movements/spark-s3 ./start-master
+docker run --restart unless-stopped -d --link master --name slave1 movements/spark-s3 ./start-worker
+docker run --restart unless-stopped -d --link master --name slave2 movements/spark-s3 ./start-worker
 
 echo
 echo "# Created minio S3"
-docker run -d -p 9000:9000 --name s3bucket \
+docker run --restart unless-stopped -d -p 9000:9000 --name s3bucket \
   -e "MINIO_ACCESS_KEY=movements" \
   -e "MINIO_SECRET_KEY=movements" \
   minio/minio server /export
