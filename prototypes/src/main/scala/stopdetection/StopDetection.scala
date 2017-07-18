@@ -80,7 +80,7 @@ class StopDetection private(
 
   /**
     * This function filters all DetectedPoints and
-    * return Vector with (0)->Latitude (1)->Longitude, (2)->ID, (3)->TimeStamp,
+    * return Vector with (0) -> Latitude (1) -> Longitude, (2) -> ID, (3) -> TimeStamp, (4) -> Stay duration
     */
   private def filter(parsedData: RDD[Vector[String]]): RDD[Vector[String]] = {
     parsedData
@@ -109,7 +109,7 @@ class StopDetection private(
       .filter(filterMovements)
       // In this version, stop point is in movement starting point
       .map(stop => Vector(stop._1.startPoint.lat.toString, stop._1.startPoint.long.toString,
-          stop._1.startPoint.id.toString, stop._1.startPoint.timestamp.toString, stop._1.getDuration)
+          stop._1.startPoint.id.toString, stop._1.startPoint.timestamp.toString, stop._1.getDuration.toString)
       )
   }
 
