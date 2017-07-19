@@ -108,9 +108,13 @@ class StopDetection private(
       .map(pair => (pair._1, pair._2))
       .filter(filterMovements)
       // In this version, stop point is in movement starting point
-      .map(stop => Vector(stop._1.startPoint.lat.toString, stop._1.startPoint.long.toString,
-          stop._1.startPoint.id.toString, stop._1.startPoint.timestamp.toString, stop._1.getDuration.toString)
-      )
+      .map(stop =>  {
+        // Append average duration
+        var newPoint = stop._1.startPoint.vector.toBuffer
+        newPoint += stop._1.getDuration.toString
+
+        newPoint.toVector
+      })
   }
 
   private def filterMovements(pair: (Movement, Double))

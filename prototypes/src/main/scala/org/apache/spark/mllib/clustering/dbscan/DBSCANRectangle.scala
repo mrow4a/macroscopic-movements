@@ -36,6 +36,13 @@ case class DBSCANRectangle(x: Double, y: Double, x2: Double, y2: Double) {
   }
 
   /**
+    * Returns whether point is contained by this box
+    */
+  def contains(pointx: Double, pointy: Double): Boolean = {
+    x <= pointx && pointx <= x2 && y <= pointy && pointy <= y2
+  }
+
+  /**
    * Returns a new box from shrinking this box by the given amount
    */
   def shrink(amount: Double): DBSCANRectangle = {

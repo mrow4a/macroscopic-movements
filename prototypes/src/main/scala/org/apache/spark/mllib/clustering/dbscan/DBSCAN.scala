@@ -18,12 +18,14 @@ package org.apache.spark.mllib.clustering.dbscan
 
 import org.apache.spark.internal.Logging
 import org.apache.spark.mllib.clustering.dbscan.DBSCANLabeledPoint.Flag
-import util.Writer
-// import org.apache.spark.mllib.linalg.Vector
 import org.apache.spark.rdd.RDD
 
 /**
-  * Top level method for calling DBSCAN
+  * Area DBSCAN implementation which will bound points only for selected areas
+  * and automaticaly decide about eps, minPoints, maxPointsPerPartition based on area density
+  * specified in the Config file
+  *
+  * NOTE: In current version, BERLIN area is hardcoded !!!
   */
 object DBSCAN {
 
@@ -76,19 +78,6 @@ class DBSCAN private(
     labeledPartitionedPoints.values
   }
 
-/*  var bufferedWriter: BufferedWriter = _
-
-  def setWriter(bufferedWriter: BufferedWriter) = {
-    this.bufferedWriter = bufferedWriter
-  }
-
-  def write(size: Int): Unit = {
-    val line = minPoints + ", " + size
-    bufferedWriter.write(line)
-    logDebug("Wrote: " + line)
-    bufferedWriter.close()
-  }
-*/
   def train(vectors: RDD[Vector[String]]): DBSCAN = {
     // generate the smallest rectangles that split the space
     // and count how many points are contained in each one of them
@@ -124,13 +113,11 @@ class DBSCAN private(
     } yield (id, point)
 
     val numOfPartitions = localPartitions.size
-
     // perform local dbscan
     val clustered =
       duplicated
         .groupByKey(numOfPartitions)
-        .flatMapValues(points =>
-          new LocalDBSCANNaive(eps, minPoints).fit(points))
+        .flatMapValues(clusterPoints)
         .cache()
 
     // find all candidate points for merging clusters and group them
@@ -257,6 +244,35 @@ class DBSCAN private(
     )
 
   }
+
+  private def clusterPoints(points: Iterable[DBSCANPoint]): Iterable[DBSCANLabeledPoint] = {
+    // Assign points to proper area
+    points
+      .groupBy(_.areaID).values
+      // Cluster points
+      .flatMap(areaDBSCANNaive)
+  }
+
+  private def areaDBSCANNaive(stops: Iterable[DBSCANPoint])
+  : Iterable[DBSCANLabeledPoint] = {
+    val first = stops.head
+    var areaId = first.areaID
+    var areaEps = first.areaEps
+
+    val clusteredPoints = new LocalDBSCANNaive(areaEps, minPoints)
+      .fit(stops)
+
+    clusteredPoints.map(point => adjustCluster(point, areaId))
+  }
+
+  private def adjustCluster(point: DBSCANLabeledPoint, areaID : Int): DBSCANLabeledPoint = {
+    val newClusterId = areaID + "" + point.cluster
+    if (point.cluster != 0)
+      point.cluster = newClusterId.toInt
+
+    point
+  }
+
 
   /**
     * Find the appropriate label to the given `vector`

@@ -39,13 +39,18 @@ object Config {
   val minimumAccuracyDuration = 100 // Filter all points within duration of 100s, anomalies
 
   val maxPointsPerPartition = 10000
-  val eps = 0.001
+  val eps = 0.005
   val minPoints = 5
 
+  val unknownAreaID = 0
+
   object innerBerlin extends Enumeration {
-    val (xMin, xMax, yMin, yMax) = (52.4425, 13.2582, 52.5647, 13.4818)
+    val (xMin, xMax, yMin, yMax, id, eps) = (52.4425, 13.2582, 52.5647, 13.4818, 1, 0.001)
   }
   object middleBerlin extends Enumeration {
-    val (xMin, xMax, yMin, yMax) = (52.3446, 13.0168, 52.6375, 13.6603)
+    val (xMin, xMax, yMin, yMax, id, eps) = (52.3446, 13.0168, 52.6375, 13.6603, 2, 0.003)
+  }
+  object outsideBerlin extends Enumeration {
+    val (xMin, xMax, yMin, yMax, id, eps) = (52.0102, 11.2830, 53.0214, 13.9389, 3, 0.005)
   }
 }

@@ -16,53 +16,46 @@
  */
 package movements.jobs
 
-import java.util.Random
-
-import org.apache.spark.ml.feature.LabeledPoint
-import org.apache.spark.mllib.clustering.dbscan.{DBSCAN, DBSCANLabeledPoint, DBSCANPoint, DBSCANRectangle}
-import org.apache.spark.rdd.RDD
+import org.apache.spark.mllib.clustering.dbscan.{DBSCAN, DBSCANLabeledPoint, DBSCANRectangle}
 import org.apache.spark.{SparkConf, SparkContext}
-import org.slf4j.{Logger, LoggerFactory}
-import stopdetection.StopDetection
+import stopdetection.{DetectedPoint, StopDetection}
 import util.Config
 
-import org.apache.log4j.BasicConfigurator
+import scala.collection.mutable.ArrayBuffer
 
 object ClusterStopsJob {
 
-  val log: Logger = LoggerFactory.getLogger(ClusterStopsJob.getClass)
-
   def main(args: Array[String]) {
-    BasicConfigurator.configure()
 
     var maxPointsPerPartition: Int = Config.maxPointsPerPartition
     var eps: Double = Config.eps
     var minPoints: Int = Config.minPoints
 
-    if (args.length < 2) {
-      log.error("Error: No input or output file given")
-      println("EXample: " +
-        "/home/mrow4a/Projects/MacroMovements/resources/Locker/input.csv " +
-        "/home/mrow4a/Projects/MacroMovements/resources/Locker/dbscan")
+    if (args.length < 1) {
+      println("Error: No input file given")
+      println("Example: " +
+        "/home/mrow4a/Projects/MacroMovements/resources/Locker/input.csv" )
       System.exit(1)
     }
 
     var src = args(0) // need to pass file as arg
-    var dst = args(1) // need to pass file as arg
 
-    log.info("Create Spark Context")
+    println("Create Spark Context")
     val conf = new SparkConf()
     conf.setAppName(s"DBSCAN")
     conf.set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
     conf.setMaster("local[2]").set("spark.executor.memory", "1g")
     val sc = new SparkContext(conf)
 
-    log.info("Parse Input File to StopPoint class instances")
+    println("Parse Input File to StopPoint class instances")
     val data = sc.textFile(src)
 
-    val parsedData = data.map(s => s.split(';').toVector)
+    val parsedData = data
+      .map(s => s.split(';').toVector)
+      // Filter point which cannot be processed by this job
+      .filter(filterPoint)
 
-    log.info("Filter Moves to obtain stops only")
+    println("Filter Moves to obtain stops only")
 
     val detectedStops = StopDetection.filter(
       parsedData,
@@ -76,7 +69,76 @@ object ClusterStopsJob {
       Config.minimumAccuracyDuration
     )
 
-    // hardcoded areas for inner and outer berlin
+    // Transform stops to include information about area they are in and eps of that area
+    val areaBoundStops = detectedStops
+      .map(assignArea).cache()
+
+    // NOTE: Mind that this version of DBScan of spark is only compatible with Berlin!!!
+    val dbscanModel = DBSCAN.train(
+      areaBoundStops,
+      Config.eps,
+      Config.minPoints,
+      Config.maxPointsPerPartition
+    )
+
+    val clusteredData = dbscanModel.labeledPoints
+      .filter(_.cluster != 0)
+      .groupBy(p => p.cluster).values
+      .map(p => getMetadata(p))
+
+    clusteredData.foreach(stop => println(stop))
+    println("Stopping Spark Context...")
+    sc.stop()
+  }
+
+
+  private def getMetadata(points : Iterable[DBSCANLabeledPoint]) :
+  String = {
+    var countVal = 0
+    var Lat = 0.0
+    var Long = 0.0
+    val resultAvg = points.foldLeft(ArrayBuffer[(Double,Double,Int)]()) { (result, c) => {
+      countVal += 1
+      Lat += c.x
+      Long += c.y
+      val temp = ((Lat/countVal) , (Long/countVal) , c.cluster)
+      result += temp
+    }
+    }.last      // end of foldLeft
+    val lat = resultAvg._1
+    val long = resultAvg._2
+    val cluster = resultAvg._3
+    val resultFinal = lat.toString + "," + long.toString + "," + cluster.toString;
+    resultFinal
+  }
+
+  private def filterPoint(point: Vector[String]): Boolean = {
+    try{
+      val outsideArea: DBSCANRectangle =
+        DBSCANRectangle(Config.outsideBerlin.xMin,
+          Config.outsideBerlin.xMax,
+          Config.outsideBerlin.yMin,
+          Config.outsideBerlin.yMax)
+      val parsedPoint = DetectedPoint(point)
+      // Try to obtain most essential values
+      parsedPoint.id
+      parsedPoint.lat
+      parsedPoint.long
+      parsedPoint.timestamp
+      if (outsideArea.contains(parsedPoint.lat, parsedPoint.long)){
+        true
+      } else {
+        false
+      }
+    } catch {
+      case e: Exception => {
+        println("Filtering point: "+ point.toString())
+        false
+      }
+    }
+  }
+
+  private def assignArea(point: Vector[String]): Vector[String] = {
     val innerArea: DBSCANRectangle = DBSCANRectangle(Config.innerBerlin.xMin,
       Config.innerBerlin.xMax,
       Config.innerBerlin.yMin,
@@ -88,50 +150,23 @@ object ClusterStopsJob {
         Config.middleBerlin.yMin,
         Config.middleBerlin.yMax)
 
-    val innerStops = detectedStops.filter(p => innerArea.contains(DBSCANPoint(p)))
-    // inner
-    val outerStops = detectedStops.filter(p => !middleArea.contains(DBSCANPoint(p)))
-    // outer
-    val middleStops = detectedStops.subtract(outerStops).subtract(innerStops) // middle = detected - outer - inner
 
-    log.debug("Cluster Points")
+    val parsedPoint = DetectedPoint(point)
+    var newPoint = point.toBuffer
+    // Try to obtain most essential values
+    if (innerArea.contains(parsedPoint.lat, parsedPoint.long)) {
+      newPoint += Config.innerBerlin.id.toString
+      newPoint += Config.innerBerlin.eps.toString
+    }
+    else if (middleArea.contains(parsedPoint.lat, parsedPoint.long)) {
+      newPoint += Config.middleBerlin.id.toString
+      newPoint += Config.middleBerlin.eps.toString
+    }
+    else {
+      newPoint += Config.outsideBerlin.id.toString
+      newPoint += Config.outsideBerlin.eps.toString
+    }
 
-    // run DBSCAN for 3 areas with hardcoded parameters
-    val innerDBSCAN = runDBSCAN(innerStops, 0.001, minPoints, maxPointsPerPartition, 1)
-    val middleDBSCAN = runDBSCAN(middleStops, 0.003, minPoints, maxPointsPerPartition, 2)
-    val outerDBSCAN =  runDBSCAN(outerStops, 0.005, minPoints, maxPointsPerPartition, 3)
-
-    // merge results and write to file
-    writeToFile(innerDBSCAN ++ middleDBSCAN ++ outerDBSCAN, eps, minPoints, dst)
-
-    log.info("Stopping Spark Context...")
-    sc.stop()
-  }
-
-  /**
-    * Run DBSCAN implementation with given params and map points to string
-    */
-  private def runDBSCAN(stops: RDD[Vector[String]],
-                        eps: Double, minPoints: Int,
-                        maxPointsPerPartition: Int,
-                        areaID: Int)
-  : RDD[String] = {
-    DBSCAN.train(stops, eps, minPoints, maxPointsPerPartition)
-      .labeledPoints.map(p => s"${p.id},${p.x},${p.y},${clusterId(p, areaID)},${p.duration}") //  TODO crashes on p.duration
-  }
-
-  private def clusterId(p: DBSCANLabeledPoint, areaID : Int): String = {
-    if (p.cluster == 0) "0" else areaID + "" + p.cluster
-  }
-
-  val random = new Random()
-
-  private def writeToFile(clusteredData: RDD[String], eps: Double, minPoints: Int, dst: String) = {
-    log.debug("Save points to the result file")
-    log.debug(clusteredData.toDebugString)
-
-    var filePath = dst + eps + "_" + minPoints + "_" + random.nextInt()
-    clusteredData.coalesce(1).saveAsTextFile(filePath)
-    println("Wrote result to " + filePath)
+    newPoint.toVector
   }
 }

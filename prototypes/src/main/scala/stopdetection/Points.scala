@@ -23,7 +23,6 @@ case class DetectedPoint(vector: Vector[String]){
   def id: String = vector(2)
   def lat: Double = vector(3).toDouble
   def long: Double = vector(4).toDouble
-  def duration: Double = vector(5).toDouble
 
   def getTimestamp(dayOfWeek: String, timeOfDay: String) : Int = {
     val splitTimestamp = timeOfDay.split(':')
