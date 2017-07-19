@@ -39,4 +39,4 @@ hostname_s3_port='9000'
 echo
 echo "# SparkMaster node UI localhost:8080, spark://$(hostname_master):7077"
 echo
-echo "# Created S3 on http://$(hostname_s3):9000 with user: [movements] and password: [movements]"
+echo "# Created S3 on http://$(hostname_s3):9000 with   user: [movements] and password: [movements]"

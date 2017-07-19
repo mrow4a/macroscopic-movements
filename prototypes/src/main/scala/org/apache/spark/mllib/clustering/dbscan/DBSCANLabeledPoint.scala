@@ -17,8 +17,8 @@
 package org.apache.spark.mllib.clustering.dbscan
 
 /**
- * Companion constants for labeled points
- */
+  * Companion constants for labeled points
+  */
 object DBSCANLabeledPoint {
 
   val Unknown = 0
