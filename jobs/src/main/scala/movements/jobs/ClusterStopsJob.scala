@@ -91,7 +91,7 @@ object ClusterStopsJob {
 
   private def getMetadata(points : Iterable[DBSCANLabeledPoint]) :
   String = {
-    var countVal = 0.0
+    var countVal : Int = 0
     var lat = 0.0
     var lon = 0.0
     var duration = 0.0
@@ -108,12 +108,13 @@ object ClusterStopsJob {
       }
     }.last // end of foldLeft
 
-    val avgLat = avg._1
-    val avgLon = avg._2
-    val cluster = avg._3
-    val avgDuration = avg._4 / countVal
 
-    avgLat.toString + "," + avgLon.toString + "," + cluster.toString + "," + avgDuration.toInt.toString
+    val avgLat  = avg._1
+    val avgLon  = avg._2
+    val cluster = avg._3
+    val avgDuration = BigDecimal((avg._4 / countVal)/3600).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
+
+    avgLat.toString + "," + avgLon.toString + "," + cluster.toString + "," + avgDuration.toString + "," + countVal.toString
   }
 
   private def filterPoint(point: Vector[String]): Boolean = {

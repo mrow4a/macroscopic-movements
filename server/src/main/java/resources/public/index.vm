@@ -94,7 +94,7 @@
                         <label id="lat"></label>
                     </div>
                     <div>
-                        Average stay duration (sec):
+                        Average stay duration (hours):
                         <br>
                         <label id="duration"></label>
                     </div>
