@@ -27,19 +27,22 @@ class CreateGraph() extends Serializable {
 
   def graphOperations(data: RDD[(String, Int)], spark: SparkSession): DataFrame = {
 
+    val partitions = 2
     import spark.implicits._
     val edgeData  = data
       .groupBy(a => a._1).values
       .flatMap(mapEdge).groupBy(a => (a._1,a._2)).values.flatMap(tripCount)
       .map { line =>
         Edge(line._1.toInt, line._2.toInt, line._3.toString)
-      }
+      }.cache()
 
     var graphRDD = Graph.fromEdges(edgeData , defaultValue = 1)
 
     val indegreeDF = graphRDD.inDegrees.toDF("vertexId","Indegrees")
+      .coalesce(partitions).cache()
 
     val outdegreeDF = graphRDD.outDegrees.toDF("id","Outdegrees")
+      .coalesce(partitions).cache()
 
     val alldegreesDF = outdegreeDF
       .join(indegreeDF, indegreeDF("vertexId") === outdegreeDF("id"), "full_outer")
@@ -47,22 +50,27 @@ class CreateGraph() extends Serializable {
         when($"vertexId".isNull, $"id")
           .otherwise($"vertexId"))
       .drop("vertexId","id")
+      .coalesce(partitions).cache()
 
     var collVertIn  =
       graphRDD.collectNeighborIds(EdgeDirection.In)
         .map(e => (e._1,e._2.mkString(",")))
         .toDF("VID", "NeighborsIN")
+        .coalesce(partitions).cache()
 
     var collVertOut  =
       graphRDD.collectNeighborIds(EdgeDirection.Out)
         .map(e => (e._1,e._2.mkString(",")))
         .toDF("VertID", "NeighborsOUT")
+        .coalesce(partitions).cache()
 
-    val dfneighbors = collVertIn.join(collVertOut, collVertOut("VertID")===collVertIn("VID"), "full_outer")
+    val dfneighbors = collVertIn
+      .join(collVertOut, collVertOut("VertID")===collVertIn("VID"), "full_outer")
       .withColumn("VertexId",
         when($"VID".isNull, $"VertID")
           .otherwise($"VID"))
       .drop("VID","VertID")
+      .coalesce(partitions).cache()
 
     val dfJoin2 = dfneighbors
       .join(alldegreesDF, dfneighbors("VertexId") === alldegreesDF("ClusterID"), "full_outer")
@@ -70,9 +78,12 @@ class CreateGraph() extends Serializable {
         when($"VertexId".isNull, $"ClusterID")
           .otherwise($"VertexId"))
       .drop("VertexId","ClusterID")
+      .coalesce(partitions).cache()
 
-    val PageRank = graphRDD.pageRank(0.0001).vertices.sortBy(_._2,ascending = false)
+    val PageRank = graphRDD.pageRank(0.0001).vertices
+      .sortBy(_._2,ascending = false)
       .toDF("VertexId", "PageRank")
+      .coalesce(partitions).cache()
 
     val dfJoin3 = PageRank
       .join(dfJoin2, PageRank("VertexId")===dfJoin2("Cluster#"), "full_outer")

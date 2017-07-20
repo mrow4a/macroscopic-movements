@@ -68,7 +68,6 @@ public final class SparkClient {
             for (String line : lines) {
                 JSONObject item = new JSONObject();
                 String[] parts = line.split("\\|");
-                System.out.println(String.join(",", parts));
 //              |-- ClusterID: integer (nullable = true)
 //              |-- avg(Latitude): double (nullable = true)
 //              |-- avg(Longitude): double (nullable = true)
@@ -85,8 +84,8 @@ public final class SparkClient {
                     item.put("duration", parts[3]);
                     item.put("pagerank", parts[4]);
 
-                    JSONArray neighborsin = JSONArray.fromObject(parts[5]);
-                    JSONArray neighborsout = JSONArray.fromObject(parts[6]);
+                    JSONArray neighborsin = JSONArray.fromObject("["+parts[5]+"]");
+                    JSONArray neighborsout = JSONArray.fromObject("["+parts[6]+"]");
                     item.put("neighborsin", neighborsin);
                     item.put("neighborsout", neighborsout);
 
