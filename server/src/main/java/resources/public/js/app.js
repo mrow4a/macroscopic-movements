@@ -119,9 +119,11 @@ $(document).ready(function () {
     var mapMarkers = [];
 
     function removeMarkers() {
-        for (var i = 0; i < mapMarkers.length; i++) {
+      for (var i = 0; i < mapMarkers.length; i++) {
             mymap.removeLayer(mapMarkers[i]);
         }
+        mapMarkers.length = 0;
+
     }
 
     function getHotspots() {

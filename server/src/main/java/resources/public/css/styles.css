@@ -37,7 +37,8 @@ body {
     padding-top: 40px;
 }
 
-div#sidebar-wrapper {}
+div#sidebar-wrapper {
+}
 
 #wrapper.toggled #sidebar-wrapper {
     width: 250px;
@@ -106,14 +107,30 @@ div#sidebar-wrapper {}
     border-color: #337ab7;
 }
 
+.blockMe {
+!important;
+    position: static;
+!important;
+    height: 100%;
+!important;
+    width: 100%;
+}
+
 .panel {
-     margin-top: 40px;
-     background-color: #f7faff;
-     border: 1px solid transparent;
-     border-radius: 4px;
-     -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
-     box-shadow: 0 1px 1px rgba(0,0,0,.05);
- }
+    /* margin-top: 40px; */
+    background-color: rgba(255, 255, 255, 0.7);
+    border: 1px solid #337ab7;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+    display: inline-block;
+    position: fixed;
+    right: 0;
+    padding: 5px;
+    margin: 10px;
+    font-size: 15px;
+    z-index: 100;
+}
 
 @media (min-width: 768px) {
     #wrapper {
