@@ -15,15 +15,18 @@
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
 
+    <link rel="stylesheet" href="css/styles.css">
+
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
 
     <script type="text/javascript" src="/js/vendor/jquery.blockUI.js"></script>
 
 </head>
-<body class="">
 
 <div class="blockMe" style="position: relative; zoom: 1;"> <!-- style="position: static;"-->
+<body class="">
+
     <div id="wrapper" class="toggled">
         <!-- Sidebar -->
         <div id="sidebar-wrapper">
@@ -106,6 +109,7 @@
         <div id="page-content-wrapper">
             <div class="container-fluid">
                 <div style="padding:10px;" class="row justify-content-md-center">
+                    <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Menu</a>
                 </div>
                 <div id="mapid" style="width: 100%; height: 800px; margin-right: auto; margin-left: auto;"></div>
             </div>
@@ -118,6 +122,7 @@
   -->
 
 
-</div>
+
 </body>
+</div>
 </html>

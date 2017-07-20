@@ -30,12 +30,14 @@ body {
     height: 100%;
     margin-left: -250px;
     overflow-y: auto;
-    background: #000;
     -webkit-transition: all 0.5s ease;
     -moz-transition: all 0.5s ease;
     -o-transition: all 0.5s ease;
     transition: all 0.5s ease;
+    padding-top: 40px;
 }
+
+div#sidebar-wrapper {}
 
 #wrapper.toggled #sidebar-wrapper {
     width: 250px;
@@ -99,6 +101,19 @@ body {
     color: #fff;
     background: none;
 }
+
+.panel-primary {
+    border-color: #337ab7;
+}
+
+.panel {
+     margin-top: 40px;
+     background-color: #f7faff;
+     border: 1px solid transparent;
+     border-radius: 4px;
+     -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
+     box-shadow: 0 1px 1px rgba(0,0,0,.05);
+ }
 
 @media (min-width: 768px) {
     #wrapper {
