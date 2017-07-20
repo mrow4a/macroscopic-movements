@@ -37,6 +37,23 @@
             </snapshots>
         </repository>
         <repository>
+            <id>SparkPackagesRepo</id>
+            <url>http://dl.bintray.com/spark-packages/maven</url>
+        </repository>
+        <repository>
+            <id>maven3</id>
+            <!-- This should be at top, it makes maven try the central repo first
+                and then others and hence faster dep resolution -->
+            <name>Maven Repository</name>
+            <url>https://repo1.maven.org/maven2</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
             <id>archery-repo</id>
             <name>Repo for Archery R-Tree</name>
             <url>http://dl.bintray.com/meetup/maven</url>
@@ -59,6 +76,20 @@
             <artifactId>archery_${scala.binary.version}</artifactId>
             <version>0.3.0</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/graphframes/graphframes -->
+        <dependency>
+            <groupId>graphframes</groupId>
+            <artifactId>graphframes</artifactId>
+            <version>0.5.0-spark2.1-s_${scala.binary.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/dmarcous/spark-betweenness -->
+        <dependency>
+            <groupId>dmarcous</groupId>
+            <artifactId>spark-betweenness</artifactId>
+            <version>1.0-s_2.10</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>
