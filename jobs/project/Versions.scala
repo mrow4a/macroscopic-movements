@@ -17,7 +17,7 @@
 object Versions {
   lazy val netty = "4.0.42.Final"
   lazy val jobServer = "0.7.0"
-  lazy val spark = "1.6.2"
+  lazy val spark = "2.1.0"
   lazy val typesafeConfig = "1.2.1"
   lazy val archery = "0.4.0"
 }

@@ -67,13 +67,37 @@ public final class SparkClient {
             String[] lines = output.split("\n");
             for (String line : lines) {
                 JSONObject item = new JSONObject();
-                String[] parts = line.split(",");
-                if (parts.length > 3) {
-                    item.put("lat", parts[0]);
-                    item.put("long", parts[1]);
-                    item.put("id", parts[2]);
+                String[] parts = line.split("\\|");
+                System.out.println(String.join(",", parts));
+//              |-- ClusterID: integer (nullable = true)
+//              |-- avg(Latitude): double (nullable = true)
+//              |-- avg(Longitude): double (nullable = true)
+//              |-- avg(Duration): double (nullable = true)
+//              |-- PageRank: double (nullable = true)
+//              |-- NeighborsIN: list() (nullable = true)
+//              |-- NeighborsOUT: list() (nullable = true)
+//              |-- Outdegrees: integer (nullable = true)
+//              |-- Indegrees: integer (nullable = true)
+                if (parts.length == 9) {
+                    item.put("id", parts[0]);
+                    item.put("lat", parts[1]);
+                    item.put("long", parts[2]);
                     item.put("duration", parts[3]);
-                    item.put("clusterSize", parts[4]);
+                    item.put("pagerank", parts[4]);
+
+                    JSONArray neighborsin = JSONArray
+                            .fromObject(
+                                    parts[5].replace("List(", "[").replace(")","]")
+                            );
+                    JSONArray neighborsout = JSONArray
+                            .fromObject(
+                                    parts[6].replace("List(", "[").replace(")","]")
+                            );
+                    item.put("neighborsin", neighborsin);
+                    item.put("neighborsout", neighborsout);
+
+                    item.put("outdegrees", parts[7]);
+                    item.put("indegrees", parts[8]);
                     array.add(item);
                 } else {
                     System.out.println("Error, wrong number of parameters");
