@@ -17,6 +17,7 @@
 
 package movements.jobs
 
+import org.apache.spark.sql.SparkSession
 import org.apache.spark.{SparkConf, SparkContext}
 
 object ValidateFileJob {
@@ -29,7 +30,11 @@ object ValidateFileJob {
     //
     // conf.set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
     // conf.setMaster("local[*]").set("spark.executor.memory", "1g")
-    val sc = new SparkContext(conf)
+    val spark = SparkSession
+      .builder()
+      .config(conf)
+      .getOrCreate()
+    val sc = spark.sparkContext
 
     if (args.length < 2) {
       throw new Exception("No s3 endpoint or s3a:// path given. "
@@ -39,9 +44,6 @@ object ValidateFileJob {
     var src = args(1) // need to pass file as arg
     var dst = args(2) // need to pass dst as arg
 
-
-    // http://localhost:9000
-    // s3a://movements:movements/movements/macroscopic-movement-01_areafilter.csv
     sc.hadoopConfiguration.set("fs.s3a.endpoint", endpoint)
 
     val data = sc.textFile(src)

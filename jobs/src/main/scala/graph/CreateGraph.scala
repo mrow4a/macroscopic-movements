@@ -15,47 +15,31 @@
  * limitations under the License.
  */
 
-package Graph
-// import org.apache.spark.SparkContext
-// import org.apache.spark.SparkConf
+package graph
 import org.apache.spark.rdd.RDD
-import org.apache.spark.graphx.VertexRDD
-import org.apache.spark.graphx.EdgeRDD
 import org.apache.spark.graphx._
-import org.apache.spark.sql.{Column, DataFrame, Row, SparkSession}
-import org.apache.spark.sql.functions.explode
-import org.apache.spark.sql.functions.udf
+import org.apache.spark.sql.{DataFrame, SparkSession}
 
 import scala.collection.mutable.ArrayBuffer
-import org.apache.spark.sql.functions.{concat, lit}
-import org.apache.spark.sql.functions.{avg, explode}
 import org.apache.spark.sql.functions._
-import com.centrality.kBC.KBetweenness
-import org.graphframes._
-
-// SPARK_HOME/bin/spark-shell --packages dmarcous:spark-betweenness:1.0-s_2.10
-/**
-  * Created by ananya on 23.05.17.
-  */
-
 
 class CreateGraph() extends Serializable {
 
   def graphOperations(data: RDD[(String, Int)], spark: SparkSession): DataFrame = {
 
     import spark.implicits._
-    val edgeData  = data.groupBy(a => a._1).values
+    val edgeData  = data
+      .groupBy(a => a._1).values
       .flatMap(mapEdge).groupBy(a => (a._1,a._2)).values.flatMap(tripCount)
-    .map { line =>
-      Edge(line._1.toInt, line._2.toInt, line._3.toString)
-    }
+      .map { line =>
+        Edge(line._1.toInt, line._2.toInt, line._3.toString)
+      }
 
-     var graphRDD = Graph.fromEdges(edgeData , defaultValue = 1)
+    var graphRDD = Graph.fromEdges(edgeData , defaultValue = 1)
 
-    val indegreeDF = graphRDD.inDegrees.toDF("vertexId","indegrees")
+    val indegreeDF = graphRDD.inDegrees.toDF("vertexId","Indegrees")
 
-    val outdegreeDF = graphRDD.outDegrees.toDF("id","outdegrees")
-
+    val outdegreeDF = graphRDD.outDegrees.toDF("id","Outdegrees")
 
     val alldegreesDF = outdegreeDF
       .join(indegreeDF, indegreeDF("vertexId") === outdegreeDF("id"), "full_outer")
@@ -69,24 +53,17 @@ class CreateGraph() extends Serializable {
         .map(e => (e._1,e._2.toList.toString))
         .toDF("VID", "NeighborsIN")
 
-
     var collVertOut  =
       graphRDD.collectNeighborIds(EdgeDirection.Out)
         .map(e => (e._1,e._2.toList.toString))
         .toDF("VertID", "NeighborsOUT")
 
-  //  var temp = collVertIn.fullOuterJoin(collVertOut)
-    // converting connected neighbors RDD to DF
     val dfneighbors = collVertIn.join(collVertOut, collVertOut("VertID")===collVertIn("VID"), "full_outer")
       .withColumn("VertexId",
-      when($"VID".isNull, $"VertID")
-        .otherwise($"VID"))
+        when($"VID".isNull, $"VertID")
+          .otherwise($"VID"))
       .drop("VID","VertID")
-//      .map{ u => (u._1,u._2._1.toList.toString, u._2._2.toList.toString)}
-//      .toDF("VertexId", "NeighborsIN", "NeighborsOut")
 
-
-    // joining dfJoinLatLongDeg with neighbors DF
     val dfJoin2 = dfneighbors
       .join(alldegreesDF, dfneighbors("VertexId") === alldegreesDF("ClusterID"), "full_outer")
       .withColumn("Cluster#",
@@ -94,10 +71,8 @@ class CreateGraph() extends Serializable {
           .otherwise($"VertexId"))
       .drop("VertexId","ClusterID")
 
-     val PageRank = graphRDD.pageRank(0.0001).vertices.sortBy(_._2,ascending = false)
-       .toDF("VertexId", "PageRank")
-   // val pageRankDF = graphDF.pageRank.resetProbability(0.15).maxIter(1).run()
-  //  val vertexPG = pageRankDF.vertices.select("id", "pagerank")
+    val PageRank = graphRDD.pageRank(0.0001).vertices.sortBy(_._2,ascending = false)
+      .toDF("VertexId", "PageRank")
 
     val dfJoin3 = PageRank
       .join(dfJoin2, PageRank("VertexId")===dfJoin2("Cluster#"), "full_outer")
@@ -105,14 +80,11 @@ class CreateGraph() extends Serializable {
         when($"VertexId".isNull, $"Cluster#")
           .otherwise($"VertexId"))
       .drop("VertexId","Cluster#")
- //     .coalesce(1).write.option("header", "true").csv("resources/sample_file")
+      .na.fill(0,Seq("Indegrees"))
+      .na.fill(0,Seq("Outdegrees"))
 
-
-    // val components = userGraph.connectedComponents()
-
-    // val newGraph = userGraph.stronglyConnectedComponents(5)
     dfJoin3
-  }    // end of function
+  }
 
   def tripCount(data : Iterable[(Int, Int)]) :
   Iterable[(Int, Int, Int)] = {
@@ -122,10 +94,10 @@ class CreateGraph() extends Serializable {
       val temp = (c._1, c._2, count)
       result += temp
       result
-    }}.max  // end of foldLeft */
+    }}.max
     val resultFinal = (resultMax._1,resultMax._2,resultMax._3)
     List(resultFinal)
-  }   // end of funtion
+  }
 
   def mapEdge(user: Iterable[(String,Int)])  :
   Iterable[(Int,Int)]
@@ -144,12 +116,11 @@ class CreateGraph() extends Serializable {
         result += temp
       }
       result
-    } // end of foldLeft
+    }
     }.drop(1)
-  }// end of function
+  }
 
-}   // end of class
-
+}
 
 object CreateGraph {
   def main(args: Array[String]) {
@@ -173,8 +144,6 @@ object CreateGraph {
       result.show(false)
       spark.stop()
 
-    } // end of else
-  } // end of main
+    }
+  }
 }
-
-

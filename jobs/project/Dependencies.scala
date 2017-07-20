@@ -28,6 +28,7 @@ object Dependencies {
   )
 
   lazy val sparkExtraDeps = Seq(
+    "org.apache.spark" %% "spark-graphx" % spark % "provided",
     "org.apache.spark" %% "spark-sql" % spark % "provided"
   )
 

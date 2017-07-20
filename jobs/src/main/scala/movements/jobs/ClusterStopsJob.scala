@@ -17,13 +17,12 @@
 
 package movements.jobs
 
+import graph.CreateGraph
 import org.apache.spark.mllib.clustering.dbscan.{DBSCAN, DBSCANLabeledPoint, DBSCANRectangle}
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.{SparkConf, SparkContext}
 import stopdetection.{DetectedPoint, StopDetection}
 import util.Config
-
-import scala.collection.mutable.ArrayBuffer;
 
 object ClusterStopsJob {
 
@@ -51,6 +50,8 @@ object ClusterStopsJob {
     var dst = args(2) // need to pass dst as arg
 
     sc.hadoopConfiguration.set("fs.s3a.endpoint", endpoint)
+
+    import spark.implicits._
 
     val data = sc.textFile(src)
 
@@ -83,25 +84,21 @@ object ClusterStopsJob {
       Config.maxPointsPerPartition
     ).labeledPoints.filter(_.cluster != 0).cache()
 
-    //    val graphInput = clusteredPoints
-    //        .map(point => (point.id, point.cluster))
-    //      .toDF("UserId", "VertexId")
-
-    import spark.implicits._
     val graphInput = clusteredPoints
-      .groupBy(_.cluster).map(pair => (pair._1, pair._2.map(p => p.id).toList))
-      .toDF("VertexId", "UserList")
+      .map(point => (point.id, point.cluster))
 
-    val statisticsInput = clusteredPoints
+    val createGraphJob = new CreateGraph()
+    val createGraphJobDataframes = createGraphJob.graphOperations(graphInput, spark)
+
+    val statisticsOutput = clusteredPoints
       .map(point =>
         (point.cluster, point.x, point.y, point.duration)
-      ).toDF("VertexId", "Latitude", "Longitude", "Duration")
+      )
+      .toDF("ClusterID", "Latitude", "Longitude", "Duration")
+      .groupBy("ClusterID").avg("Latitude","Longitude","Duration")
 
-    // getting average Latitude and LOngitude values
-    val statisticsOutput= statisticsInput.groupBy("VertexId").avg("Latitude","Longitude","Duration")
-
-    val resultDf = statisticsOutput.join(graphInput,
-      Seq("VertexId")
+    val resultDf = statisticsOutput.join(createGraphJobDataframes,
+      Seq("ClusterID")
     )
 
     resultDf.collect().foreach(row => println(row.mkString("|")))

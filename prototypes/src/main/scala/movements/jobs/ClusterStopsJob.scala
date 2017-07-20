@@ -16,6 +16,7 @@
  */
 package movements.jobs
 
+import graph.CreateGraph
 import org.apache.spark.mllib.clustering.dbscan.{DBSCAN, DBSCANLabeledPoint, DBSCANRectangle}
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.{SparkConf, SparkContext}
@@ -84,27 +85,25 @@ object ClusterStopsJob {
       Config.maxPointsPerPartition
     ).labeledPoints.filter(_.cluster != 0).cache()
 
-
-//    val graphInput = clusteredPoints
-//        .map(point => (point.id, point.cluster))
-//      .toDF("UserId", "VertexId")
     val graphInput = clusteredPoints
-        .groupBy(_.cluster).map(pair => (pair._1, pair._2.map(p => p.id).toList))
-      .toDF("VertexId", "UserList")
+      .map(point => (point.id, point.cluster))
 
-    val statisticsInput = clusteredPoints
+    val createGraphJob = new CreateGraph()
+    val createGraphJobDataframes = createGraphJob.graphOperations(graphInput, spark)
+
+    val statisticsOutput = clusteredPoints
       .map(point =>
-      (point.cluster, point.x, point.y, point.duration)
-    ).toDF("VertexId", "Latitude", "Longitude", "Duration")
+        (point.cluster, point.x, point.y, point.duration)
+      )
+      .toDF("ClusterID", "Latitude", "Longitude", "Duration")
+      .groupBy("ClusterID").avg("Latitude","Longitude","Duration")
 
-    // getting average Latitude and LOngitude values
-    val statisticsOutput= statisticsInput.groupBy("VertexId").avg("Latitude","Longitude","Duration")
-
-    val resultDf = statisticsOutput.join(graphInput,
-      Seq("VertexId")
+    val resultDf = statisticsOutput.join(createGraphJobDataframes,
+      Seq("ClusterID")
     )
 
-    resultDf.foreach(row => println(row.mkString("|")))
+    resultDf.collect().foreach(row => println(row.mkString("|")))
+    resultDf.printSchema()
 
     sc.stop()
   }
