@@ -133,6 +133,8 @@ $(document).ready(function () {
             url: '/api/get_hotspots?file=' + filePath + '&spark=' + spark + '&endpoint=' + endpoint,
             beforeSend: function () {
                 // setting a timeout
+
+                removeMarkers();
                 mapMarkers = [];
                 block('Loading...');
             },
