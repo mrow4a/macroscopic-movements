@@ -74,8 +74,8 @@ public final class SparkClient {
 //              |-- avg(Longitude): double (nullable = true)
 //              |-- avg(Duration): double (nullable = true)
 //              |-- PageRank: double (nullable = true)
-//              |-- NeighborsIN: list() (nullable = true)
-//              |-- NeighborsOUT: list() (nullable = true)
+//              |-- NeighborsIN: [.., ..](nullable = true)
+//              |-- NeighborsOUT: [.., ..] (nullable = true)
 //              |-- Outdegrees: integer (nullable = true)
 //              |-- Indegrees: integer (nullable = true)
                 if (parts.length == 9) {
@@ -85,14 +85,8 @@ public final class SparkClient {
                     item.put("duration", parts[3]);
                     item.put("pagerank", parts[4]);
 
-                    JSONArray neighborsin = JSONArray
-                            .fromObject(
-                                    parts[5].replace("List(", "[").replace(")","]")
-                            );
-                    JSONArray neighborsout = JSONArray
-                            .fromObject(
-                                    parts[6].replace("List(", "[").replace(")","]")
-                            );
+                    JSONArray neighborsin = JSONArray.fromObject(parts[5]);
+                    JSONArray neighborsout = JSONArray.fromObject(parts[6]);
                     item.put("neighborsin", neighborsin);
                     item.put("neighborsout", neighborsout);
 
