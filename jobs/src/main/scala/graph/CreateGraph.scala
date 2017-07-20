@@ -50,12 +50,12 @@ class CreateGraph() extends Serializable {
 
     var collVertIn  =
       graphRDD.collectNeighborIds(EdgeDirection.In)
-        .map(e => (e._1,e._2.toList.toString))
+        .map(e => (e._1,e._2.mkString(",")))
         .toDF("VID", "NeighborsIN")
 
     var collVertOut  =
       graphRDD.collectNeighborIds(EdgeDirection.Out)
-        .map(e => (e._1,e._2.toList.toString))
+        .map(e => (e._1,e._2.mkString(",")))
         .toDF("VertID", "NeighborsOUT")
 
     val dfneighbors = collVertIn.join(collVertOut, collVertOut("VertID")===collVertIn("VID"), "full_outer")
