@@ -117,6 +117,7 @@ $(document).ready(function () {
     }
 
     var mapMarkers = [];
+    var hashmapMarkers = {};
 
     function removeMarkers() {
         for (var i = 0; i < mapMarkers.length; i++) {
@@ -143,26 +144,36 @@ $(document).ready(function () {
                     var jsonArray = JSON.parse(data);
                     $(read_run_label).html(toGreen("Job done!"));
 
+                    hashmapMarkers = {};
                     removeMarkers();
                     for (var i = 0; i < jsonArray.length; i++) {
                         var obj = jsonArray[i];
                         var marker = L.marker([obj.lat, obj.long],
-                            {icon: defaultIcon},
                             {
+                                icon: defaultIcon,
                                 id: obj.id,
                                 lat: obj.lat, // .toFixed crashes
                                 long: obj.long,
-                                duration: obj.duration,
+                                duration: Math.round((parseInt(obj.duration)/3600) * 100) / 100,
+                                neighborsIn: obj.neighborsin,
+                                neighborsOut : obj.neighborsout,
+                                outDegrees: obj.outdegrees, // TODO add
+                                inDegrees: obj.indegrees,
+                                pagerank: obj.pagerank,
                                 clusterSize: Math.round(obj.clusterSize)
                             })
                             .addTo(mymap)
                             .on('click', showStatistics);
                         // .bindPopup("<b>" + obj.id + "</b>" + "</br><b>" + obj.duration + "</b>");
+
+                        hashmapMarkers[obj.id] = [obj.lat,obj.long];
+
                         mapMarkers.push(marker);
                     }
                     defaultIcon = marker.getIcon();
 
                 } catch (e) {
+                    console.log(e);
                     $(read_run_label).html(toRed("Received wrong content"));
                 }
             },
@@ -201,11 +212,15 @@ $(document).ready(function () {
     var currMarker;
 
     function showStatistics(e) {
+        console.log(e);
         var marker = e.target;
 
+        if(currMarker !== undefined) {
+            currMarker.setIcon(defaultIcon);
+        }
         marker.setIcon(clickedIcon);
         var options = marker.options;
-        
+
         // mymap.fitBounds(marker.getBounds());
         // if(marker !== undefined) {
         //     marker.options.icon = marker.options.icon;
@@ -220,27 +235,23 @@ $(document).ready(function () {
         $('#duration').text(options.duration);
         $('#clusterSize').text(options.clusterSize);
 
-        if(currMarker !== undefined) {
-            currMarker.setIcon(defaultIcon);
-            createPolylines(currMarker, marker);
-        }
+        createPolylines(marker);
+
         currMarker = marker;
     }
 
     var polyline;
 
-    function createPolylines(marker1, marker2) {
-        var latlngs = [];
-        
-        //for(var i = 0; i < mapMarkers.length; i++) {
-        //    latlngs[i] = mapMarkers[i].getLatLng();
-       // }
-        
-        latlngs.push(marker1.getLatLng());
-        latlngs.push(marker2.getLatLng());
+    function createPolylines(marker) {
+        for(var i = 0; i < marker.options.neighborsOut.length; i++) {
+            var id = marker.options.neighborsOut[i];
+            polyline = L.polyline([hashmapMarkers[id], marker.getLatLng()], {color: 'red'}).addTo(mymap);
+        }
 
-        polyline = L.polyline(latlngs, {color: 'red'}).addTo(mymap);
-     //   mymap.fitBounds(polyline.getBounds());
+        //latlngs.push(marker.getLatLng());
+        //latlngs.push(marker2.getLatLng());
+
+        //   mymap.fitBounds(polyline.getBounds());
 
     }
 
