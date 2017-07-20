@@ -20,20 +20,15 @@ object Dependencies {
 
   import Versions._
 
-  // NettyIo is very bad one, the organization name is different
-  // from the jar name for older versions
-  val excludeNettyIo = ExclusionRule(organization = "org.jboss.netty")
-
   lazy val sparkDeps = Seq(
-    "org.apache.spark" %% "spark-core" % spark % "provided" excludeAll (excludeNettyIo),
+    "org.apache.spark" %% "spark-core" % spark % "provided",
     // Force netty version.  This avoids some Spark netty dependency problem.
     "com.meetup" %% "archery" % "0.4.0",
     "io.netty" % "netty-all" % netty
   )
 
   lazy val sparkExtraDeps = Seq(
-    "org.apache.spark" %% "spark-sql" % spark % "provided" excludeAll (excludeNettyIo),
-    "org.apache.spark" %% "spark-streaming" % spark % "provided" excludeAll (excludeNettyIo)
+    "org.apache.spark" %% "spark-sql" % spark % "provided"
   )
 
 //  lazy val jobserverDeps = Seq(

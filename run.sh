@@ -5,8 +5,8 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 docker rm -f spark-client
 
 # Build server
-cd $DIR/server && \
-docker run -ti --rm -v $(pwd):/code -v "$HOME/.m2":/root/.m2 iflavoursbv/mvn-sbt-openjdk-8-alpine:latest mvn clean compile assembly:single && \
+#cd $DIR/server && \
+#docker run -ti --rm -v $(pwd):/code -v "$HOME/.m2":/root/.m2 iflavoursbv/mvn-sbt-openjdk-8-alpine:latest mvn clean compile assembly:single && \
 
 # Build jobs
 cd $DIR/jobs && \

@@ -66,6 +66,7 @@ public final class SparkClient {
             JSONArray array = new JSONArray();
             String[] lines = output.split("\n");
             for (String line : lines) {
+                System.out.println(line);
                 JSONObject item = new JSONObject();
                 String[] parts = line.split(",");
                 if (parts.length > 3) {

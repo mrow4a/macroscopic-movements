@@ -17,6 +17,7 @@
 package movements.jobs
 
 import org.apache.spark.mllib.clustering.dbscan.{DBSCAN, DBSCANLabeledPoint, DBSCANRectangle}
+import org.apache.spark.sql.SparkSession
 import org.apache.spark.{SparkConf, SparkContext}
 import stopdetection.{DetectedPoint, StopDetection}
 import util.Config
@@ -40,22 +41,24 @@ object ClusterStopsJob {
 
     var src = args(0) // need to pass file as arg
 
-    println("Create Spark Context")
     val conf = new SparkConf()
     conf.setAppName(s"DBSCAN")
     conf.set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
     conf.setMaster("local[2]").set("spark.executor.memory", "1g")
-    val sc = new SparkContext(conf)
+    val spark = SparkSession
+      .builder()
+      .config(conf)
+      .getOrCreate()
 
-    println("Parse Input File to StopPoint class instances")
+    val sc = spark.sparkContext
+    import spark.implicits._
+
     val data = sc.textFile(src)
 
     val parsedData = data
       .map(s => s.split(';').toVector)
       // Filter point which cannot be processed by this job
       .filter(filterPoint)
-
-    println("Filter Moves to obtain stops only")
 
     val detectedStops = StopDetection.filter(
       parsedData,
@@ -74,42 +77,36 @@ object ClusterStopsJob {
       .map(assignArea).cache()
 
     // NOTE: Mind that this version of DBScan of spark is only compatible with Berlin!!!
-    val dbscanModel = DBSCAN.train(
+    val clusteredPoints = DBSCAN.train(
       areaBoundStops,
       Config.eps,
       Config.minPoints,
       Config.maxPointsPerPartition
+    ).labeledPoints.filter(_.cluster != 0).cache()
+
+
+//    val graphInput = clusteredPoints
+//        .map(point => (point.id, point.cluster))
+//      .toDF("UserId", "VertexId")
+    val graphInput = clusteredPoints
+        .groupBy(_.cluster).map(pair => (pair._1, pair._2.map(p => p.id).toList))
+      .toDF("VertexId", "UserList")
+
+    val statisticsInput = clusteredPoints
+      .map(point =>
+      (point.cluster, point.x, point.y, point.duration)
+    ).toDF("VertexId", "Latitude", "Longitude", "Duration")
+
+    // getting average Latitude and LOngitude values
+    val statisticsOutput= statisticsInput.groupBy("VertexId").avg("Latitude","Longitude","Duration")
+
+    val resultDf = statisticsOutput.join(graphInput,
+      Seq("VertexId")
     )
 
-    val clusteredData = dbscanModel.labeledPoints
-      .filter(_.cluster != 0)
-      .groupBy(p => p.cluster).values
-      .map(p => getMetadata(p))
+    resultDf.foreach(row => println(row.mkString("|")))
 
-    clusteredData.foreach(stop => println(stop))
-    println("Stopping Spark Context...")
     sc.stop()
-  }
-
-
-  private def getMetadata(points : Iterable[DBSCANLabeledPoint]) :
-  String = {
-    var countVal = 0
-    var Lat = 0.0
-    var Long = 0.0
-    val resultAvg = points.foldLeft(ArrayBuffer[(Double,Double,Int)]()) { (result, c) => {
-      countVal += 1
-      Lat += c.x
-      Long += c.y
-      val temp = ((Lat/countVal) , (Long/countVal) , c.cluster)
-      result += temp
-    }
-    }.last      // end of foldLeft
-    val lat = resultAvg._1
-    val long = resultAvg._2
-    val cluster = resultAvg._3
-    val resultFinal = lat.toString + "," + long.toString + "," + cluster.toString;
-    resultFinal
   }
 
   private def filterPoint(point: Vector[String]): Boolean = {
