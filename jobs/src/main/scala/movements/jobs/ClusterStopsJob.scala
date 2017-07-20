@@ -75,7 +75,7 @@ object ClusterStopsJob {
       .groupBy(a => a._3).values
       .map(p => getMetadata(p))
 
-    clusteredData.foreach(stop => println(stop))
+    clusteredData.collect().foreach(stop => println(stop))
 
     sc.stop()
   }
