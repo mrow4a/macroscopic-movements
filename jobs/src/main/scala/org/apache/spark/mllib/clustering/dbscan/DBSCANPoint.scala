@@ -18,11 +18,14 @@ package org.apache.spark.mllib.clustering.dbscan
 
 case class DBSCANPoint(vector: Vector[String]) {
 
-  def x: Double = vector(0).toDouble // lat
-  def y: Double = vector(1).toDouble // long
+  // 1st and 2nd are reserved
+  def timestamp: Int = getTimestamp(vector(0), vector(1))
   def id: String = vector(2) // user id
-  def timestamp: Int = vector(3).toInt // seconds
-  def duration: Double = vector(4).toDouble // seconds
+  def x: Double = vector(3).toDouble // lat
+  def y: Double = vector(4).toDouble // long
+  def duration: Double = vector(5).toDouble // long
+  def areaID: Int = vector(6).toInt // area id
+  def areaEps: Double = vector(7).toDouble // area id
 
   def distanceSquared(other: DBSCANPoint): Double = {
     val dx = other.x - x
@@ -30,4 +33,11 @@ case class DBSCANPoint(vector: Vector[String]) {
     (dx * dx) + (dy * dy)
   }
 
+  def getTimestamp(dayOfWeek: String, timeOfDay: String) : Int = {
+    val splitTimestamp = timeOfDay.split(':')
+    dayOfWeek.toInt * 86400 +          // convert day number to seconds
+      splitTimestamp(0).toInt * 3600 + // convert hours number to seconds
+      splitTimestamp(1).toInt * 60 +   // convert minutes number to seconds
+      splitTimestamp(2).toInt          // get seconds
+  }
 }

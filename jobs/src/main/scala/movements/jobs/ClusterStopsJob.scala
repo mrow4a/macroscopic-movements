@@ -17,9 +17,10 @@
 
 package movements.jobs
 
-import org.apache.spark.mllib.clustering.dbscan.DBSCAN
+import org.apache.spark.mllib.clustering.dbscan.{DBSCAN, DBSCANLabeledPoint, DBSCANRectangle}
 import org.apache.spark.{SparkConf, SparkContext}
-import stopdetection.StopDetection
+import stopdetection.{DetectedPoint, StopDetection}
+import util.Config
 
 import scala.collection.mutable.ArrayBuffer;
 
@@ -45,34 +46,41 @@ object ClusterStopsJob {
     var dst = args(2) // need to pass dst as arg
 
     sc.hadoopConfiguration.set("fs.s3a.endpoint", endpoint)
+
     val data = sc.textFile(src)
 
-    val parsedData = data.map(s => s.split(';').toVector)
+    val parsedData = data
+      .map(s => s.split(';').toVector)
+      // Filter point which cannot be processed by this job
+      .filter(filterPoint)
 
     val detectedStops = StopDetection.filter(
       parsedData,
-      Parameters.durationsSlidingWindowSize,
-      Parameters.mobilityIndexThreshold,
-      Parameters.stopAccuracyDistance,
-      Parameters.stopAccuracySpeed,
-      Parameters.minimumFlightSpeed,
-      Parameters.minimumFlightDistance,
-      Parameters.minimumAccuracyDistance,
-      Parameters.minimumAccuracyDuration
-    ).collect()
+      Config.durationsSlidingWindowSize,
+      Config.mobilityIndexThreshold,
+      Config.stopAccuracyDistance,
+      Config.stopAccuracySpeed,
+      Config.minimumFlightSpeed,
+      Config.minimumFlightDistance,
+      Config.minimumAccuracyDistance,
+      Config.minimumAccuracyDuration
+    )
 
-    val detectedStopsParal = sc.parallelize(detectedStops)
+    // Transform stops to include information about area they are in and eps of that area
+    val areaBoundStops = detectedStops
+      .map(assignArea).cache()
 
-    val dbScanModel = DBSCAN.train(
-      detectedStopsParal,
-      Parameters.eps,
-      Parameters.minPoints,
-      Parameters.maxPointsPerPartition)
+    // NOTE: Mind that this version of DBScan of spark is only compatible with Berlin!!!
+    val dbscanModel = DBSCAN.train(
+      areaBoundStops,
+      Config.eps,
+      Config.minPoints,
+      Config.maxPointsPerPartition
+    )
 
-    val clusteredData = dbScanModel.labeledPoints
+    val clusteredData = dbscanModel.labeledPoints
       .filter(_.cluster != 0)
-      .map(p => (p.x, p.y, p.cluster, p.duration))
-      .groupBy(a => a._3).values
+      .groupBy(p => p.cluster).values
       .map(p => getMetadata(p))
 
     clusteredData.collect().foreach(stop => println(stop))
@@ -80,21 +88,24 @@ object ClusterStopsJob {
     sc.stop()
   }
 
-  private def getMetadata(data: Iterable[(Double, Double, Int, Double)]): String = {
+
+  private def getMetadata(points : Iterable[DBSCANLabeledPoint]) :
+  String = {
     var countVal = 0.0
     var lat = 0.0
     var lon = 0.0
     var duration = 0.0
 
-    val avg = data.foldLeft(ArrayBuffer[(Double, Double, Int, Double)]()) { (result, c) => {
-      countVal += 1
-      lat += c._1
-      lon += c._2
-      duration += c._4
+    val avg = points.foldLeft(ArrayBuffer[(Double, Double, Int, Double)]()) {
+      (result, c) => {
+        countVal += 1
+        lat += c.x
+        lon += c.y
+        duration += c.duration
 
-      var tmp = (lat / countVal, lon / countVal, c._3, duration)
-      result += tmp
-    }
+        var tmp = (lat / countVal, lon / countVal, c.cluster, duration)
+        result += tmp
+      }
     }.last // end of foldLeft
 
     val avgLat = avg._1
@@ -103,5 +114,63 @@ object ClusterStopsJob {
     val avgDuration = avg._4 / countVal
 
     avgLat.toString + "," + avgLon.toString + "," + cluster.toString + "," + avgDuration.toInt.toString
+  }
+
+  private def filterPoint(point: Vector[String]): Boolean = {
+    try{
+      val outsideArea: DBSCANRectangle =
+        DBSCANRectangle(Config.outsideBerlin.xMin,
+          Config.outsideBerlin.xMax,
+          Config.outsideBerlin.yMin,
+          Config.outsideBerlin.yMax)
+      val parsedPoint = DetectedPoint(point)
+      // Try to obtain most essential values
+      parsedPoint.id
+      parsedPoint.lat
+      parsedPoint.long
+      parsedPoint.timestamp
+      if (outsideArea.contains(parsedPoint.lat, parsedPoint.long)){
+        true
+      } else {
+        false
+      }
+    } catch {
+      case e: Exception => {
+        println("Filtering point: "+ point.toString())
+        false
+      }
+    }
+  }
+
+  private def assignArea(point: Vector[String]): Vector[String] = {
+    val innerArea: DBSCANRectangle = DBSCANRectangle(Config.innerBerlin.xMin,
+      Config.innerBerlin.xMax,
+      Config.innerBerlin.yMin,
+      Config.innerBerlin.yMax)
+
+    val middleArea: DBSCANRectangle =
+      DBSCANRectangle(Config.middleBerlin.xMin,
+        Config.middleBerlin.xMax,
+        Config.middleBerlin.yMin,
+        Config.middleBerlin.yMax)
+
+
+    val parsedPoint = DetectedPoint(point)
+    var newPoint = point.toBuffer
+    // Try to obtain most essential values
+    if (innerArea.contains(parsedPoint.lat, parsedPoint.long)) {
+      newPoint += Config.innerBerlin.id.toString
+      newPoint += Config.innerBerlin.eps.toString
+    }
+    else if (middleArea.contains(parsedPoint.lat, parsedPoint.long)) {
+      newPoint += Config.middleBerlin.id.toString
+      newPoint += Config.middleBerlin.eps.toString
+    }
+    else {
+      newPoint += Config.outsideBerlin.id.toString
+      newPoint += Config.outsideBerlin.eps.toString
+    }
+
+    newPoint.toVector
   }
 }
