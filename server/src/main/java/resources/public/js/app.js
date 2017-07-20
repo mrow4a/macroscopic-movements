@@ -123,7 +123,6 @@ $(document).ready(function () {
             mymap.removeLayer(mapMarkers[i]);
         }
         mapMarkers.length = 0;
-
     }
 
     function getHotspots() {
@@ -146,7 +145,13 @@ $(document).ready(function () {
                     for (var i = 0; i < jsonArray.length; i++) {
                         var obj = jsonArray[i];
                         var marker = L.marker([obj.lat, obj.long],
-                            {id: obj.id, lat: obj.lat, long: obj.long, duration: obj.duration})
+                            {
+                                id: obj.id,
+                                lat: obj.lat, // .toFixed crashes
+                                long: obj.long,
+                                duration: obj.duration,
+                                clusterSize: Math.round(obj.clusterSize)
+                            })
                             .addTo(mymap)
                             .on('click', showStatistics);
                         // .bindPopup("<b>" + obj.id + "</b>" + "</br><b>" + obj.duration + "</b>");
@@ -182,6 +187,7 @@ $(document).ready(function () {
         $('#lat').text(marker.lat);
         $('#long').text(marker.long);
         $('#duration').text(marker.duration);
+        $('#clusterSize').text(marker.clusterSize);
     }
 
 

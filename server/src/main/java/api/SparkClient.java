@@ -73,6 +73,7 @@ public final class SparkClient {
                     item.put("long", parts[1]);
                     item.put("id", parts[2]);
                     item.put("duration", parts[3]);
+                    item.put("clusterSize", parts[4]);
                     array.add(item);
                 } else {
                     System.out.println("Error, wrong number of parameters");

@@ -80,30 +80,37 @@
                     </div>
                     <div>
                         Cluster ID:
+                        <br>
                         <label id="id"></label>
                     </div>
                     <div>
-                        Longitud:
+                        Longitude:
+                        <br>
                         <label id="long"></label>
                     </div>
                     <div>
-                        Latitud:
+                        Latitude:
+                        <br>
                         <label id="lat"></label>
                     </div>
                     <div>
-                        Average stay duration:
+                        Average stay duration (sec):
+                        <br>
                         <label id="duration"></label>
                     </div>
                     <div>
                         In degree:
+                        <br>
                         <label id="inDeg"></label>
                     </div>
                     <div>
                         Out degree:
+                        <br>
                         <label id="outDeg"></label>
                     </div>
                     <div>
                         Cluster size:
+                        <br>
                         <label id="clusterSize"></label>
                     </div>
                 </div>
