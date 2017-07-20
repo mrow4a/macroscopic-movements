@@ -68,11 +68,14 @@ public final class SparkClient {
             for (String line : lines) {
                 JSONObject item = new JSONObject();
                 String[] parts = line.split(",");
-                if (parts.length == 3) {
+                if (parts.length > 3) {
                     item.put("lat", parts[0]);
                     item.put("long", parts[1]);
                     item.put("id", parts[2]);
+                    item.put("duration", parts[3]);
                     array.add(item);
+                } else {
+                    println("Error, wrong number of parameters");
                 }
             }
             return array.toString();

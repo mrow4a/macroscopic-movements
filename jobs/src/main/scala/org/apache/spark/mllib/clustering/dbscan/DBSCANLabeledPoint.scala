@@ -39,7 +39,7 @@ class DBSCANLabeledPoint(vector: Vector[String]) extends DBSCANPoint(vector) {
   var visited = false
 
   override def toString(): String = {
-    s"$vector,$cluster,$flag"
+    s"$vector,$cluster,$flag,$duration"
   }
 
 }

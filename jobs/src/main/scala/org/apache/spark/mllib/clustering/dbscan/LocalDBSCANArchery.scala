@@ -16,18 +16,14 @@
  */
 package org.apache.spark.mllib.clustering.dbscan
 
-import scala.collection.mutable.Queue
-
+import archery.{Box, Entry, Point, RTree}
 import org.apache.spark.mllib.clustering.dbscan.DBSCANLabeledPoint.Flag
 
-import archery.Box
-import archery.Entry
-import archery.Point
-import archery.RTree
+import scala.collection.mutable.Queue
 
 /**
- * An implementation of DBSCAN using an R-Tree to improve its running time
- */
+  * An implementation of DBSCAN using an R-Tree to improve its running time
+  */
 class LocalDBSCANArchery(eps: Double, minPoints: Int) {
 
   val minDistanceSquared = eps * eps
@@ -66,10 +62,10 @@ class LocalDBSCANArchery(eps: Double, minPoints: Int) {
   }
 
   private def expandCluster(
-    point: DBSCANLabeledPoint,
-    neighbors: Seq[Entry[DBSCANLabeledPoint]],
-    tree: RTree[DBSCANLabeledPoint],
-    cluster: Int): Unit = {
+                             point: DBSCANLabeledPoint,
+                             neighbors: Seq[Entry[DBSCANLabeledPoint]],
+                             tree: RTree[DBSCANLabeledPoint],
+                             cluster: Int): Unit = {
 
     point.flag = Flag.Core
     point.cluster = cluster

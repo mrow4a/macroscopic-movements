@@ -20,6 +20,7 @@ package movements.jobs
 import org.apache.spark.mllib.clustering.dbscan.DBSCAN
 import org.apache.spark.{SparkConf, SparkContext}
 import stopdetection.StopDetection
+
 import scala.collection.mutable.ArrayBuffer;
 
 object ClusterStopsJob {
@@ -70,8 +71,8 @@ object ClusterStopsJob {
 
     val clusteredData = dbScanModel.labeledPoints
       .filter(_.cluster != 0)
-      .map(p => (p.x, p.y, p.cluster))
-      .groupBy(a=> (a._3)).values
+      .map(p => (p.x, p.y, p.cluster, p.duration))
+      .groupBy(a => a._3).values
       .map(p => getMetadata(p))
 
     clusteredData.foreach(stop => println(stop))
@@ -79,25 +80,28 @@ object ClusterStopsJob {
     sc.stop()
   }
 
-  private def getMetadata(data : Iterable[(Double,Double,Int)]) :
-  String = {
-    var countVal = 0
-    var Lat = 0.0
-    var Long = 0.0
-    val resultAvg = data.foldLeft(ArrayBuffer[(Double,Double,Int)]()) { (result, c) => {
+  private def getMetadata(data: Iterable[(Double, Double, Int, Double)]): String = {
+    var countVal = 0.0
+    var lat = 0.0
+    var lon = 0.0
+    var duration = 0.0
+
+    val avg = data.foldLeft(ArrayBuffer[(Double, Double, Int, Double)]()) { (result, c) => {
       countVal += 1
-      Lat += c._1
-      Long += c._2
-      val temp = ((Lat/countVal) , (Long/countVal) , c._3)
-      result += temp
+      lat += c._1
+      lon += c._2
+      duration += c._4
+
+      var tmp = (lat / countVal, lon / countVal, c._3, duration)
+      result += tmp
     }
-    }.last      // end of foldLeft
-    val lat = resultAvg._1
-    val long = resultAvg._2
-    val cluster = resultAvg._3
-    val resultFinal = lat.toString + "," + long.toString + "," + cluster.toString;
-    resultFinal
+    }.last // end of foldLeft
+
+    val avgLat = avg._1
+    val avgLon = avg._2
+    val cluster = avg._3
+    val avgDuration = avg._4 / countVal
+
+    avgLat.toString + "," + avgLon.toString + "," + cluster.toString + "," + avgDuration.toInt.toString
   }
-
-
 }

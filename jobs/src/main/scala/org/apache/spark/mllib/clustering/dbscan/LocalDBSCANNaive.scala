@@ -16,9 +16,9 @@
  */
 package org.apache.spark.mllib.clustering.dbscan
 
-import scala.collection.mutable.Queue
-
 import org.apache.spark.mllib.clustering.dbscan.DBSCANLabeledPoint.Flag
+
+import scala.collection.mutable.Queue
 
 /**
  * A naive implementation of DBSCAN. It has O(n2) complexity
@@ -33,7 +33,6 @@ class LocalDBSCANNaive(eps: Double, minPoints: Int) {
   def samplePoint = Array(new DBSCANLabeledPoint(Array("0.0", "0.0").toVector))
 
   def fit(points: Iterable[DBSCANPoint]): Iterable[DBSCANLabeledPoint] = {
-
     val labeledPoints = points.map { new DBSCANLabeledPoint(_) }.toArray
 
     val totalClusters =
