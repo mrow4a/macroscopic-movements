@@ -75,7 +75,7 @@ public final class SparkClient {
                     item.put("duration", parts[3]);
                     array.add(item);
                 } else {
-                    println("Error, wrong number of parameters");
+                    System.out.println("Error, wrong number of parameters");
                 }
             }
             return array.toString();

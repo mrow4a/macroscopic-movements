@@ -71,7 +71,7 @@ public class ServerMain {
 
     private static String renderMap(Request req) {
         Map<String, Object> model = new HashMap<>();
-        return renderTemplate("index.vm", model);
+        return renderTemplate("public/index.vm", model);
     }
 
     private static String renderTemplate(String template, Map model) {

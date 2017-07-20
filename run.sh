@@ -14,4 +14,9 @@ docker run -ti --rm -v $DIR/jobs:/code -v "$HOME/.ivy2":/root/.ivy2 iflavoursbv/
 
 # Create docker spark-client
 docker build -t "movements/spark-client" $DIR
+
+echo
+echo "# Web server listening on http://localhost:9999"
+echo
+
 docker run --name spark-client -p 9999:80 "movements/spark-client"
