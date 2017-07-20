@@ -205,17 +205,14 @@ $(document).ready(function () {
 
         marker.setIcon(clickedIcon);
         var options = marker.options;
-        //mymap.fitBounds(marker.getBounds());
-
-
-
+        
+        // mymap.fitBounds(marker.getBounds());
         // if(marker !== undefined) {
         //     marker.options.icon = marker.options.icon;
         // }
         // marker.setIcon(yellowIcon);
         // marker.addTo(mymap);
-
-       // var marker2 = L.marker([options.long, options.lat]).addTo(mymap);
+        // var marker2 = L.marker([options.long, options.lat]).addTo(mymap);
 
         $('#id').text(options.id);
         $('#lat').text(options.lat);
@@ -233,12 +230,12 @@ $(document).ready(function () {
     var polyline;
 
     function createPolylines(marker1, marker2) {
-
-
         var latlngs = [];
+        
         //for(var i = 0; i < mapMarkers.length; i++) {
         //    latlngs[i] = mapMarkers[i].getLatLng();
        // }
+        
         latlngs.push(marker1.getLatLng());
         latlngs.push(marker2.getLatLng());
 
