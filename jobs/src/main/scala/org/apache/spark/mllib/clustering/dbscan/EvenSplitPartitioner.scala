@@ -35,7 +35,7 @@ object EvenSplitPartitioner {
 
 class EvenSplitPartitioner(
   maxPointsPerPartition: Long,
-  minimumRectangleSize: Double) {
+  minimumRectangleSize: Double){
 
   type RectangleWithCount = (DBSCANRectangle, Int)
 
