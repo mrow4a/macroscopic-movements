@@ -230,9 +230,6 @@ $(document).ready(function () {
         // marker.addTo(mymap);
         // var marker2 = L.marker([options.long, options.lat]).addTo(mymap);
 
-
-
-
         $('#id').text(options.id);
         $('#lat').text(options.lat);
         $('#long').text(options.long);
@@ -242,31 +239,33 @@ $(document).ready(function () {
         $('#inDeg').text(options.inDegrees);
         $('#outDeg').text(options.outDegrees);
 
-        createPolylines(marker);
+        removePolylines();
+        createPolylines(marker, marker.options.neighborsIn, 'blue');
+        createPolylines(marker, marker.options.neighborsOut, 'red');
 
         currMarker = marker;
     }
 
-    var polyline;
+    var polylines = [];
 
-    function createPolylines(marker) {
-        mymap.removeLayer(polyline);
+    function removePolylines() {
+         if(polylines.length > 0) {
+            for(var i = 0; i < polylines.length; i++) {
+                 mymap.removeLayer(polylines[i]);
+            }
+            //polylines.length = 0;
+            polylines = [];
+        }
+    }
+
+    function createPolylines(marker, neighbors, lineColor) {       
         console.log("creaing polyline for marker " + marker.getLatLng());
 
-        for(var i = 0; i < marker.options.neighborsOut.length; i++) {
-            var id = marker.options.neighborsOut[i];
-            polyline = L.polyline([hashmapMarkers[id], marker.getLatLng()], {color: 'red'}).addTo(mymap);
+        for(var i = 0; i <  neighbors.length; i++) {
+            var id = neighbors[i];
+            polylines.push(L.polyline([hashmapMarkers[id], marker.getLatLng()], {color: lineColor}).addTo(mymap));
         }
-        for(var i = 0; i < marker.options.neighborsIn.length; i++) {
-            var id = marker.options.neighborsIn[i];
-            polyline = L.polyline([hashmapMarkers[id], marker.getLatLng()], {color: 'blue'}).addTo(mymap);
-        }
-
-        //latlngs.push(marker.getLatLng());
-        //latlngs.push(marker2.getLatLng());
-
         //   mymap.fitBounds(polyline.getBounds());
-
     }
 
     $('#spark_run').click(function () {
