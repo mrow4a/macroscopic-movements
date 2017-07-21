@@ -1,5 +1,6 @@
+#### Macroscopic movements
 
-
+![alt text](resources/img/ui.png)
 
 #### PROJECT STRUCTURE:
 
@@ -44,10 +45,19 @@
 
 Project consists of three parts:
 
+##### Inputfile format
+
+```
+dayofweek ; time     ; id     ; lat    ; lon
+0         ; 04:27:10 ; userID ; 48.348 ; 8.606
+```
+
 ##### Stop Detection Algorithm
 
-Stop Detection algorithm which given timestamp, latitude and longitude series is able
-to determine which of detected points high be possible stay at the location.
+Stop Detection algorithm which given timestamp, latitude and longitude series 
+identifies points which are possible stops 
+
+(for more info look in documentation)
 
 ##### DBSCAN on Spark
 
@@ -58,18 +68,21 @@ on top of [Apache Spark](http://spark.apache.org/). It is loosely based on the p
 There is also a [visual guide](http://www.irvingc.com/visualizing-dbscan) that explains how the DBSCan algorithm works.
 
 DBScan is used to cluster stops and detect most visited areas in which most of the locations been found
-
+ 
+(for more info look in documentation)
 ##### Graphx Graph Processing Engine
 
-TODO:
+Uses GraphX to compute PageRank, InDegrees, OutDegrees, NeighborsIn, NeighborsOut
+
+(for more info look in documentation)
 
 ### HOW TO RUN:
 
-All project is dockerised, and the only requirement is Docker. Two scripts has to be executed:
+As the project is build in conteneraised, the only requirement is Docker. Two scripts has to be executed:
 
-1. `./preparedockers.sh` 
+1. `./preparedockers.sh` - will mock Spark and S3
 
-2. `./run.sh`
+2. `./run.sh` - will build docker image and run it
 
 ####1. Spawn dockerised Spark Cluster and Minio S3:
 
@@ -99,20 +112,18 @@ The server is now running.
 
 Access the web interface (`localhost:9999`) and point the input file to the s3 and the spark from the preparedocker script.
 
-![alt text](resources/img/ui.png)
-
 Fill out the froms with s3 url, input file, and spark master adress. 
 
 Then run 'setup' button followed by 'run' to run the job on the input file.
 
 #### License
 
-DBSCAN on Spark is available under the Apache 2.0 license. 
-See the [LICENSE](LICENSE) file for details.
+DBSCAN on Spark is available under the Apache 2.0 license.
 
 
 #### Credits
 
-Stop Detection algorithm maintained by Piotr Mrowczynski, Gabriel Vilen and Ananya Chowdhury 
+Stop Detection algorithm, modified DBSCan and Graph creation maintained by Piotr Mrowczynski, Gabriel Vilen and Ananya Chowdhury 
+
 DBSCAN on Spark is maintained by Irving Cordova (irving@irvingc.com).
 
