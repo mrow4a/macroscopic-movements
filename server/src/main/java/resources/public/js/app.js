@@ -159,8 +159,8 @@ $(document).ready(function () {
                                 neighborsOut : obj.neighborsout,
                                 outDegrees: obj.outdegrees, // TODO add
                                 inDegrees: obj.indegrees,
-                                pagerank: obj.pagerank,
-                                clusterSize: Math.round(obj.clusterSize)
+                                pagerank: obj.pagerank
+                                // clusterSize: Math.round(obj.clusterSize)
                             })
                             .addTo(mymap)
                             .on('click', showStatistics);
@@ -211,6 +211,7 @@ $(document).ready(function () {
     });
     var currMarker;
 
+    // TODO: cannot read leaflet_id of undefined
     function showStatistics(e) {
         console.log(e);
         var marker = e.target;
@@ -229,11 +230,17 @@ $(document).ready(function () {
         // marker.addTo(mymap);
         // var marker2 = L.marker([options.long, options.lat]).addTo(mymap);
 
+
+
+
         $('#id').text(options.id);
         $('#lat').text(options.lat);
         $('#long').text(options.long);
         $('#duration').text(options.duration);
-        $('#clusterSize').text(options.clusterSize);
+        //$('#clusterSize').text(options.clusterSize);
+        $('#pagerank').text(options.pagerank);
+        $('#inDeg').text(options.inDegrees);
+        $('#outDeg').text(options.outDegrees);
 
         createPolylines(marker);
 
@@ -243,9 +250,16 @@ $(document).ready(function () {
     var polyline;
 
     function createPolylines(marker) {
+        mymap.removeLayer(polyline);
+        console.log("creaing polyline for marker " + marker.getLatLng());
+
         for(var i = 0; i < marker.options.neighborsOut.length; i++) {
             var id = marker.options.neighborsOut[i];
             polyline = L.polyline([hashmapMarkers[id], marker.getLatLng()], {color: 'red'}).addTo(mymap);
+        }
+        for(var i = 0; i < marker.options.neighborsIn.length; i++) {
+            var id = marker.options.neighborsIn[i];
+            polyline = L.polyline([hashmapMarkers[id], marker.getLatLng()], {color: 'blue'}).addTo(mymap);
         }
 
         //latlngs.push(marker.getLatLng());
