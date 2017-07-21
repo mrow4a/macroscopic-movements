@@ -104,14 +104,14 @@
                         <label id="duration"></label>
                     </div>
                     <div>
-                        In degree (blue lines):
+                        In degree (lines):
                         <br>
-                        <label id="inDeg"></label>
+                        <label id="inDeg" style="color:blue" > </label>
                     </div>
                     <div>
-                        Out degree (red lines):
+                        Out degree (lines):
                         <br>
-                        <label id="outDeg"></label>
+                        <label id="outDeg" style="color:red"></label>
                     </div>
                     <div>
                         Cluster size:

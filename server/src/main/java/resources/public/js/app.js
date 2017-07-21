@@ -9,7 +9,7 @@ $(document).ready(function () {
         'Imagery © <a href="http://mapbox.com">Mapbox</a>',
         id: 'mapbox.streets'
     }).addTo(mymap);
-    var popup = L.popup();
+    //var popup = L.popup();
 
     var spark_input = "spark_input";
     var file_input = "file_input";
@@ -164,17 +164,15 @@ $(document).ready(function () {
                             })
                             .addTo(mymap)
                             .on('click', showStatistics);
-                        // .bindPopup("<b>" + obj.id + "</b>" + "</br><b>" + obj.duration + "</b>");
 
                         hashmapMarkers[obj.id] = [obj.lat,obj.long];
 
                         mapMarkers.push(marker);
                     }
-                    defaultIcon = marker.getIcon();
 
                 } catch (e) {
                     console.log(e);
-                    $(read_run_label).html(toRed("Received wrong content"));
+                    $(read_run_label).html(toRed("Received wrong content (see web console output)"));
                 }
             },
             error: function (xhr) { // if error occured
@@ -211,7 +209,6 @@ $(document).ready(function () {
     });
     var currMarker;
 
-    // TODO: cannot read leaflet_id of undefined
     function showStatistics(e) {
         console.log(e);
         var marker = e.target;
@@ -223,12 +220,6 @@ $(document).ready(function () {
         var options = marker.options;
 
         // mymap.fitBounds(marker.getBounds());
-        // if(marker !== undefined) {
-        //     marker.options.icon = marker.options.icon;
-        // }
-        // marker.setIcon(yellowIcon);
-        // marker.addTo(mymap);
-        // var marker2 = L.marker([options.long, options.lat]).addTo(mymap);
 
         $('#id').text(options.id);
         $('#lat').text(options.lat);
@@ -253,7 +244,6 @@ $(document).ready(function () {
             for(var i = 0; i < polylines.length; i++) {
                  mymap.removeLayer(polylines[i]);
             }
-            //polylines.length = 0;
             polylines = [];
         }
     }
