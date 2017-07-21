@@ -61,6 +61,9 @@
                         <button class="btn btn-default" id="read_run"> Run</button>
                         <label id="read_run_label" for="read_run"><span style="color:green;"></span></label>
                     </div>
+                    <div id="read_div2" class="btn2">
+                        <button class="btn btn-default" id="exportToCSVButton" >Export to CSV</button>
+                    </div>
 
                 </div>
 
@@ -73,8 +76,16 @@
             <div class="container-fluid">
                 <div style="padding:10px;" class="row justify-content-md-center">
                     <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Menu</a>
-                    <a class="btn btn-default" id="pagerank-toggle">Top 5 PageRank</a>
                 </div>
+                <div style="padding:10px;" class="row justify-content-md-center">
+                    <div class="dropdown" id="pageranktopdropdown">
+                        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Top 10 PageRank
+                            <span class="caret"></span></button>
+                        <ul class="dropdown-menu" id="pageranktop">
+                        </ul>
+                    </div>
+                </div>
+
                 <div id="statbar" class="panel panel-primary">
                     <div>
                         <h4>Statistics about stop:</h4>
@@ -107,12 +118,12 @@
                     <div>
                         In degree (lines):
                         <br>
-                        <label id="inDeg" style="color:blue" > </label>
+                        <label id="inDeg" style="color:red" > </label>
                     </div>
                     <div>
                         Out degree (lines):
                         <br>
-                        <label id="outDeg" style="color:red"></label>
+                        <label id="outDeg" style="color:blue"></label>
                     </div>
                     <div>
                         Cluster size:

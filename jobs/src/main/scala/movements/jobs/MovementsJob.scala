@@ -38,7 +38,6 @@ object MovementsJob {
       .builder()
       .config(conf)
       .getOrCreate()
-    val sc = spark.sparkContext
 
     if (args.length < 2) {
       throw new Exception("No s3 endpoint or s3a:// path given. "
@@ -46,13 +45,12 @@ object MovementsJob {
     }
     var endpoint = args(0) // need to pass endpoint as arg
     var src = args(1) // need to pass file as arg
-    var dst = args(2) // need to pass dst as arg
 
-    sc.hadoopConfiguration.set("fs.s3a.endpoint", endpoint)
+    spark.sparkContext.hadoopConfiguration.set("fs.s3a.endpoint", endpoint)
 
     import spark.implicits._
 
-    val data = sc.textFile(src)
+    val data = spark.sparkContext.textFile(src)
 
     /*
      STOP DETECTION
@@ -123,9 +121,11 @@ object MovementsJob {
     val resultDf = basicDF
       .join(countDF, Seq("ClusterID"))
       .join(createGraphJobDataframes, Seq("ClusterID"))
+      .map(row => row.mkString("|"))
 
-    resultDf.collect().foreach(row => println(row.mkString("|")))
-    sc.stop()
+
+    resultDf.collect().foreach(row => println(row))
+
     spark.stop()
   }
 

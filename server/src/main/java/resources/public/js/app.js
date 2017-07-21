@@ -9,7 +9,7 @@ $(document).ready(function () {
         'Imagery © <a href="http://mapbox.com">Mapbox</a>',
         id: 'mapbox.streets'
     }).addTo(mymap);
-    //var popup = L.popup();
+    // var popup = L.popup();
 
     var spark_input = "spark_input";
     var file_input = "file_input";
@@ -42,14 +42,16 @@ $(document).ready(function () {
         }
     }
 
-    function onMapClick(e) {
-        popup
-            .setLatLng(e.latlng)
-            .setContent(e.latlng.toString())
-            .openOn(mymap);
-    }
+    // function onMapClick(e) {
+    //     popup
+    //         .setLatLng(e.latlng)
+    //         .setContent(e.latlng.toString())
+    //         .openOn(mymap);
+    // }
 
-    mymap.on('click', onMapClick);
+
+    //
+    // mymap.on('click', onMapClick);
 
     function block(text) {
         var blockMeta = {
@@ -118,6 +120,78 @@ $(document).ready(function () {
 
     var mapMarkers = [];
     var hashmapMarkers = {};
+    var hashmapPageRank = [];
+
+    $("#pageranktopdropdown").on("show.bs.dropdown", function(event){
+        var list = document.getElementById("pageranktop");
+        while (list.firstChild) {
+            list.removeChild(list.firstChild);
+        }
+
+        var sortedPageRanks = hashmapPageRank.sort();
+        var endLength = Math.max(0,sortedPageRanks.length-10);
+        var startLength = sortedPageRanks.length-1;
+        for (var i = startLength; i >= endLength; i--){
+            var opt = sortedPageRanks[i];
+
+            var li = document.createElement("li");
+            li.addEventListener('click', function(e) {
+                var id = e.target.innerHTML.split("-")[1]
+
+                for (var i = 0; i < mapMarkers.length; i++){
+                    if (mapMarkers[i].options.id == id) {
+                        var markerBounds = L.latLngBounds([ mapMarkers[i].getLatLng() ]);
+                        mymap.fitBounds(markerBounds, {
+                            padding: [50, 50],
+                            maxZoom: 18,
+                            animate: true,
+                            pan: {
+                                duration: 1
+                            }
+                        });
+                        break;
+                    }
+                }
+            });
+
+
+            var text = document.createTextNode(opt);
+            li.appendChild(text);
+            list.appendChild(li);
+        }
+    });
+
+    function destroyClickedElement(event)
+    {
+        document.body.removeChild(event.target);
+    }
+
+    function exportToCsv() {
+        var fileContents = "";
+        for (var i = 0; i < mapMarkers.length; i++){
+            var options = mapMarkers[i].options;
+            fileContents += options.id+"|"+options.lat+"|"+options.long
+                +"|"+options.duration+"|"+options.count+"|"+options.neighborsIn.join(",")
+                +"|"+options.neighborsOut.join(",")+"|"+options.outDegrees+"|"+options.inDegrees+"|"+options.pagerank+"\n";
+        }
+
+        var textToSaveAsBlob = new Blob([fileContents], {type:"text/plain"});
+        var textToSaveAsURL = window.URL.createObjectURL(textToSaveAsBlob);
+        var fileNameToSaveAs = "macromovements-"+ Math.random()+".result";
+
+        var downloadLink = document.createElement("a");
+        downloadLink.download = fileNameToSaveAs;
+        downloadLink.innerHTML = "Download File";
+        downloadLink.href = textToSaveAsURL;
+        downloadLink.onclick = destroyClickedElement;
+        downloadLink.style.display = "none";
+        document.body.appendChild(downloadLink);
+
+        downloadLink.click();
+    }
+
+    var button = document.getElementById('exportToCSVButton');
+    button.addEventListener('click', exportToCsv);
 
     function removeMarkers() {
         for (var i = 0; i < mapMarkers.length; i++) {
@@ -145,6 +219,7 @@ $(document).ready(function () {
                     $(read_run_label).html(toGreen("Job done!"));
 
                     hashmapMarkers = {};
+                    hashmapPageRank = [];
                     removeMarkers();
                     for (var i = 0; i < jsonArray.length; i++) {
                         var obj = jsonArray[i];
@@ -159,11 +234,14 @@ $(document).ready(function () {
                                 neighborsOut : obj.neighborsout,
                                 outDegrees: obj.outdegrees, // TODO add
                                 inDegrees: obj.indegrees,
-                                pagerank: obj.pagerank
-                                // clusterSize: Math.round(obj.clusterSize)
+                                pagerank: obj.pagerank,
+                                count: obj.count
                             })
                             .addTo(mymap)
                             .on('click', showStatistics);
+
+                        var id = obj.pagerank+"-"+obj.id;
+                        hashmapPageRank.push(id);
 
                         hashmapMarkers[obj.id] = [obj.lat,obj.long];
 
@@ -225,7 +303,7 @@ $(document).ready(function () {
         $('#lat').text(options.lat);
         $('#long').text(options.long);
         $('#duration').text(options.duration);
-        //$('#clusterSize').text(options.clusterSize);
+        $('#clusterSize').text(options.count);
         $('#pagerank').text(options.pagerank);
         $('#inDeg').text(options.inDegrees);
         $('#outDeg').text(options.outDegrees);

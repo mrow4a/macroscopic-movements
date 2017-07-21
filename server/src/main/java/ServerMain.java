@@ -1,12 +1,8 @@
-import com.spotify.docker.client.exceptions.DockerException;
 import spark.*;
 import spark.template.velocity.*;
 
 import java.util.*;
 import static spark.Spark.*;
-import java.io.File;
-import java.nio.file.Paths;
-import movements.docker.*;
 import api.ApiHandler;
 
 /**
@@ -34,9 +30,14 @@ public class ServerMain {
         get("/api/get_hotspots", (req, res) -> {
             QueryParamsMap map = req.queryMap();
             String endpoint = map.get("endpoint").value().replaceAll("\\s+","");
-            String filePath = map.get("file").value().replaceAll("\\s+","");
             String sparkMaster = map.get("spark").value().replaceAll("\\s+","");
-            return ApiHandler.get_hotspots(endpoint, filePath, sparkMaster);
+            String srcfilePath = map.get("file").value().replaceAll("\\s+","");
+            if (srcfilePath.endsWith(".result")) {
+                return ApiHandler.load_hotspots(endpoint, srcfilePath, sparkMaster);
+            } else {
+                return ApiHandler.get_hotspots(endpoint, srcfilePath, sparkMaster);
+            }
+
         });
 
     /*

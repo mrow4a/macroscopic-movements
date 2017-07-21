@@ -45,14 +45,14 @@ public final class SparkClient {
         throw new Exception(errorStreamReaderRunnable.getOutput());
     }
 
-    public static String get_hotspots(String endpoint, String filePath, String sparkMaster) throws Exception {
+    public static String get_hotspots(String endpoint, String srcfilePath, String sparkMaster) throws Exception {
         Process spark = new SparkLauncher()
                 .setAppResource(jarLocation)
                 .setMainClass("movements.jobs.MovementsJob")
                 .setMaster(sparkMaster)
                 .setAppName(appName)
                 .addAppArgs(endpoint)
-                .addAppArgs(filePath)
+                .addAppArgs(srcfilePath)
                 .addAppArgs(sparkMaster)
                 .launch();
 
@@ -68,49 +68,82 @@ public final class SparkClient {
 
         if (spark.exitValue() == 0) {
             String output = inputStreamReaderRunnable.getOutput();
-            JSONArray array = new JSONArray();
             String[] lines = output.split("\n");
-            for (String line : lines) {
-                JSONObject item = new JSONObject();
-                String[] parts = line.split("\\|");
-//              |-- ClusterID: integer (nullable = true)
-//              |-- avg(Latitude): double (nullable = true)
-//              |-- avg(Longitude): double (nullable = true)
-//              |-- avg(Duration): double (nullable = true)
-//              |-- PageRank: double (nullable = true)
-//              |-- Indegrees: integer (nullable = true)
-//              |-- Outdegrees: integer (nullable = true)
-//              |-- NeighborsIN: [.., ..](nullable = true)
-//              |-- NeighborsOUT: [.., ..] (nullable = true)
-                if (parts.length == 10) {
-                    // Main parameters
-                    item.put("id", parts[0]);
-                    item.put("lat", parts[1]);
-                    item.put("long", parts[2]);
-                    item.put("duration", parts[3]);
-                    item.put("count", parts[4]);
-
-                    // Neighbors
-                    JSONArray neighborsin = JSONArray.fromObject("["+parts[5]+"]");
-                    JSONArray neighborsout = JSONArray.fromObject("["+parts[6]+"]");
-                    item.put("neighborsin", neighborsin);
-                    item.put("neighborsout", neighborsout);
-
-                    // InDegrees, OutDegrees and PageRank
-                    item.put("indegrees", parts[7]);
-                    item.put("outdegrees", parts[8]);
-                    item.put("pagerank", parts[9]);
-
-                    array.add(item);
-                } else {
-                    System.out.println("Error, wrong number of parameters in: " + line);
-                }
-            }
-            return array.toString();
+            return parseHotspots(lines);
         }
         throw new Exception(errorStreamReaderRunnable.getOutput());
     }
 
+    public static String load_hotspots(String endpoint, String srcfilePath, String sparkMaster) throws Exception {
+        Process spark = new SparkLauncher()
+                .setAppResource(jarLocation)
+                .setMainClass("movements.jobs.LoadJob")
+                .setMaster(sparkMaster)
+                .setAppName(appName)
+                .addAppArgs(endpoint)
+                .addAppArgs(srcfilePath)
+                .addAppArgs(sparkMaster)
+                .launch();
+
+        InputStreamReaderRunnable inputStreamReaderRunnable = new InputStreamReaderRunnable(spark.getInputStream(), "input");
+        Thread inputThread = new Thread(inputStreamReaderRunnable, "LogStreamReader input");
+        inputThread.start();
+
+        InputStreamReaderRunnable errorStreamReaderRunnable = new InputStreamReaderRunnable(spark.getErrorStream(), "error");
+        Thread errorThread = new Thread(errorStreamReaderRunnable, "LogStreamReader error");
+        errorThread.start();
+
+        spark.waitFor();
+
+        if (spark.exitValue() == 0) {
+            String output = inputStreamReaderRunnable.getOutput();
+            String[] lines = output.split("\n");
+            return parseHotspots(lines);
+        }
+        throw new Exception(errorStreamReaderRunnable.getOutput());
+    }
+
+    private static String parseHotspots(String[] lines) {
+        JSONArray array = new JSONArray();
+        for (String line : lines) {
+            JSONObject item = new JSONObject();
+            String[] parts = line.split("\\|");
+//              |-- ClusterID: integer (nullable = true)
+//              |-- avg(Latitude): double (nullable = true)
+//              |-- avg(Longitude): double (nullable = true)
+//              |-- avg(Duration): double (nullable = true)
+//              |-- count: double (nullable = true)
+//              |-- NeighborsIN: [.., ..](nullable = true)
+//              |-- NeighborsOUT: [.., ..] (nullable = true)
+//              |-- Indegrees: integer (nullable = true)
+//              |-- Outdegrees: integer (nullable = true)
+//              |-- PageRank: double (nullable = true)
+            if (parts.length == 10) {
+                // Main parameters
+                item.put("id", parts[0]);
+                item.put("lat", parts[1]);
+                item.put("long", parts[2]);
+                item.put("duration", parts[3]);
+                item.put("count", parts[4]);
+
+                // Neighbors
+                JSONArray neighborsin = JSONArray.fromObject("["+parts[5]+"]");
+                JSONArray neighborsout = JSONArray.fromObject("["+parts[6]+"]");
+                item.put("neighborsin", neighborsin);
+                item.put("neighborsout", neighborsout);
+
+                // InDegrees, OutDegrees and PageRank
+                item.put("indegrees", parts[7]);
+                item.put("outdegrees", parts[8]);
+                item.put("pagerank", parts[9]);
+
+                array.add(item);
+            } else {
+                System.out.println("Error, wrong number of parameters in: " + line);
+            }
+        }
+        return array.toString();
+    }
 
     /*
      * The below methods were used to handle Docker clients and are now depreciated

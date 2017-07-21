@@ -14,15 +14,23 @@ public final class ApiHandler {
         }
     }
 
-    public static String get_hotspots(String endpoint, String filePath, String sparkMaster) {
+    public static String get_hotspots(String endpoint, String srcfilePath, String sparkMaster) {
         try {
-            return SparkClient.get_hotspots(endpoint, filePath, sparkMaster);
+            return SparkClient.get_hotspots(endpoint, srcfilePath, sparkMaster);
         }
         catch (Exception e){
             return "Error: "+e;
         }
     }
 
+    public static String load_hotspots(String endpoint, String srcfilePath, String sparkMaster) {
+        try {
+            return SparkClient.load_hotspots(endpoint, srcfilePath, sparkMaster);
+        }
+        catch (Exception e){
+            return "Error: "+e;
+        }
+    }
     /*
      * The below methods were used to handle Docker clients and are now depreciated
      */
