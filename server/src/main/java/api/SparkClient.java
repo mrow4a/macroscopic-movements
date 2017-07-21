@@ -82,23 +82,24 @@ public final class SparkClient {
 //              |-- Outdegrees: integer (nullable = true)
 //              |-- NeighborsIN: [.., ..](nullable = true)
 //              |-- NeighborsOUT: [.., ..] (nullable = true)
-                if (parts.length == 9) {
+                if (parts.length == 10) {
                     // Main parameters
                     item.put("id", parts[0]);
                     item.put("lat", parts[1]);
                     item.put("long", parts[2]);
                     item.put("duration", parts[3]);
+                    item.put("count", parts[4]);
 
                     // Neighbors
-                    JSONArray neighborsin = JSONArray.fromObject("["+parts[4]+"]");
-                    JSONArray neighborsout = JSONArray.fromObject("["+parts[5]+"]");
+                    JSONArray neighborsin = JSONArray.fromObject("["+parts[5]+"]");
+                    JSONArray neighborsout = JSONArray.fromObject("["+parts[6]+"]");
                     item.put("neighborsin", neighborsin);
                     item.put("neighborsout", neighborsout);
 
                     // InDegrees, OutDegrees and PageRank
-                    item.put("indegrees", parts[6]);
-                    item.put("outdegrees", parts[7]);
-                    item.put("pagerank", parts[8]);
+                    item.put("indegrees", parts[7]);
+                    item.put("outdegrees", parts[8]);
+                    item.put("pagerank", parts[9]);
 
                     array.add(item);
                 } else {

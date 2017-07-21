@@ -73,6 +73,7 @@
             <div class="container-fluid">
                 <div style="padding:10px;" class="row justify-content-md-center">
                     <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Menu</a>
+                    <a class="btn btn-default" id="pagerank-toggle">Top 5 PageRank</a>
                 </div>
                 <div id="statbar" class="panel panel-primary">
                     <div>

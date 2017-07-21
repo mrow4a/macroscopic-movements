@@ -172,7 +172,7 @@ $(document).ready(function () {
 
                 } catch (e) {
                     console.log(e);
-                    $(read_run_label).html(toRed("Received wrong content (see web console output)"));
+                    $(read_run_label).html(toRed("Received wrong content (see web console in browser)"));
                 }
             },
             error: function (xhr) { // if error occured

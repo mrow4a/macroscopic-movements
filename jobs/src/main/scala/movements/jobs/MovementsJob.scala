@@ -106,19 +106,27 @@ object MovementsJob {
     val createGraphJob = new CreateGraph()
     val createGraphJobDataframes = createGraphJob.graphOperations(graphInput, spark)
 
-    val statisticsOutput = clusteredPoints
+    val basicDF = clusteredPoints
       .map(point =>
         (point.cluster, point.x, point.y, point.duration) // TODO: cluster size not passed
       )
       .toDF("ClusterID", "Latitude", "Longitude", "Duration")
       .groupBy("ClusterID").avg("Latitude","Longitude","Duration")
 
-    val resultDf = statisticsOutput.join(createGraphJobDataframes,
-      Seq("ClusterID")
-    )
+    val countDF = clusteredPoints
+      .map(point =>
+        (point.cluster) // TODO: cluster size not passed
+      )
+      .toDF("ClusterID")
+      .groupBy("ClusterID").count()
+
+    val resultDf = basicDF
+      .join(countDF, Seq("ClusterID"))
+      .join(createGraphJobDataframes, Seq("ClusterID"))
 
     resultDf.collect().foreach(row => println(row.mkString("|")))
     sc.stop()
+    spark.stop()
   }
 
   private def filterPoint(point: Vector[String]): Boolean = {
