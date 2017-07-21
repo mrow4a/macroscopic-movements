@@ -84,6 +84,11 @@
                         <label id="id"></label>
                     </div>
                     <div>
+                        Page rank:
+                        <br>
+                        <label id="pagerank"></label>
+                    </div>
+                    <div>
                         Longitude:
                         <br>
                         <label id="long"></label>
@@ -99,12 +104,12 @@
                         <label id="duration"></label>
                     </div>
                     <div>
-                        In degree:
+                        In degree (blue lines):
                         <br>
                         <label id="inDeg"></label>
                     </div>
                     <div>
-                        Out degree:
+                        Out degree (red lines):
                         <br>
                         <label id="outDeg"></label>
                     </div>
