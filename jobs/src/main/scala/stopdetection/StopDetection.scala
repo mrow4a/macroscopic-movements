@@ -44,7 +44,7 @@ object StopDetection {
     * @param minimumAccuracyDistance
     * @param minimumAccuracyDuration
     */
-  def filter(
+  def run(
       data: RDD[Vector[String]],
       durationsWindowSize: Double,
       mobilityIndexThreshold: Double,
@@ -63,7 +63,7 @@ object StopDetection {
       minimumFlightSpeed,
       minimumFlightDistance,
       minimumAccuracyDistance,
-      minimumAccuracyDuration).filter(data)
+      minimumAccuracyDuration).run(data)
   }
 }
 
@@ -82,18 +82,18 @@ class StopDetection private(
     * This function filters all DetectedPoints and
     * return Vector with (0) -> Latitude (1) -> Longitude, (2) -> ID, (3) -> TimeStamp, (4) -> Stay duration
     */
-  private def filter(parsedData: RDD[Vector[String]]): RDD[Vector[String]] = {
+  private def run(parsedData: RDD[Vector[String]]): RDD[Vector[String]] = {
     parsedData
       // Convert to Detected Point
-      .map(DetectedPoint)
+      .map(Point)
       // Split into several partitions by ID
       .groupBy(_.id).values
       // Filter movements for each group in parallel (map) and
       // then flatten (merge into RDD)
-      .flatMap(getCandidates)
+      .flatMap(getStops)
   }
 
-  private def getCandidates(userValues: Iterable[DetectedPoint]): Iterator[Vector[String]] = {
+  private def getStops(userValues: Iterable[Point]): Iterator[Vector[String]] = {
     val firstMovement = new Movement()
     userValues
       // Ensure that values are sorted by timestamp
@@ -102,8 +102,8 @@ class StopDetection private(
       .sliding(2).filter(_.size==2).map(getMovement)
       // Filter movement anomalies
       .filter(filterAnomalies)
-      // Determine sliding window and remove firstMovement
-      .scanLeft((firstMovement, 0.0, ArrayBuffer[Double]()))(determineSlidingWindow).drop(1)
+      // Determine sliding window and calculate mobility index
+      .scanLeft((firstMovement, 0.0, ArrayBuffer[Double]()))(getMobilityIndex).drop(1)
       // Filter movements
       .map(pair => (pair._1, pair._2))
       .filter(filterMovements)
@@ -126,15 +126,15 @@ class StopDetection private(
 
     if ((distance < stopAccuracyDistance && speed < stopAccuracySpeed)
       || (distance > stopAccuracyDistance && mobilityIndex < mobilityIndexThreshold)){
-      // println(true, pair)
+      // This is stop
       true
     } else {
-      // println(false, pair)
+      // This is movements, so filter out
       false
     }
   }
 
-  private def determineSlidingWindow(result: (Movement, Double, ArrayBuffer[Double]),
+  private def getMobilityIndex(result: (Movement, Double, ArrayBuffer[Double]),
                       current: Movement)
   : (Movement, Double, ArrayBuffer[Double]) = {
     // Obtain parameters
@@ -169,7 +169,7 @@ class StopDetection private(
     result
   }
 
-  private def getMovement(window: List[DetectedPoint])
+  private def getMovement(window: List[Point])
   : Movement = {
     val startPoint = window(0)
     val endPoint = window(1)

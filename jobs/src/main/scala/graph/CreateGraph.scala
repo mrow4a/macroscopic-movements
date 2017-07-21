@@ -34,67 +34,54 @@ class CreateGraph() extends Serializable {
       .flatMap(mapEdge).groupBy(a => (a._1,a._2)).values.flatMap(tripCount)
       .map { line =>
         Edge(line._1.toInt, line._2.toInt, line._3.toString)
-      }.cache()
+      }
 
+    // Create Graph
     var graphRDD = Graph.fromEdges(edgeData , defaultValue = 1)
 
-    val indegreeDF = graphRDD.inDegrees.toDF("vertexId","Indegrees")
-      .coalesce(partitions).cache()
+    // Calculate OutDegrees
+    val outdegreeDF = graphRDD.outDegrees.toDF("ClusterID","Outdegrees")
+      // Cache since all join will join with it
+      .cache()
 
-    val outdegreeDF = graphRDD.outDegrees.toDF("id","Outdegrees")
-      .coalesce(partitions).cache()
+    // Calculate InDegrees
+    val indegreeDF = graphRDD.inDegrees.toDF("ClusterID","Indegrees")
 
-    val alldegreesDF = outdegreeDF
-      .join(indegreeDF, indegreeDF("vertexId") === outdegreeDF("id"), "full_outer")
-      .withColumn("ClusterID",
-        when($"vertexId".isNull, $"id")
-          .otherwise($"vertexId"))
-      .drop("vertexId","id")
-      .coalesce(partitions).cache()
-
+    // Get Edges IN
     var collVertIn  =
       graphRDD.collectNeighborIds(EdgeDirection.In)
         .map(e => (e._1,e._2.mkString(",")))
-        .toDF("VID", "NeighborsIN")
-        .coalesce(partitions).cache()
+        .toDF("ClusterID", "NeighborsIN")
 
+    // Get Edges OUT
     var collVertOut  =
       graphRDD.collectNeighborIds(EdgeDirection.Out)
         .map(e => (e._1,e._2.mkString(",")))
-        .toDF("VertID", "NeighborsOUT")
-        .coalesce(partitions).cache()
+        .toDF("ClusterID", "NeighborsOUT")
 
-    val dfneighbors = collVertIn
-      .join(collVertOut, collVertOut("VertID")===collVertIn("VID"), "full_outer")
-      .withColumn("VertexId",
-        when($"VID".isNull, $"VertID")
-          .otherwise($"VID"))
-      .drop("VID","VertID")
-      .coalesce(partitions).cache()
-
-    val dfJoin2 = dfneighbors
-      .join(alldegreesDF, dfneighbors("VertexId") === alldegreesDF("ClusterID"), "full_outer")
-      .withColumn("Cluster#",
-        when($"VertexId".isNull, $"ClusterID")
-          .otherwise($"VertexId"))
-      .drop("VertexId","ClusterID")
-      .coalesce(partitions).cache()
-
-    val PageRank = graphRDD.pageRank(0.0001).vertices
+    // Get PageRank
+    val pageRank = graphRDD.pageRank(0.0001).vertices
       .sortBy(_._2,ascending = false)
-      .toDF("VertexId", "PageRank")
-      .coalesce(partitions).cache()
+      .toDF("ClusterID", "PageRank")
 
-    val dfJoin3 = PageRank
-      .join(dfJoin2, PageRank("VertexId")===dfJoin2("Cluster#"), "full_outer")
-      .withColumn("ClusterID",
-        when($"VertexId".isNull, $"Cluster#")
-          .otherwise($"VertexId"))
-      .drop("VertexId","Cluster#")
+    val joinedTables = outdegreeDF
+      // Join Out and In Degree
+      .join(indegreeDF, indegreeDF("ClusterID") <=> outdegreeDF("ClusterID"), "full_outer")
+      .drop(indegreeDF("ClusterID"))
+      // Join to it collVertIn
+      .join(collVertIn, collVertIn("ClusterID") <=> outdegreeDF("ClusterID"), "full_outer")
+      .drop(collVertIn("ClusterID"))
+      // Join to it collVertOut
+      .join(collVertOut, collVertOut("ClusterID") <=> outdegreeDF("ClusterID"), "full_outer")
+      .drop(collVertOut("ClusterID"))
+      // Join to it pageRank
+      .join(pageRank, pageRank("ClusterID") <=> outdegreeDF("ClusterID"), "full_outer")
+      .drop(pageRank("ClusterID"))
+      // Replace nul with 0
       .na.fill(0,Seq("Indegrees"))
       .na.fill(0,Seq("Outdegrees"))
 
-    dfJoin3
+    joinedTables
   }
 
   def tripCount(data : Iterable[(Int, Int)]) :

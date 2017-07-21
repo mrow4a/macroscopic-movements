@@ -6,6 +6,8 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import utils.InputStreamReaderRunnable;
 
+import java.util.concurrent.TimeUnit;
+
 public final class SparkClient {
 
     private static final String inputLocation = "/data/input";
@@ -33,19 +35,22 @@ public final class SparkClient {
         Thread errorThread = new Thread(errorStreamReaderRunnable, "LogStreamReader error");
         errorThread.start();
 
-        spark.waitFor();
+        long waitTime = 30; //s
+        spark.waitFor(waitTime, TimeUnit.SECONDS);
 
-        if (spark.exitValue() == 0) {
+        if (spark.isAlive() == false) {
             return inputStreamReaderRunnable.getOutput();
         }
+        spark.destroy();
         throw new Exception(errorStreamReaderRunnable.getOutput());
     }
 
     public static String get_hotspots(String endpoint, String filePath, String sparkMaster) throws Exception {
         Process spark = new SparkLauncher()
                 .setAppResource(jarLocation)
-                .setMainClass("movements.jobs.ClusterStopsJob")
+                .setMainClass("movements.jobs.MovementsJob")
                 .setMaster(sparkMaster)
+                .setAppName(appName)
                 .addAppArgs(endpoint)
                 .addAppArgs(filePath)
                 .addAppArgs(sparkMaster)
@@ -82,18 +87,18 @@ public final class SparkClient {
                     item.put("lat", parts[1]);
                     item.put("long", parts[2]);
                     item.put("duration", parts[3]);
-                    item.put("pagerank", parts[4]);
+                    item.put("outdegrees", parts[4]);
+                    item.put("indegrees", parts[5]);
 
-                    JSONArray neighborsin = JSONArray.fromObject("["+parts[5]+"]");
-                    JSONArray neighborsout = JSONArray.fromObject("["+parts[6]+"]");
+                    JSONArray neighborsin = JSONArray.fromObject("["+parts[6]+"]");
+                    JSONArray neighborsout = JSONArray.fromObject("["+parts[7]+"]");
                     item.put("neighborsin", neighborsin);
                     item.put("neighborsout", neighborsout);
 
-                    item.put("outdegrees", parts[7]);
-                    item.put("indegrees", parts[8]);
+                    item.put("pagerank", parts[8]);
                     array.add(item);
                 } else {
-                    System.out.println("Error, wrong number of parameters");
+                    System.out.println("Error, wrong number of parameters in: " + line);
                 }
             }
             return array.toString();

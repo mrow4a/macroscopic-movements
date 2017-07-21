@@ -17,7 +17,7 @@
 
 package stopdetection
 
-case class DetectedPoint(vector: Vector[String]){
+case class Point(vector: Vector[String]){
 
   def timestamp: Int = getTimestamp(vector(0), vector(1))
   def id: String = vector(2)
@@ -34,16 +34,16 @@ case class DetectedPoint(vector: Vector[String]){
 
 }
 
-class Movement(start: DetectedPoint, end: DetectedPoint){
+class Movement(start: Point, end: Point){
 
-  def this() = this(DetectedPoint(Vector()), DetectedPoint(Vector()))
+  def this() = this(Point(Vector()), Point(Vector()))
 
   /* Constants */
   def minDuration: Double = 0.0001 // default to very small number in seconds
   def maxDuration: Double = 86400 // default to 24h in seconds
 
-  def startPoint: DetectedPoint = start
-  def endPoint: DetectedPoint = end
+  def startPoint: Point = start
+  def endPoint: Point = end
 
   private var distance: Double = -1
 

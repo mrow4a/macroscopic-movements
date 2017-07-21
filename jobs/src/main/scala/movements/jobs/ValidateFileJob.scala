@@ -23,7 +23,7 @@ import org.apache.spark.{SparkConf, SparkContext}
 object ValidateFileJob {
 
   def main(args: Array[String]) {
-    val conf = new SparkConf().setAppName(s"MOVEMENTS")
+    val conf = new SparkConf()
 
     // NOTE: Without below lines, if spark cluster consists only of master node,
     // it will not run:

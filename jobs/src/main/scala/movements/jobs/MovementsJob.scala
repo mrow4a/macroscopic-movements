@@ -21,16 +21,15 @@ import graph.CreateGraph
 import org.apache.spark.SparkConf
 import org.apache.spark.mllib.clustering.dbscan.{DBSCAN, DBSCANRectangle}
 import org.apache.spark.sql.SparkSession
-import stopdetection.{DetectedPoint, StopDetection}
+import stopdetection.{Point, StopDetection}
 import util.Config
 
-object ClusterStopsJob {
+object MovementsJob {
 
   def main(args: Array[String]) {
-    val conf = new SparkConf().setAppName(s"MOVEMENTS")
+    val conf = new SparkConf()
 
-    // NOTE: Without below lines, if spark cluster consists only of master node,
-    // it will not run:
+    // TODO: Without below lines, if spark cluster consists only of master node, it will not run and hang:
     //
     //  conf.set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
     //  conf.setMaster("local[*]").set("spark.executor.memory", "1g")
@@ -55,12 +54,17 @@ object ClusterStopsJob {
 
     val data = sc.textFile(src)
 
+    /*
+     STOP DETECTION
+
+     TODO: Mind that this will filter out all points outside Berlin!!!
+     */
     val parsedData = data
       .map(s => s.split(';').toVector)
       // Filter point which cannot be processed by this job
       .filter(filterPoint)
 
-    val detectedStops = StopDetection.filter(
+    val detectedStops = StopDetection.run(
       parsedData,
       Config.durationsSlidingWindowSize,
       Config.mobilityIndexThreshold,
@@ -72,18 +76,30 @@ object ClusterStopsJob {
       Config.minimumAccuracyDuration
     )
 
+    /*
+     CLUSTERING
+
+     TODO: Mind that this version of DBScan of spark is only compatible with Berlin!!!
+          CHECK FILE util.Config and make it work across more areas
+     */
+
     // Transform stops to include information about area they are in and eps of that area
     val areaBoundStops = detectedStops
-      .map(assignArea).cache()
+      .map(assignArea)
+      .cache()
 
-    // NOTE: Mind that this version of DBScan of spark is only compatible with Berlin!!!
+    // Clusters stops in Berlin
     val clusteredPoints = DBSCAN.train(
       areaBoundStops,
       Config.eps,
       Config.minPoints,
       Config.maxPointsPerPartition
-    ).labeledPoints.filter(_.cluster != 0).cache()
+    ).labeledPoints.filter(_.cluster != 0)
+      .cache()
 
+    /*
+     GRAPH ANALYSIS
+     */
     val graphInput = clusteredPoints
       .map(point => (point.id, point.cluster))
 
@@ -102,7 +118,6 @@ object ClusterStopsJob {
     )
 
     resultDf.collect().foreach(row => println(row.mkString("|")))
-
     sc.stop()
   }
 
@@ -113,7 +128,7 @@ object ClusterStopsJob {
           Config.outsideBerlin.xMax,
           Config.outsideBerlin.yMin,
           Config.outsideBerlin.yMax)
-      val parsedPoint = DetectedPoint(point)
+      val parsedPoint = Point(point)
       // Try to obtain most essential values
       parsedPoint.id
       parsedPoint.lat
@@ -132,6 +147,7 @@ object ClusterStopsJob {
     }
   }
 
+  // TODO: Mind that this will assign areas only in Berlin!!!
   private def assignArea(point: Vector[String]): Vector[String] = {
     val innerArea: DBSCANRectangle = DBSCANRectangle(Config.innerBerlin.xMin,
       Config.innerBerlin.xMax,
@@ -145,7 +161,7 @@ object ClusterStopsJob {
         Config.middleBerlin.yMax)
 
 
-    val parsedPoint = DetectedPoint(point)
+    val parsedPoint = Point(point)
     var newPoint = point.toBuffer
     // Try to obtain most essential values
     if (innerArea.contains(parsedPoint.lat, parsedPoint.long)) {
