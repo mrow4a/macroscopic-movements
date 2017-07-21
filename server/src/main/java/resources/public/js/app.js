@@ -117,13 +117,13 @@ $(document).ready(function () {
     }
 
     var mapMarkers = [];
+    var hashmapMarkers = {};
 
     function removeMarkers() {
-      for (var i = 0; i < mapMarkers.length; i++) {
+        for (var i = 0; i < mapMarkers.length; i++) {
             mymap.removeLayer(mapMarkers[i]);
         }
         mapMarkers.length = 0;
-
     }
 
     function getHotspots() {
@@ -134,6 +134,8 @@ $(document).ready(function () {
             url: '/api/get_hotspots?file=' + filePath + '&spark=' + spark + '&endpoint=' + endpoint,
             beforeSend: function () {
                 // setting a timeout
+
+                removeMarkers();
                 mapMarkers = [];
                 block('Loading...');
             },
@@ -142,17 +144,36 @@ $(document).ready(function () {
                     var jsonArray = JSON.parse(data);
                     $(read_run_label).html(toGreen("Job done!"));
 
+                    hashmapMarkers = {};
                     removeMarkers();
                     for (var i = 0; i < jsonArray.length; i++) {
                         var obj = jsonArray[i];
                         var marker = L.marker([obj.lat, obj.long],
-                            {id: obj.id, lat: obj.lat, long: obj.long, duration: obj.duration})
+                            {
+                                icon: defaultIcon,
+                                id: obj.id,
+                                lat: obj.lat, // .toFixed crashes
+                                long: obj.long,
+                                duration: Math.round((parseInt(obj.duration)/3600) * 100) / 100,
+                                neighborsIn: obj.neighborsin,
+                                neighborsOut : obj.neighborsout,
+                                outDegrees: obj.outdegrees, // TODO add
+                                inDegrees: obj.indegrees,
+                                pagerank: obj.pagerank
+                                // clusterSize: Math.round(obj.clusterSize)
+                            })
                             .addTo(mymap)
                             .on('click', showStatistics);
                         // .bindPopup("<b>" + obj.id + "</b>" + "</br><b>" + obj.duration + "</b>");
+
+                        hashmapMarkers[obj.id] = [obj.lat,obj.long];
+
                         mapMarkers.push(marker);
                     }
+                    defaultIcon = marker.getIcon();
+
                 } catch (e) {
+                    console.log(e);
                     $(read_run_label).html(toRed("Received wrong content"));
                 }
             },
@@ -176,24 +197,87 @@ $(document).ready(function () {
         return false;
     });
 
+
+    var LeafIcon = L.Icon.extend({
+        options: {
+            iconSize: [25, 41]
+        }
+    });
+    var clickedIcon = new LeafIcon({
+        iconUrl: 'https://camo.githubusercontent.com/82f10ed32b4252324cd714ffbd31cedc47b1cc72/68747470733a2f2f7261772e6769746875622e636f6d2f706f696e7468692f6c6561666c65742d636f6c6f722d6d61726b6572732f6d61737465722f696d672f6d61726b65722d69636f6e2d32782d79656c6c6f772e706e673f7261773d74727565'
+    });
+    var defaultIcon = new LeafIcon({
+        iconUrl: 'https://camo.githubusercontent.com/1c5e8242c57d3b712ed654e3bc9fe2f0717a7200/68747470733a2f2f7261772e6769746875622e636f6d2f706f696e7468692f6c6561666c65742d636f6c6f722d6d61726b6572732f6d61737465722f696d672f6d61726b65722d69636f6e2d32782d626c75652e706e673f7261773d74727565'
+    });
+    var currMarker;
+
+    // TODO: cannot read leaflet_id of undefined
     function showStatistics(e) {
-        var marker = e.target.options;
-        $('#id').text(marker.id);
-        $('#lat').text(marker.lat);
-        $('#long').text(marker.long);
-        $('#duration').text(marker.duration);
+        console.log(e);
+        var marker = e.target;
+
+        if(currMarker !== undefined) {
+            currMarker.setIcon(defaultIcon);
+        }
+        marker.setIcon(clickedIcon);
+        var options = marker.options;
+
+        // mymap.fitBounds(marker.getBounds());
+        // if(marker !== undefined) {
+        //     marker.options.icon = marker.options.icon;
+        // }
+        // marker.setIcon(yellowIcon);
+        // marker.addTo(mymap);
+        // var marker2 = L.marker([options.long, options.lat]).addTo(mymap);
+
+
+
+
+        $('#id').text(options.id);
+        $('#lat').text(options.lat);
+        $('#long').text(options.long);
+        $('#duration').text(options.duration);
+        //$('#clusterSize').text(options.clusterSize);
+        $('#pagerank').text(options.pagerank);
+        $('#inDeg').text(options.inDegrees);
+        $('#outDeg').text(options.outDegrees);
+
+        createPolylines(marker);
+
+        currMarker = marker;
     }
 
+    var polyline;
+
+    function createPolylines(marker) {
+        mymap.removeLayer(polyline);
+        console.log("creaing polyline for marker " + marker.getLatLng());
+
+        for(var i = 0; i < marker.options.neighborsOut.length; i++) {
+            var id = marker.options.neighborsOut[i];
+            polyline = L.polyline([hashmapMarkers[id], marker.getLatLng()], {color: 'red'}).addTo(mymap);
+        }
+        for(var i = 0; i < marker.options.neighborsIn.length; i++) {
+            var id = marker.options.neighborsIn[i];
+            polyline = L.polyline([hashmapMarkers[id], marker.getLatLng()], {color: 'blue'}).addTo(mymap);
+        }
+
+        //latlngs.push(marker.getLatLng());
+        //latlngs.push(marker2.getLatLng());
+
+        //   mymap.fitBounds(polyline.getBounds());
+
+    }
 
     $('#spark_run').click(function () {
         console.log("Clicked spark run");
-        storeData();
         checkInputFile();
+        storeData();
     });
 
     $("#read_run").click(function () {
-        storeData();
         getHotspots();
+        storeData();
     });
 
 })

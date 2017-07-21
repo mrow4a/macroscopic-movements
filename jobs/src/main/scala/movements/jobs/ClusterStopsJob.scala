@@ -18,9 +18,9 @@
 package movements.jobs
 
 import graph.CreateGraph
-import org.apache.spark.mllib.clustering.dbscan.{DBSCAN, DBSCANLabeledPoint, DBSCANRectangle}
+import org.apache.spark.SparkConf
+import org.apache.spark.mllib.clustering.dbscan.{DBSCAN, DBSCANRectangle}
 import org.apache.spark.sql.SparkSession
-import org.apache.spark.{SparkConf, SparkContext}
 import stopdetection.{DetectedPoint, StopDetection}
 import util.Config
 
@@ -92,7 +92,7 @@ object ClusterStopsJob {
 
     val statisticsOutput = clusteredPoints
       .map(point =>
-        (point.cluster, point.x, point.y, point.duration)
+        (point.cluster, point.x, point.y, point.duration) // TODO: cluster size not passed
       )
       .toDF("ClusterID", "Latitude", "Longitude", "Duration")
       .groupBy("ClusterID").avg("Latitude","Longitude","Duration")
