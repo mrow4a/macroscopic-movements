@@ -39,19 +39,12 @@ class CreateGraph() extends Serializable {
     // Create Graph
     var graphRDD = Graph.fromEdges(edgeData , defaultValue = 1)
 
-    // Calculate OutDegrees
-    val outdegreeDF = graphRDD.outDegrees.toDF("ClusterID","Outdegrees")
-      // Cache since all join will join with it
-      .cache()
-
-    // Calculate InDegrees
-    val indegreeDF = graphRDD.inDegrees.toDF("ClusterID","Indegrees")
-
     // Get Edges IN
     var collVertIn  =
       graphRDD.collectNeighborIds(EdgeDirection.In)
         .map(e => (e._1,e._2.mkString(",")))
         .toDF("ClusterID", "NeighborsIN")
+        .cache()
 
     // Get Edges OUT
     var collVertOut  =
@@ -59,25 +52,32 @@ class CreateGraph() extends Serializable {
         .map(e => (e._1,e._2.mkString(",")))
         .toDF("ClusterID", "NeighborsOUT")
 
+    // Calculate InDegrees
+    val indegreeDF = graphRDD.inDegrees.toDF("ClusterID","Indegrees")
+
+    // Calculate OutDegrees
+    val outdegreeDF = graphRDD.outDegrees.toDF("ClusterID","Outdegrees")
+      // Cache since all join will join with it
+
     // Get PageRank
     val pageRank = graphRDD.pageRank(0.0001).vertices
       .sortBy(_._2,ascending = false)
       .toDF("ClusterID", "PageRank")
 
-    val joinedTables = outdegreeDF
-      // Join Out and In Degree
-      .join(indegreeDF, indegreeDF("ClusterID") <=> outdegreeDF("ClusterID"), "full_outer")
-      .drop(indegreeDF("ClusterID"))
-      // Join to it collVertIn
-      .join(collVertIn, collVertIn("ClusterID") <=> outdegreeDF("ClusterID"), "full_outer")
-      .drop(collVertIn("ClusterID"))
-      // Join to it collVertOut
-      .join(collVertOut, collVertOut("ClusterID") <=> outdegreeDF("ClusterID"), "full_outer")
+    val joinedTables = collVertIn
+      // Join with NeighborsOut
+      .join(collVertOut, collVertOut("ClusterID") <=> collVertIn("ClusterID"), "full_outer")
       .drop(collVertOut("ClusterID"))
-      // Join to it pageRank
-      .join(pageRank, pageRank("ClusterID") <=> outdegreeDF("ClusterID"), "full_outer")
+      // Join with InDegrees
+      .join(indegreeDF, indegreeDF("ClusterID") <=> collVertIn("ClusterID"), "full_outer")
+      .drop(indegreeDF("ClusterID"))
+      // Join with OutDegrees
+      .join(outdegreeDF, outdegreeDF("ClusterID") <=> collVertIn("ClusterID"), "full_outer")
+      .drop(outdegreeDF("ClusterID"))
+      // Join with PageRank
+      .join(pageRank, pageRank("ClusterID") <=> collVertIn("ClusterID"), "full_outer")
       .drop(pageRank("ClusterID"))
-      // Replace nul with 0
+      // Replace null with 0
       .na.fill(0,Seq("Indegrees"))
       .na.fill(0,Seq("Outdegrees"))
 

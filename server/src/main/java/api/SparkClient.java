@@ -78,24 +78,28 @@ public final class SparkClient {
 //              |-- avg(Longitude): double (nullable = true)
 //              |-- avg(Duration): double (nullable = true)
 //              |-- PageRank: double (nullable = true)
+//              |-- Indegrees: integer (nullable = true)
+//              |-- Outdegrees: integer (nullable = true)
 //              |-- NeighborsIN: [.., ..](nullable = true)
 //              |-- NeighborsOUT: [.., ..] (nullable = true)
-//              |-- Outdegrees: integer (nullable = true)
-//              |-- Indegrees: integer (nullable = true)
                 if (parts.length == 9) {
+                    // Main parameters
                     item.put("id", parts[0]);
                     item.put("lat", parts[1]);
                     item.put("long", parts[2]);
                     item.put("duration", parts[3]);
-                    item.put("outdegrees", parts[4]);
-                    item.put("indegrees", parts[5]);
 
-                    JSONArray neighborsin = JSONArray.fromObject("["+parts[6]+"]");
-                    JSONArray neighborsout = JSONArray.fromObject("["+parts[7]+"]");
+                    // Neighbors
+                    JSONArray neighborsin = JSONArray.fromObject("["+parts[4]+"]");
+                    JSONArray neighborsout = JSONArray.fromObject("["+parts[5]+"]");
                     item.put("neighborsin", neighborsin);
                     item.put("neighborsout", neighborsout);
 
+                    // InDegrees, OutDegrees and PageRank
+                    item.put("indegrees", parts[6]);
+                    item.put("outdegrees", parts[7]);
                     item.put("pagerank", parts[8]);
+
                     array.add(item);
                 } else {
                     System.out.println("Error, wrong number of parameters in: " + line);
