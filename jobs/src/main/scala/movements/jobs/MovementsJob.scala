@@ -175,14 +175,17 @@ object MovementsJob {
     if (innerArea.contains(parsedPoint.lat, parsedPoint.long)) {
       newPoint += Config.innerBerlin.id.toString
       newPoint += Config.innerBerlin.eps.toString
+      newPoint += Config.innerBerlin.minPts.toString
     }
     else if (middleArea.contains(parsedPoint.lat, parsedPoint.long)) {
       newPoint += Config.middleBerlin.id.toString
       newPoint += Config.middleBerlin.eps.toString
+      newPoint += Config.middleBerlin.minPts.toString
     }
     else {
       newPoint += Config.outsideBerlin.id.toString
       newPoint += Config.outsideBerlin.eps.toString
+      newPoint += Config.outsideBerlin.minPts.toString
     }
 
     newPoint.toVector

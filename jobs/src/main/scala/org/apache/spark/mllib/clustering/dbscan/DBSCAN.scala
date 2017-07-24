@@ -243,8 +243,9 @@ class DBSCAN private(
     val first = stops.head
     var areaId = first.areaID
     var areaEps = first.areaEps
+    var areaMinPts = first.areaMinPts
 
-    val clusteredPoints = new LocalDBSCANNaive(areaEps, minPoints)
+    val clusteredPoints = new LocalDBSCANNaive(areaEps, areaMinPts)
       .fit(stops)
 
     clusteredPoints.map(point => adjustCluster(point, areaId))
