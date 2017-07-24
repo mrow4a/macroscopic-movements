@@ -185,7 +185,7 @@ $(document).ready(function () {
 
         var textToSaveAsBlob = new Blob([fileContents], {type:"text/plain"});
         var textToSaveAsURL = window.URL.createObjectURL(textToSaveAsBlob);
-        var fileNameToSaveAs = "macromovements-"+ Math.random()+".result";
+        var fileNameToSaveAs = "macromovements-" + Math.round(new Date().getTime()/1000) + ".result";
 
         var downloadLink = document.createElement("a");
         downloadLink.download = fileNameToSaveAs;
@@ -295,6 +295,8 @@ $(document).ready(function () {
     });
     var currMarker;
 
+    var modeInOut = true;
+
     function showStatistics(e) {
         console.log(e);
         var marker = e.target;
@@ -317,8 +319,13 @@ $(document).ready(function () {
         $('#outDeg').text(options.outDegrees);
 
         removePolylines();
-        createPolylines(marker, marker.options.neighborsIn, 'blue');
-        createPolylines(marker, marker.options.neighborsOut, 'red');
+        if (modeInOut) {
+            createPolylines(marker, marker.options.neighborsIn, 'blue');
+            modeInOut = false;
+        } else {
+            createPolylines(marker, marker.options.neighborsOut, 'red');
+            modeInOut = true;
+        }
 
         currMarker = marker;
     }
@@ -337,11 +344,23 @@ $(document).ready(function () {
     function createPolylines(marker, neighbors, lineColor) {       
         console.log("creaing polyline for marker " + marker.getLatLng());
 
+        var neighborCountMap = {};
         for(var i = 0; i <  neighbors.length; i++) {
             var id = neighbors[i];
-            polylines.push(L.polyline([hashmapMarkers[id], marker.getLatLng()], {color: lineColor}).addTo(mymap));
+            if (id in neighborCountMap) {
+                neighborCountMap[id]++;
+            } else {
+                neighborCountMap[id] = 1;
+            }
         }
-        //   mymap.fitBounds(polyline.getBounds());
+
+        for(var i = 0; i <  neighbors.length; i++) {
+            var id = neighbors[i];
+            var percentage = Math.floor(neighborCountMap[id]/neighbors.length*100)+"%";
+            var polyline = L.polyline([hashmapMarkers[id], marker.getLatLng()], {color: lineColor}).addTo(mymap);
+            polyline.bindTooltip(percentage, {permanent: true, interactive: true}).openTooltip();
+            polylines.push(polyline);
+        }
     }
 
     $('#spark_run').click(function () {

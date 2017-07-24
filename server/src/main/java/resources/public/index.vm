@@ -118,12 +118,12 @@
                     <div>
                         In degree (lines):
                         <br>
-                        <label id="inDeg" style="color:blue" > </label>
+                        <label id="inDeg" style="color:blue" ></label>
                     </div>
                     <div>
                         Out degree (lines):
                         <br>
-                        <label id="outDeg" style="color:red/label>
+                        <label id="outDeg" style="color:red" ></label>
                     </div>
                     <div>
                         Cluster size:

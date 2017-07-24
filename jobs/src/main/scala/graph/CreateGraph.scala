@@ -28,12 +28,16 @@ class CreateGraph() extends Serializable {
   def graphOperations(data: RDD[(String, Int)], spark: SparkSession): DataFrame = {
 
     val partitions = 2
+    val tripCount = 1
     import spark.implicits._
     val edgeData  = data
       .groupBy(a => a._1).values
-      .flatMap(mapEdge).groupBy(a => (a._1,a._2)).values.flatMap(tripCount)
+      .flatMap(mapEdge)
+      // TODO: Include TripCount as an attribute
+      // -> this may affect PageRank because duplicate edges will dissapear
+      // .groupBy(a => (a._1,a._2)).values.flatMap(tripCount)
       .map { line =>
-        Edge(line._1.toInt, line._2.toInt, line._3.toString)
+        Edge(line._1.toInt, line._2.toInt, tripCount)
       }
 
     // Create Graph
