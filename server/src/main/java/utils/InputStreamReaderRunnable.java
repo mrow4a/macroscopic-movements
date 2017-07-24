@@ -28,7 +28,7 @@ public class InputStreamReaderRunnable implements Runnable {
             String line = reader.readLine();
             while (line != null) {
                 // TODO: Uncomment it if you want output on console
-                System.out.println(line);
+                // System.out.println(line);
                 this.output.append(line).append("\n");
                 line = reader.readLine();
             }
