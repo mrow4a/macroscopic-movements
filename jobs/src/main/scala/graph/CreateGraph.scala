@@ -49,7 +49,7 @@ class CreateGraph() extends Serializable {
         .flatMap(mapEdge)
           .groupBy(a => (a._1,a._2)).values.flatMap(tripCount)
         .map { line =>
-        Edge(line._1.toInt, line._2.toInt, tripCount)
+        Edge(line._1.toInt, line._2.toInt, line._3.toInt)
       }
      // create simple graph
      var simpleGraphRDD = Graph.fromEdges(simpleEdgeData , defaultValue = 1)
