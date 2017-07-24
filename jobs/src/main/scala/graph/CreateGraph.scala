@@ -23,12 +23,14 @@ import org.apache.spark.sql.{DataFrame, SparkSession}
 import scala.collection.mutable.ArrayBuffer
 import org.apache.spark.sql.functions._
 
+import scala.math.Ordering
+
 class CreateGraph() extends Serializable {
 
   def graphOperations(data: RDD[(String, Int)], spark: SparkSession): DataFrame = {
 
     val partitions = 2
-    val tripCount = 1
+    val edgeWeight = 1
     import spark.implicits._
     val edgeData  = data
       .groupBy(a => a._1).values
@@ -37,10 +39,26 @@ class CreateGraph() extends Serializable {
       // -> this may affect PageRank because duplicate edges will dissapear
       // .groupBy(a => (a._1,a._2)).values.flatMap(tripCount)
       .map { line =>
+        Edge(line._1.toInt, line._2.toInt, edgeWeight)
+      }
+    /*  Section: Simple Graph : this is for creating a graph based on tripcounts
+      // Create simple directed graph  - i.e. without parallel edges
+      // create edges for simple directed graph
+      val simpleEdgeData  = data
+        .groupBy(a => a._1).values
+        .flatMap(mapEdge)
+          .groupBy(a => (a._1,a._2)).values.flatMap(tripCount)
+        .map { line =>
         Edge(line._1.toInt, line._2.toInt, tripCount)
       }
+     // create simple graph
+     var simpleGraphRDD = Graph.fromEdges(simpleEdgeData , defaultValue = 1)
 
-    // Create Graph
+    // obtain the most important edges as per trip count
+    val topEdges = simpleGraphRDD.edges.top(5)(Ordering.by(_.attr))
+  */
+
+    // Create drected multi-graph  - i.e. the graph will contain parallel edges.
     var graphRDD = Graph.fromEdges(edgeData , defaultValue = 1)
 
     // Get Edges IN
