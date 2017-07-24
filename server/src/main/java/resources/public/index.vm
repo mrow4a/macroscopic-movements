@@ -79,7 +79,7 @@
                 </div>
                 <div style="padding:10px;" class="row justify-content-md-center">
                     <div class="dropdown" id="pageranktopdropdown">
-                        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Top 10 PageRank
+                        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Top10 PageRank
                             <span class="caret"></span></button>
                         <ul class="dropdown-menu" id="pageranktop">
                         </ul>

@@ -132,11 +132,22 @@ $(document).ready(function () {
         var endLength = Math.max(0,sortedPageRanks.length-10);
         var startLength = sortedPageRanks.length-1;
         for (var i = startLength; i >= endLength; i--){
-            var opt = sortedPageRanks[i];
-
             var li = document.createElement("li");
+
+            var id = sortedPageRanks[i].split("-")[1];
+
+            var optText = "Cluster "+id;
+            var text = document.createTextNode(optText);
+            li.appendChild(text);
+
+            var att = document.createAttribute("id");
+            att.value = id;
+            li.setAttributeNode(att);
+
+            li.classList.add("list-group-item");
+
             li.addEventListener('click', function(e) {
-                var id = e.target.innerHTML.split("-")[1]
+                var id = e.target.id;
 
                 for (var i = 0; i < mapMarkers.length; i++){
                     if (mapMarkers[i].options.id == id) {
@@ -154,9 +165,6 @@ $(document).ready(function () {
                 }
             });
 
-
-            var text = document.createTextNode(opt);
-            li.appendChild(text);
             list.appendChild(li);
         }
     });

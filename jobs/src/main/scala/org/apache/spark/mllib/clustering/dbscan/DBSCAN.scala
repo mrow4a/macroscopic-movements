@@ -21,11 +21,11 @@ import org.apache.spark.rdd.RDD
 
 /**
   * Area DBSCAN implementation which will bound points only for selected areas
-  * and automaticaly decide about eps, minPoints, maxPointsPerPartition based on area density
-  * specified in the Config file
+  * and automatically decide about eps and minPoints based on area density
+  * specified in the util/Config file
   *
-  * NOTE: In current version, BERLIN area is hardcoded !!!
   */
+// TODO: In current version, BERLIN area is hardcoded !!!
 object DBSCAN {
 
   /**
@@ -34,17 +34,15 @@ object DBSCAN {
     * @param data                  training points stored as `RDD[Vector]`
     *                              only the first two points of the vector are taken into consideration
     * @param eps                   the maximum distance between two points for them to be considered as part
-    *                              of the same region
-    * @param minPoints             the minimum number of points required to form a dense region
+    *                              of the same region - used mostly for efficient partitioning of data.
     * @param maxPointsPerPartition the largest number of points in a single partition
     */
   def train(
              data: RDD[Vector[String]],
              eps: Double,
-             minPoints: Int,
              maxPointsPerPartition: Int): DBSCAN = {
 
-    new DBSCAN(eps, minPoints, maxPointsPerPartition, null, null).train(data)
+    new DBSCAN(eps, maxPointsPerPartition, null, null).train(data)
   }
 }
 
@@ -60,13 +58,11 @@ object DBSCAN {
   */
 class DBSCAN private(
                       val eps: Double,
-                      val minPoints: Int,
                       val maxPointsPerPartition: Int,
                       @transient val partitions: List[(Int, DBSCANRectangle)],
                       @transient private val labeledPartitionedPoints: RDD[(Int, DBSCANLabeledPoint)]
                     )
   extends Serializable { // has to be Serializable
-
 
   type Margins = (DBSCANRectangle, DBSCANRectangle, DBSCANRectangle)
   type ClusterId = (Int, Int)
@@ -75,6 +71,30 @@ class DBSCAN private(
 
   def labeledPoints: RDD[DBSCANLabeledPoint] = {
     labeledPartitionedPoints.values
+  }
+
+  /*
+   * Main DBScan Logic
+   */
+  private def areaDBSCANNaive(stops: Iterable[DBSCANPoint])
+  : Iterable[DBSCANLabeledPoint] = {
+    val first = stops.head
+
+    // ID of area to which point belonds
+    var areaId = first.areaID
+
+    // Eps of area to which point belonds -
+    // the maximum distance between two points for them to be considered as part
+    // of the same region
+    var areaEps = first.areaEps
+
+    // the minimum number of points required to form a dense region
+    var areaMinPts = first.areaMinPts
+
+    val clusteredPoints = new LocalDBSCANNaive(areaEps, areaMinPts)
+      .fit(stops)
+
+    clusteredPoints.map(point => adjustCluster(point, areaId))
   }
 
   def train(vectors: RDD[Vector[String]]): DBSCAN = {
@@ -222,7 +242,6 @@ class DBSCAN private(
 
     new DBSCAN(
       eps,
-      minPoints,
       maxPointsPerPartition,
       finalPartitions,
       labeledInner.union(labeledOuter)
@@ -236,18 +255,6 @@ class DBSCAN private(
       .groupBy(_.areaID).values
       // Cluster points
       .flatMap(areaDBSCANNaive)
-  }
-
-  private def areaDBSCANNaive(stops: Iterable[DBSCANPoint])
-  : Iterable[DBSCANLabeledPoint] = {
-    val first = stops.head
-    var areaId = first.areaID
-    var areaEps = first.areaEps
-
-    val clusteredPoints = new LocalDBSCANNaive(areaEps, minPoints)
-      .fit(stops)
-
-    clusteredPoints.map(point => adjustCluster(point, areaId))
   }
 
   private def adjustCluster(point: DBSCANLabeledPoint, areaID : Int): DBSCANLabeledPoint = {
