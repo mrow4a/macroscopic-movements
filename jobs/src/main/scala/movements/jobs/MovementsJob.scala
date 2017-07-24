@@ -90,7 +90,6 @@ object MovementsJob {
     val clusteredPoints = DBSCAN.train(
       areaBoundStops,
       Config.eps,
-      Config.minPoints,
       Config.maxPointsPerPartition
     ).labeledPoints.filter(_.cluster != 0)
       .cache()

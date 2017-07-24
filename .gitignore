@@ -12,11 +12,11 @@ server/.idea
 documentation/.idea
 prototypes/.idea
 
-frontend/velocity.log
+server/velocity.log*
 
+jobs/*.iml
 jobs/*.imp
 server/*.imp
-documentation/*.imp
-prototypes/*.imp
-
+server/*.iml
+*.iml
 *.imp

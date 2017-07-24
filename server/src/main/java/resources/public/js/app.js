@@ -135,6 +135,7 @@ $(document).ready(function () {
             var opt = sortedPageRanks[i];
 
             var li = document.createElement("li");
+            li.classList.add("list-group-item");
             li.addEventListener('click', function(e) {
                 var id = e.target.innerHTML.split("-")[1]
 
