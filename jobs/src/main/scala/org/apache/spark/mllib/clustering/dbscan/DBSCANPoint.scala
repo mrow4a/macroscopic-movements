@@ -26,7 +26,7 @@ case class DBSCANPoint(vector: Vector[String]) {
   def duration: Double = vector(5).toDouble // long
   def areaID: Int = vector(6).toInt // area id
   def areaEps: Double = vector(7).toDouble // area id
-  def areaMinPts: Double = vector(8).toDouble // area id
+  def areaMinPts: Int = vector(8).toInt // area id
 
   def distanceSquared(other: DBSCANPoint): Double = {
     val dx = other.x - x
