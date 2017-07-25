@@ -132,6 +132,13 @@ div#sidebar-wrapper {
     z-index: 100;
 }
 
+.scrollable-menu {
+    height: auto;
+    min-height: 50px;
+    max-height: 200px;
+    overflow-x: hidden;
+}
+
 @media (min-width: 768px) {
     #wrapper {
         padding-left: 0;

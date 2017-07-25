@@ -120,10 +120,9 @@ object MovementsJob {
     val resultDf = basicDF
       .join(countDF, Seq("ClusterID"))
       .join(createGraphJobDataframes, Seq("ClusterID"))
-      .map(row => row.mkString("|"))
 
-
-    resultDf.collect().foreach(row => println(row))
+    resultDf.collect()
+      .map(row => row.mkString("|")).foreach(row => println(row))
 
     spark.stop()
   }

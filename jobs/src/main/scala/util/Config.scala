@@ -52,7 +52,7 @@ object Config {
   }
 
   object outsideBerlin extends Enumeration {
-    // whole germany     (47.23  , 5.03   , 55.04  , 15.23  , 3, 0.005, 50)
+    // whole germany     (47.23  , 5.03   , 55.04  , 15.23  , 3, 0.005, 20)
     // whole berlin area (52.0102, 11.2830, 53.0214, 13.9389, 3, 0.005, 5)
     val (xMin, xMax, yMin, yMax, id, eps, minPts) = (52.0102, 11.2830, 53.0214, 13.9389, 3, 0.005, 5)
   }

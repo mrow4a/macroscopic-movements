@@ -13,9 +13,9 @@ docker rm -f slave2
 
 echo
 echo "# Create master and 2 slaves"
-docker run --restart unless-stopped -d --name master -p 8080:8080 -p 7077:7077 movements/spark-s3 ./start-master
-docker run --restart unless-stopped -d --link master --name slave1 movements/spark-s3 ./start-worker
-docker run --restart unless-stopped -d --link master --name slave2 movements/spark-s3 ./start-worker
+docker run -d --name master -p 8080:8080 -p 7077:7077 movements/spark-s3 ./start-master
+docker run -d --link master --name slave1 movements/spark-s3 ./start-worker
+docker run -d --link master --name slave2 movements/spark-s3 ./start-worker
 
 echo
 echo "# Created minio S3"

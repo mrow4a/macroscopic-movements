@@ -129,7 +129,7 @@ $(document).ready(function () {
         }
 
         var sortedPageRanks = hashmapPageRank.sort();
-        var endLength = Math.max(0,sortedPageRanks.length-10);
+        var endLength = 0;
         var startLength = sortedPageRanks.length-1;
         for (var i = startLength; i >= endLength; i--){
             var li = document.createElement("li");
@@ -180,7 +180,7 @@ $(document).ready(function () {
             var options = mapMarkers[i].options;
             fileContents += options.id+"|"+options.lat+"|"+options.long
                 +"|"+options.duration+"|"+options.count+"|"+options.neighborsIn.join(",")
-                +"|"+options.neighborsOut.join(",")+"|"+options.outDegrees+"|"+options.inDegrees+"|"+options.pagerank+"\n";
+                +"|"+options.neighborsOut.join(",")+"|"+options.inDegrees+"|"+options.outDegrees+"|"+options.pagerank+"\n";
         }
 
         var textToSaveAsBlob = new Blob([fileContents], {type:"text/plain"});
@@ -240,8 +240,8 @@ $(document).ready(function () {
                                 duration: Math.round((parseInt(obj.duration)/3600) * 100) / 100,
                                 neighborsIn: obj.neighborsin,
                                 neighborsOut : obj.neighborsout,
-                                outDegrees: obj.outdegrees, // TODO add
                                 inDegrees: obj.indegrees,
+                                outDegrees: obj.outdegrees,
                                 pagerank: obj.pagerank,
                                 count: obj.count
                             })
@@ -320,10 +320,10 @@ $(document).ready(function () {
 
         removePolylines();
         if (modeInOut) {
-            createPolylines(marker, marker.options.neighborsIn, 'blue');
+            createPolylines(marker, options.neighborsIn, 'blue');
             modeInOut = false;
         } else {
-            createPolylines(marker, marker.options.neighborsOut, 'red');
+            createPolylines(marker, options.neighborsOut, 'red');
             modeInOut = true;
         }
 

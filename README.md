@@ -1,6 +1,21 @@
-#### Macroscopic movements
+## Macroscopic movements
+The idea behind this project is to provide 
+algorithms and architectural software 
+solution which will be able to process 
+big amounts of data, visualize it and 
+give macroscopic view on the collected 
+data across multiple users. 
+Particularly, we look at where the 
+users stop and what are the significant 
+places considering their movements in 
+macroscopic city view. 
 
 ![alt text](resources/img/ui.png)
+
+Work might be compatible with data 
+sources as the one used in e.g. 
+"Analysis of Berlin's taxi services by 
+exploring GPS traces" research.
 
 #### PROJECT STRUCTURE:
 
@@ -115,11 +130,6 @@ Access the web interface (`localhost:9999`) and point the input file to the s3 a
 Fill out the froms with s3 url, input file, and spark master adress. 
 
 Then run 'setup' button followed by 'run' to run the job on the input file.
-
-#### License
-
-DBSCAN on Spark is available under the Apache 2.0 license.
-
 
 #### Credits
 
