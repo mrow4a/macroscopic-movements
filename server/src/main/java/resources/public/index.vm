@@ -26,118 +26,118 @@
 
 </head>
 
-<body>
-<div class="blockMe">
-    <div id="wrapper" class="toggled">
-        <!-- Sidebar -->
-        <div id="sidebar-wrapper">
-            <form style="padding: 4px;" action="#" id="form1">
-                <div class="form-group">
-                    <label for="file_input_div"><b>S3 Input File for ETL:</b> </label>
-                    <div id="file_input_div">
-                        <span>s3a://key:secret@bucket/file.extension</span>
-                        <input id="file_input" type="text" class="form-control"
-                               placeholder="s3a://movements:movements@movements/macroscopic-movement-01_areafilter.csv">
+<body class="">
+<div class="blockMe" style="position: static;zoom: 1;">
+    <div id="mapid"
+         style="height: 100%;width: 100%;position: relative;left: 0px;outline: none;"
+         class="leaflet-container leaflet-touch leaflet-fade-anim leaflet-grab leaflet-touch-drag leaflet-touch-zoom"
+         tabindex="0">
+        <div id="wrapper" class="toggled">
+            <div id="sidebar-wrapper" style="background-color: rgba(255, 255, 255, 0.9); pointer-events: all;" class="">
+                <form style="padding: 4px;padding-top: 50px;pointer-events: all;" action="#" id="form1" class="">
+                    <div class="form-group">
+                        <label for="file_input_div"><b>S3 Input File for ETL:</b> </label>
+                        <div id="file_input_div" class="">
+                            <span>s3a://key:secret@bucket/file.extension</span>
+                            <input id="file_input" type="text" class="form-control"
+                                   placeholder="s3a://movements:movements@movements/macroscopic-movement-01_areafilter.csv">
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="s3_input_div"><b>S3 Storage URL:</b> </label>
-                    <div id="s3_input_div">
-                        <span>http://s3url </span>
-                        <input id="s3_input" type="text" class="form-control" placeholder="http://172.20.0.6:9000">
+                    <div class="form-group">
+                        <label for="s3_input_div"><b>S3 Storage URL:</b> </label>
+                        <div id="s3_input_div">
+                            <span>http://s3url </span>
+                            <input id="s3_input" type="text" class="form-control" placeholder="http://172.20.0.6:9000">
+                        </div>
                     </div>
-                </div>
-                <div id="spark_input_div" class="form-group">
-                    <label for="spark_input"><b>Spark master address:</b> </label>
-                    <input id="spark_input" type="text" class="form-control" placeholder=" spark://172.20.0.2:7077">
-                </div>
-                <div id="spark_div" class="form-group">
-                    <button class="btn btn-default" id="spark_run"> Test</button>
-                    <label id="spark_run_label" for="spark_run"><span style="color:green;"></span></label>
-                </div>
-                <div class="form-group">
-                    <label for="read_div">Clean, extract, transform and load: </label>
-                    <div id="read_div" class="btn2">
-                        <button class="btn btn-default" id="read_run"> Run</button>
-                        <label id="read_run_label" for="read_run"><span style="color:green;"></span></label>
+                    <div id="spark_input_div" class="form-group">
+                        <label for="spark_input"><b>Spark master address:</b> </label>
+                        <input id="spark_input" type="text" class="form-control" placeholder=" spark://172.20.0.2:7077">
                     </div>
-                    <div id="read_div2" class="btn2">
-                        <button class="btn btn-default" id="exportToCSVButton" >Export to CSV</button>
+                    <div id="spark_div" class="form-group">
+                        <button class="btn btn-default" id="spark_run"> Test</button>
+                        <label id="spark_run_label" for="spark_run"><span style="color:green;"></span></label>
+                    </div>
+                    <div class="form-group">
+                        <label for="read_div">Clean, extract, transform and load: </label>
+                        <div id="read_div" class="btn2">
+                            <button class="btn btn-default" id="read_run"> Run</button>
+                            <label id="read_run_label" for="read_run"><span style="color:green;"></span></label>
+                        </div>
+                        <div id="read_div2" class="btn2" style=" padding-top: 10px;">
+                            <button class="btn btn-default" id="exportToCSVButton">Export to CSV</button>
+                        </div>
+
                     </div>
 
-                </div>
-
-            </form>
-        </div>
-        <!-- /#sidebar-wrapper -->
-        <!-- Sidebar -->
-        <!-- Page Content -->
-        <div id="page-content-wrapper">
-            <div class="container-fluid">
-                <div style="padding:10px;" class="row justify-content-md-center">
-                    <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Menu</a>
-                </div>
-                <div style="padding:10px;" class="row justify-content-md-center">
-                    <div class="dropdown" id="pageranktopdropdown">
-                        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Top PageRanks
-                            <span class="caret"></span></button>
-                        <ul class="dropdown-menu scrollable-menu" role="menu" id="pageranktop">
-                        </ul>
+                </form>
+            </div>
+            <div id="page-content-wrapper">
+                <div class="container-fluid" style="">
+                    <div class="row">
+                        <div class="col-xs-4" style="z-index:1000;">
+                            <div id="tooglemenu" style="display:inline">
+                                <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Menu</a>
+                            </div>
+                            <div id="pageranktopdropdown" style="display:inline">
+                                <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Top PageRank
+                                    <span class="caret"></span></button>
+                                <ul class="dropdown-menu scrollable-menu" role="menu" id="pageranktop"></ul>
+                            </div>
+                        </div>
+                        <div class="col-xs-8" style="z-index:1000;">
+                        </div>
                     </div>
-                </div>
-
-                <div id="statbar" class="panel panel-primary">
-                    <div>
-                        <h4>Statistics about stop:</h4>
+                    <div id="statbar" class="panel panel-primary" style="
+    z-index: 1000;
+">
+                        <div>
+                            <h4>Statistics about stop:</h4>
+                        </div>
+                        <div class="">
+                            Cluster ID:
+                            <br>
+                            <label id="id"></label>
+                        </div>
+                        <div>
+                            Page rank:
+                            <br>
+                            <label id="pagerank"></label>
+                        </div>
+                        <div>
+                            Longitude:
+                            <br>
+                            <label id="long"></label>
+                        </div>
+                        <div>
+                            Latitude:
+                            <br>
+                            <label id="lat"></label>
+                        </div>
+                        <div>
+                            Average stay duration (hours):
+                            <br>
+                            <label id="duration"></label>
+                        </div>
+                        <div>
+                            In degree:
+                            <br>
+                            <label id="inDeg" style="color:blue"> </label>
+                        </div>
+                        <div>
+                            Out degree:
+                            <br>
+                            <label id="outDeg" style="color:red"></label>
+                        </div>
+                        <div>
+                            Cluster size:
+                            <br>
+                            <label id="clusterSize"></label>
+                        </div>
                     </div>
-                    <div>
-                        Cluster ID:
-                        <br>
-                        <label id="id"></label>
-                    </div>
-                    <div>
-                        Page rank:
-                        <br>
-                        <label id="pagerank"></label>
-                    </div>
-                    <div>
-                        Longitude:
-                        <br>
-                        <label id="long"></label>
-                    </div>
-                    <div>
-                        Latitude:
-                        <br>
-                        <label id="lat"></label>
-                    </div>
-                    <div>
-                        Average stay duration (hours):
-                        <br>
-                        <label id="duration"></label>
-                    </div>
-                    <div>
-                        In degree (lines):
-                        <br>
-                        <label id="inDeg" style="color:blue" ></label>
-                    </div>
-                    <div>
-                        Out degree (lines):
-                        <br>
-                        <label id="outDeg" style="color:red" ></label>
-                    </div>
-                    <div>
-                        Cluster size:
-                        <br>
-                        <label id="clusterSize"></label>
-                    </div>
-                </div>
-
-                <div id="mapid" style="width: 100%; height: 800px; position: fixed;">
                 </div>
             </div>
         </div>
-        <!-- /#page-content-wrapper -->
-        <!-- /#wrapper -->
     </div>
 </div>
 </body>
