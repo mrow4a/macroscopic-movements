@@ -237,7 +237,7 @@ $(document).ready(function () {
                                 id: obj.id,
                                 lat: obj.lat, // .toFixed crashes
                                 long: obj.long,
-                                duration: Math.round((parseInt(obj.duration)/3600) * 100) / 100,
+                                duration: obj.duration,
                                 neighborsIn: obj.neighborsin,
                                 neighborsOut : obj.neighborsout,
                                 inDegrees: obj.indegrees,
@@ -312,7 +312,7 @@ $(document).ready(function () {
         $('#id').text(options.id);
         $('#lat').text(options.lat);
         $('#long').text(options.long);
-        $('#duration').text(options.duration);
+        $('#duration').text(Math.round((parseInt(options.duration)/3600) * 100) / 100);
         $('#clusterSize').text(options.count);
         $('#pagerank').text(options.pagerank);
         $('#inDeg').text(options.inDegrees);

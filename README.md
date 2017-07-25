@@ -58,7 +58,11 @@ exploring GPS traces" research.
 
 ### Overview
 
-Project consists of three parts:
+The project primarily consists of three 
+independent components; S3 storage, Apache Spark cluster, 
+and the web server with spark jobs and spark-submit.
+
+![alt text](resources/img/architect.png)
 
 ##### Inputfile format
 
