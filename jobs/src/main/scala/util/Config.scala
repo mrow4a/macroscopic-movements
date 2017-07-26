@@ -25,9 +25,9 @@ object Config {
   // By default 20 minutes
   val mobilityIndexThreshold = 0.0017
   // Mobility Index Threshold used to determine mobility patterns
-  val stopAccuracyDistance = 1000
+  val distanceThreshold = 1000
   // meters
-  val stopAccuracySpeed = 1.4 // m/s
+  val speedThreshold = 1.4 // m/s
 
   // Parameters for anomaly filtering
   val minimumFlightSpeed = 83

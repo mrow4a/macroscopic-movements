@@ -35,8 +35,8 @@ object StopDetection {
     * STOP DETECTION SPECIFIC
     * @param durationsWindowSize
     * @param mobilityIndexThreshold
-    * @param stopAccuracyDistance
-    * @param stopAccuracySpeed
+    * @param distanceThreshold
+    * @param speedThreshold
     *
     * ANOMALY FILTERING
     * @param minimumFlightSpeed
@@ -48,8 +48,8 @@ object StopDetection {
       data: RDD[Vector[String]],
       durationsWindowSize: Double,
       mobilityIndexThreshold: Double,
-      stopAccuracyDistance: Double,
-      stopAccuracySpeed: Double,
+      distanceThreshold: Double,
+      speedThreshold: Double,
       minimumFlightSpeed: Double,
       minimumFlightDistance: Double,
       minimumAccuracyDistance: Double,
@@ -58,8 +58,8 @@ object StopDetection {
     new StopDetection(
       durationsWindowSize,
       mobilityIndexThreshold,
-      stopAccuracyDistance,
-      stopAccuracySpeed,
+      distanceThreshold,
+      speedThreshold,
       minimumFlightSpeed,
       minimumFlightDistance,
       minimumAccuracyDistance,
@@ -70,8 +70,8 @@ object StopDetection {
 class StopDetection private(
       val durationsWindowSize: Double,
       val mobilityIndexThreshold: Double,
-      val stopAccuracyDistance: Double,
-      val stopAccuracySpeed: Double,
+      val distanceThreshold: Double,
+      val speedThreshold: Double,
       val minimumFlightSpeed: Double,
       val minimumFlightDistance: Double,
       val minimumAccuracyDistance: Double,
@@ -124,8 +124,8 @@ class StopDetection private(
     val speed = movement.getSpeed
     val mobilityIndex = pair._2
 
-    if ((distance < stopAccuracyDistance && speed < stopAccuracySpeed)
-      || (distance > stopAccuracyDistance && mobilityIndex < mobilityIndexThreshold)){
+    if ((distance < distanceThreshold && speed < speedThreshold)
+      || (distance > distanceThreshold && mobilityIndex < mobilityIndexThreshold)){
       // This is stop
       true
     } else {

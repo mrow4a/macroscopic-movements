@@ -36,30 +36,78 @@ object StopDetectionJob {
       .config(conf)
       .getOrCreate()
 
-    if (args.length < 2) {
+    if (args.length < 1) {
       throw new Exception("No input file e.g. macroscopic-movement-01_areafilter.csv")
     }
-    var src = args(1) // need to pass file as arg
+    var src = args(0) // need to pass file as arg
 
     val data = spark.sparkContext.textFile(src)
-
+    val dataCount = data.count()
     val parsedData = data
       .map(s => s.split(';').toVector)
+      // Filter point which cannot be processed by this job
+      .filter(filterPoint)
+
+    val countUsers = parsedData
+      .groupBy(p => p(2)).count()
+    val parsedDataCount = parsedData.count()
 
     val detectedStops = StopDetection.run(
       parsedData,
       Config.durationsSlidingWindowSize,
       Config.mobilityIndexThreshold,
-      Config.stopAccuracyDistance,
-      Config.stopAccuracySpeed,
+      Config.distanceThreshold,
+      Config.speedThreshold,
       Config.minimumFlightSpeed,
       Config.minimumFlightDistance,
       Config.minimumAccuracyDistance,
       Config.minimumAccuracyDuration
     )
 
-    detectedStops.collect().foreach(row => println(row))
+//    detectedStops.collect()
+//      .foreach(row => println(row(0)+","+row(1)+","+row(2)+","+row(3)+","+row(4)+","+row(5)))
 
+    val pointsPerUser = parsedData
+      .groupBy(p => p(2)).values
+      .map(points => points.toList.size)
+    val stopsPerUser = detectedStops
+      .groupBy(p => p(2)).values
+      .map(stops => stops.toList.size)
+    val stopsPerUserCount = stopsPerUser.count
+    val num_bins = 20
+    val (startValues,counts) = pointsPerUser.histogram(num_bins)
+    val countsStops = stopsPerUser.histogram(startValues)
     spark.stop()
+    println("Bins points")
+    startValues.foreach(value => println(value))
+    println("Bins points count")
+    counts.foreach(value => println(value))
+    println("Bin stops count")
+    countsStops.foreach(value => println(value))
+
+    println("There is total " + dataCount + " points")
+    println("After filtering found " + parsedDataCount + " points and "+countUsers+" users")
+    println("Number of users having at least one stop: "+stopsPerUserCount)
+  }
+
+  private def filterPoint(point: Vector[String]): Boolean = {
+    try{
+      val (xMin, xMax, yMin, yMax) = (52.0102, 11.2830, 53.0214, 13.9389)
+
+      val outsideArea: DBSCANRectangle =
+        DBSCANRectangle(xMin, xMax, yMin, yMax)
+
+      val parsedPoint = Point(point)
+      if (outsideArea.contains(parsedPoint.lat, parsedPoint.long)){
+        true
+      } else {
+        false
+      }
+    } catch {
+      case e: Exception => {
+        println("Filtering point: "+ point.toString())
+        false
+      }
+    }
   }
 }
