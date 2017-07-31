@@ -20,24 +20,16 @@
 % - removed separation of online and offline references -> style 1.4a
 % v1.5 - 2013-01-16
 
-\documentclass[oneside,11pt,titlepage,a4paper,english,bibliography=totocnumbered,listof=numbered]{scrbook}
+\documentclass[twoside,11pt,titlepage,a4paper,english,bibliography=totocnumbered,listof=numbered]{scrbook}
 %
 % Template Style
 \include{style/style}
-\usepackage{wrapfig}
-\usepackage{tabu}
-\usepackage{biblatex}
-\addbibresource{bibliography/bib.bib}
-%\bibliographystyle{plainnat}
-\bibliography{bibliography/bib.bib}
-
-%\usepackage[autostyle=true]{csquotes} % Required to generate language-dependent quotes in the bibliography
-
+\addbibresource{bibliography.bib}
 
 % custom hyphenation					% add words to this list to prevent hyphenation
 \hyphenation{
-ASCII
-TCP
+	ASCII
+	TCP
 }
 
 %make readable references
@@ -65,7 +57,7 @@ TCP
 \input{content/00_frontpages/00_frontpage}
 %TODO \input{content/00_frontpages/03_abstract}					% EN Abstract 
 
-%TODO \tableofcontents{}
+\tableofcontents{}
 
 %--------------------------------------------------------------
 % MAIN CONTENT
@@ -87,21 +79,23 @@ TCP
 \backmatter
 
 % Lists of tables and figures
-%TODO \listoftables
-%TODO \listoffigures
+% \listoftables
+% \listoffigures
 
 % Bibliography
 \setwidesite{}						% Set page to be wider for bibliography
-\markboth{Bibliography}{bibliography/bibliography}
+\markboth{Bibliography}{Bibliography}
 \label{cha:bibliography}
-\printbibliography[heading=bibintoc]
+\printbibliography
 
 % Use following to separate online (websites) and offline (books, papers) sources
 %\printbibliography[heading=offline,filter=offline]
 %\printbibliography[heading=online,filter=online]
 
-\begin{appendices}
-	%\input{content/99_appendices/a01_listings}
-\end{appendices}
+%\begin{appendices}
+%	\input{content/99_appendices/a01_listings}
+	% \input{content/99_appendices/a02_listings}
+	% \input{content/99_appendices/a03_listings}
+%\end{appendices}
 
 \end{document}

@@ -30,6 +30,7 @@ In the final implementation (\autoref{cha:stopdet_impl}), the following paramete
 	\caption{Comparison of two analyzed stop detection algorithms for proactive localization}
 	\label{tab:alg_comp_table}
 	\begin{tabular}{|L|L|L|}
+		\hline
 		\textbf{Case} & \textbf{Mobility Index} & \textbf{Speed/Distance} 
 		\\\hline
 		Multiple, slow movements over small area or distance & Possible, but adjusted parameters will cause results to be erroneous for different detections & Very good
@@ -56,17 +57,17 @@ To address this we implemented and analyzed an "area version" of DBSCAN on spark
 
 We conclude that the best parameters we got for our DBSCAN implementation were:
 
-\begin{tabu} to 0.8\textwidth { | X[l] | X[c] | X[r] | }
- \hline
- DBSCAN area version & \textit{eps} & \textit{minPts} \\
- \hline
- 1  & 0.001  & 5  \\
- \hline
- 2  & 0.003  & 5  \\
- \hline
- 3  & 0.005  & 5  \\
-\hline
-\end{tabu}
+	\begin{tabular}{|L|L|L|}
+		\hline
+		\textbf{DBSCAN area version} & \textbf{eps} & \textbf{minPts} 
+		\\\hline
+		1  & 0.001  & 5
+		\\\hline
+		2  & 0.003  & 5  
+		\\\hline
+		3  & 0.005  & 5
+		\\\hline
+	\end{tabular}
 
 The reason for running with the same \textit{minPts} parameters with bigger \textit{eps} were lack of data points in lesser dense areas, resulting in the need of higher \textit{eps} but not \textit{minPts} for larger areas. Important to remember is that the parameter choice depends on the granuality and application, if we are interested in capturing smaller areas, such as U-bahn/S-bahn stops, we need different parameters than clustering bigger areas, such as big plazas or towns.
 
