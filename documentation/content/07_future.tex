@@ -1,0 +1,11 @@
+\chapter{Future work}
+\label{cha:future}
+
+We identified few bullet points which might be considered in the future implementation
+
+\begin{itemize}  
+\item The user interface in the current version just runs job including stop detection, clustering and graph analysis together, with predefined parameters (hard-coded). However, it might be interesting to provide more sub-tabs which will allow to test each of algorithms with changing parameters. 
+\item It might valuable to provide additional section which will work on ETL basic. Thus, each new chunk of data extracts data from file and db, augments the results and loads back to the database, making the results and movements graph more accurate. In this case, user accessing interface triggers low-latency Spark job or queries the database.
+\item In our current implementation we focused on direct neighbors of nodes, i.e. nodes that were connected by a single hop. However, this can be extended to check second degree neighbors or more. Such results could provide further insight into the connectivity and movement patterns.
+\item Since we worked with data collected for a duration of 24 hours, we did not analyze our graph for time based variation in movement patterns. It would be interesting to see how the values and patterns vary based on time of day, between weekdays and weekends, over seasons or during any particular events.
+\end{itemize}
