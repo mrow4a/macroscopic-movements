@@ -17,6 +17,14 @@ sources as the one used in e.g.
 "Analysis of Berlin's taxi services by 
 exploring GPS traces" research.
 
+##### IMPORTANT sidenote - future work
+
+Implementation hardcodes filtering all points outside Berlin area 
+and sets Eps and MinPoints for areas within Berlin according to density
+of population,
+ DBSCAN implementation might need modification for 
+ support of dynamic area - more info in documentation and in `jobs/src/main/scala/util/Config`
+
 #### PROJECT STRUCTURE:
 
 <pre>
@@ -25,7 +33,8 @@ exploring GPS traces" research.
    ├── jobs/                          
    │   ├── clustering.dbscan      : Modified implementation of Irving's DBScan on Spark
    │   ├── stopdetection          : Stop detection algorithm implementation on Spark
-   │   └── movements.jobs         : Spark-submit compatible jobs                      
+   │   ├── movements.jobs         : Spark-submit compatible jobs                     
+   │   └── util/Config            : Sets parameters for the Spark jobs                      
    │
    ├── server/	                                 
    │   ├── ServerMain.java        : Entry Point of the Web Server                            
@@ -37,12 +46,13 @@ exploring GPS traces" research.
    │   ├── sparkjobserver	      : <Not Used> Created for low-latency jobs, but not used in the project	
    │   └── movements.docker       : <Not Used> Creating as proof of concept for spawning dockers to hadle spark-submit                
    │
-   ├── prototypes                 : Prototypes for testing of spark-submit jobs 		        
+   ├── prototypes                 : Prototypes for testing of spark-submit jobs 	
+   │   ├── data-analysis-python   : Visit data-analysis-python/README.md for more info
+   │   └── graph-analysis-python  : Python scripts used for graph analysis        
    │
    ├── spark-s3/                  : Dockerfile for mocking Spark Cluster             
    │
-   ├── documentation/                                  
-   │   └── smashbox/utilities                  
+   ├── documentation/                          
    │
    ├── preparedockers.sh          : Script to spawn Minio S3 
    │                                and Spark Master/Workers dockers       
@@ -101,7 +111,9 @@ As the project is build in conteneraised, the only requirement is Docker. Two sc
 
 1. `./preparedockers.sh` - will mock Spark and S3
 
-2. `./run.sh` - will build docker image and run it
+2. `./run.sh` - will build docker image and run 
+it using `docker run --name spark-client -p 9999:80 "movements/spark-client"`
+internaly
 
 ####1. Spawn dockerised Spark Cluster and Minio S3:
 

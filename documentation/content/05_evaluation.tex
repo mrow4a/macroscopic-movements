@@ -162,7 +162,7 @@ The \textit{eps} parameter (epsilon, radius of the cluster) was initially chosen
 
 We took Alexanderplatz in Berlin as an example cluster (a popular train stop area in Berlin). We interpret one cluster as being one stop point of interest, therefor for this zoom level we expect Alexanderplatz to be represented as one cluster. 
 
-As noted previously, DBSCAN is very sensitive to the choice of its parameters. In the figure \ref{fig:0.001_5_gray} we run DBSCAN with \textit{minimum distance}  and \textit{minPts} = 5, which causes expected looking clusters of popular stop areas. When choosing a greater \textit{eps} of 220 meters we instantly get huge clusters which correspond to an abnormal amount of expected stop areas, seen in figure \ref{fig:002_5_gray}. 
+As noted previously, DBSCAN is very sensitive to the choice of its parameters. In the figure \autoref{fig:0.001_5_gray} we run DBSCAN with \textit{minimum distance}  and \textit{minPts} = 5, which causes expected looking clusters of popular stop areas. When choosing a greater \textit{eps} of 220 meters we instantly get huge clusters which correspond to an abnormal amount of expected stop areas, seen in figure \autoref{fig:002_5_gray}. 
 
 \begin{figure}[!ht]
 	\centering
@@ -187,25 +187,25 @@ So far we have not discussed the \textit{minPts} parameter, minimum points per c
 	\caption{ Histogram of number of clusters found from DBSCAN with different minPts. Higher \textit{minPts} captures significant fewer clusters . }
 	\label{fig:histogram_minPts}
 \end{figure}
-In Berlin there are currently 173 U-bahn stops \cite{sbahn}. We would expect each stop to be represented as a stop point if our stop detection algorithm works well enough and we have enough data points. Since U-bahn stations usually are in areas of interest we could approximate the number of sought after clusters to a round this number. A number of detected stops between 100 and 200 hundred seems reasonable. As seen in the histogram in figure \ref{fig:histogram_minPts} setting \textit{minPts} to 5 gives us a cluster size of 140. Plotted on the map of our area, figure \ref{fig:0.001_5_gray}, gave us good looking result for inner Berlin. 
+In Berlin there are currently 173 U-bahn stops \cite{sbahn}. We would expect each stop to be represented as a stop point if our stop detection algorithm works well enough and we have enough data points. Since U-bahn stations usually are in areas of interest we could approximate the number of sought after clusters to a round this number. A number of detected stops between 100 and 200 hundred seems reasonable. As seen in the histogram in figure \autoref{fig:histogram_minPts} setting \textit{minPts} to 5 gives us a cluster size of 140. Plotted on the map of our area, figure \autoref{fig:0.001_5_gray}, gave us good looking result for inner Berlin. 
 
 
 \subsection{Extending DBSCAN with areas}
- Our approach with using the same two fixed parameters, \textit{eps} and \textit{minPts}, worked well for inner Berlin. However, when zooming out and running our algorithm on a less dense area, such as greater Berlin, we encounter problem with few detected clusters. To fix this and detect more clusters we needed to increase the \textit{eps} parameter, however this caused problems with \textbf{huge} clusters in central Berlin as seen in figure \ref{fig:huge_cluster}.
+ Our approach with using the same two fixed parameters, \textit{eps} and \textit{minPts}, worked well for inner Berlin. However, when zooming out and running our algorithm on a less dense area, such as greater Berlin, we encounter problem with few detected clusters. To fix this and detect more clusters we needed to increase the \textit{eps} parameter, however this caused problems with \textbf{huge} clusters in central Berlin as seen in figure \autoref{fig:huge_cluster}.
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=0.8\textwidth]{images/big_cluster.PNG}\\
 	\caption{ Huge cluster problem in central Berlin problem when trying to detect clusters outside the center. }
 	\label{fig:huge_cluster}
 \end{figure}
-To solve the problem of not detecting clusters in less dense areas we implemented an area version of DBSCAN. This version ran DBSCAN on different areas of varying density with different \textit{eps}. To demonstrate this we divided Berlin and surrounding area into three different boxes of increasing density, as seen in figure \ref{fig:boxes}. Each point was assign to its specific box and a \textit{DBSCAN on Spark} was executed on each box and finally the result was merged. The goal was to capture more clusters in less dense regions. 
+To solve the problem of not detecting clusters in less dense areas we implemented an area version of DBSCAN. This version ran DBSCAN on different areas of varying density with different \textit{eps}. To demonstrate this we divided Berlin and surrounding area into three different boxes of increasing density, as seen in figure \autoref{fig:boxes}. Each point was assign to its specific box and a \textit{DBSCAN on Spark} was executed on each box and finally the result was merged. The goal was to capture more clusters in less dense regions. 
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=0.8\textwidth]{images/boxes.PNG}\\
 	\caption{  Berlin and surrounding area divided into boxes. On each box a separate\textit{ DBSCAN on spark} is ran with different parameters. }
 	\label{fig:boxes}
 \end{figure}
-The \textit{eps} of each outer area was increased from the previous one and the histogram in figure \ref{fig:clusters_versions} proves the feasibility of the area implementation, we capture more clusters outside of inner Berlin with the new area version. The first version runs the original DBSCAN version without using boxes, the second version divides greater Berlin into two boxes, inner and outer Berlin. Finally, the third version uses three boxes; inner, middle and outer Berlin.\begin{figure}
+The \textit{eps} of each outer area was increased from the previous one and the histogram in figure \autoref{fig:clusters_versions} proves the feasibility of the area implementation, we capture more clusters outside of inner Berlin with the new area version. The first version runs the original DBSCAN version without using boxes, the second version divides greater Berlin into two boxes, inner and outer Berlin. Finally, the third version uses three boxes; inner, middle and outer Berlin.\begin{figure}
     \centering
     \includegraphics[width=0.5\textwidth]{images/clusters_versions.png}\\
     \caption{ Histogram over found clusters running the different area DBSCAN versions.}

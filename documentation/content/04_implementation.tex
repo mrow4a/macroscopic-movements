@@ -20,7 +20,7 @@ To understand the data we have used a set of tools in python \cite{pythonQgis}. 
 \section{Architecture - batch processing in Apache Spark}
 
 The architecture of the project follows an elegant microservice concept, using independent deployable components.
-The project primarily consists of three independent components; S3 storage (a protocol for data storage, in this case open source \textit{Minio} in Docker container), Apache Spark cluster (distributed compute engine over nodes), and a web server with spark jobs and spark-submit. See figure \ref{fig:architect}.
+The project primarily consists of three independent components; S3 storage (a protocol for data storage, in this case open source \textit{Minio} in Docker container), Apache Spark cluster (distributed compute engine over nodes), and a web server with spark jobs and spark-submit. See figure \autoref{fig:architect}.
 
 \begin{figure}[!ht]
 	\centering
@@ -71,9 +71,9 @@ The first phase of stop detection algorithm is to group points according to user
 %TODO descib in related work
  The implementations of clustering were primarily done by using open source implementations and extending it to our needs. For clustering we used the algorithm DBSCAN. 
  
-We wanted a scalable implementation of DBSCAN that could handle large data sets, preferable in parallel. We decided to use Apache Spark, a scalable engine for large-scale data processing \cite{spark}. For this we used an implementation by Irving Cordova, explained in Related work, \ref{cha:relatedwork}. 
+We wanted a scalable implementation of DBSCAN that could handle large data sets, preferable in parallel. We decided to use Apache Spark, a scalable engine for large-scale data processing \cite{spark}. For this we used an implementation by Irving Cordova, explained in Related work, \autoref{cha:relatedwork}. 
 
-Along as using this implementation we extended it with an area version, which divided the data set into predefined boxes. Each box were assign different parameters (discussed in Evaluation, \ref{cha:evaluation} and ran in parallel. After each box was finished the results were merged and written to a file along with important output (such as latitude, longitude, user id, cluster id).
+Along as using this implementation we extended it with an area version, which divided the data set into predefined boxes. Each box were assign different parameters (discussed in Evaluation, \autoref{cha:evaluation} and ran in parallel. After each box was finished the results were merged and written to a file along with important output (such as latitude, longitude, user id, cluster id).
 
 Other versions of DBSCAN were also implemented that ran the jobs in batches and stored it in different files, used for evaluating the results and plotting them in the graph visualization tool QGIS.
 
@@ -86,7 +86,7 @@ Filtering was essential at this step as the clustering algorithm identified many
 GraphX provides built-in functions to extract many different properties of a graph. We used GraphX for the indegrees, outdegrees and PageRank values and also NetworkX library of Python to obtain the strongly connected components and betweenness values of our graph. We plotted the results using Python so that we could form a better understanding of the data. It also helped us determine thresholds while calculating top indegree, outdegree, pagerank and betweenness values. We also used the tool QGIS to visualize the property values with respect to physical locations in cities.
 
 \section{User Interface}
-To bundle our three parts; stop detection, clustering of detected stop, and graph analysis we developed a web based user interface where job files could be submitted to a running Spark cluster from a specified Amazon S3 storage. The UI was build upon leaflet\cite{leaflet}, a interactive map library for JavaScript, and featured functionality for running the jobs, displaying  the clusters and visualizing graph information such as connected component with out and in degree. To minimize executing time we implemented functionality for displaying previously ran job, instead of re executing jobs it could now display previously ran jobs. When a stop is clicked statistics about the stop appears and lines are drawn on the map according to the out and in degrees (connected travellers to/from this stop to another captured one) See figure \ref{fig:ui_berlin}
+To bundle our three parts; stop detection, clustering of detected stop, and graph analysis we developed a web based user interface where job files could be submitted to a running Spark cluster from a specified Amazon S3 storage. The UI was build upon leaflet\cite{leaflet}, a interactive map library for JavaScript, and featured functionality for running the jobs, displaying  the clusters and visualizing graph information such as connected component with out and in degree. To minimize executing time we implemented functionality for displaying previously ran job, instead of re executing jobs it could now display previously ran jobs. When a stop is clicked statistics about the stop appears and lines are drawn on the map according to the out and in degrees (connected travellers to/from this stop to another captured one) See figure \autoref{fig:ui_berlin}
 
 The current UI provides following features:
 \begin{itemize}

@@ -12,7 +12,7 @@ This section is a theoretical introduction to the modules required for macroscop
 \section{Type of data available}
 
 The data supplied to the system is based on tracking and geofencing proactive location-based
-service, targeted at end users and retailing companies, as discussed in \ref{cha:introduction_hummob}. The accuracy of user location is biased not only on accuracy of position estimation used by mobile device, but also by the technological and commercial limitations of the data acquisition strategy of geofences. This means that data is spatially sparse, coarse and its resolution depends on density of geofences.
+service, targeted at end users and retailing companies, as discussed in \autoref{cha:introduction_hummob}. The accuracy of user location is biased not only on accuracy of position estimation used by mobile device, but also by the technological and commercial limitations of the data acquisition strategy of geofences. This means that data is spatially sparse, coarse and its resolution depends on density of geofences.
 \\\\
 Thus, recorded data points are associated with unique user id, timestamp, latitute and longitude of the position at which user have been found to move from one area to another.
 
@@ -78,9 +78,9 @@ For movements between points over mid/long distances recorded, a user might have
 
 After our stop detection algorithm has detected the proper stops we need to analyze them. Our goal is to retrieve the overall movement patterns of a population within a certain area, which means we are interested in \textbf{macroscopic} movements and not microscopic (individual) movement. If we would consider every individual our analysis algorithms would get fed with a lot of noise (outliers) which would make data mining and prediction difficult and inaccurate. Meaning, \textit{Macroscopic Movements} are not interesting in tracking individuals but rather seeing the big picture.
 
- Once the clustering algorithm has been applied and we have the overall picture, we can see which stops are most popular, where people are moving from them, and how long they stay at a certain location. One could then perform some interesting graph analysis on these locations, answering questions such as "what isi the probability that a person moves from point \textit{A} to \textit{B}?", or "what is the average stop time at location \textit{A}?". 
+ Once the clustering algorithm has been applied and we have the overall picture, we can see which stops are most popular, where people are moving from them, and how long they stay at a certain location. One could then perform some interesting graph analysis on these locations, answering questions such as "what is the probability that a person moves from point \textit{A} to \textit{B}?", or "what is the average stop time at location \textit{A}?". 
  
- To achieve these clusters, which represents our interesting stop locations, we need to apply some clustering algorithm. DBSCAN, described in\textit{ Related work}, chapter \ref{cha:relatedwork}, was our approach of achieving these clusters.  
+ To achieve these clusters, which represents our interesting stop locations, we need to apply some clustering algorithm. DBSCAN, described in \autoref{cha:relatedwork}, was our approach of achieving these clusters.  
 
 \FloatBarrier
 \section{City movements graph}
