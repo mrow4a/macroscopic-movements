@@ -51,7 +51,7 @@ There are different types of clustering (such as centroid, distribution, or dens
 
 \subsection{DBSCAN on spark}
 
- In this project we used an implementation of the DBSCAN clustering algorithm on top of Apache Spark. The imp,enetation is called DBSCAN on Spark \cite{dbscan_on_spark} and loosely based on the paper from \textit{He, Yaobin, et al. "MR-DBSCAN: a scalable MapReduce-based DBSCAN algorithm for heavily skewed data"}. The public repository is maintained by Irving Cordova, and accessible on github (\textit{https://github.com/irvingc/dbscan-on-spark}).
+ In this project we used an implementation of the DBSCAN clustering algorithm on top of Apache Spark. The imp,enetation is called DBSCAN on Spark \cite{dbscan_on_spark} and loosely based on the paper from \textit{He, Yaobin, et al. "MR-DBSCAN: a scalable MapReduce-based DBSCAN algorithm for heavily skewed data"}.
  
   This implementation of DBSCAN runs in parallel by splitting the data space into boxes, using the number of boxes as a cost estimator for the algorithm. Each box then grows to include one \textit{eps} in it. After each box and its points has been determined the traditional DBSCAN algorithm is run on the points in each box. Finally it examines the intersection points betweeen boxes and merges the result together \cite{vis_dbscan_on_spark}. See figure set \autoref{fig:dbscan_on_spark} for a visual guide. 
  
