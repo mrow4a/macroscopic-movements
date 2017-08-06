@@ -1,7 +1,7 @@
 \chapter{Conclusions}
 \label{cha:conclusion}
 
-This chapter will summarize the main findings of the project.
+This chapter will summarize the main findings of the project implementation \cite{macromovements}.
 
 \section{Stop detection algorithm}
 
@@ -55,8 +55,10 @@ However, we found out that since DBSCAN is highly parameter sensitive, a configu
 
 To address this we implemented and analyzed an "area version" of DBSCAN on spark. The implementation ran multiple parallel iterations of \textit{DBSCAN on Spark}, each on a specified area of various density with different \textit{epsilon} and \textit{minPts} parameters, and finally merging the results. This addressed our problems of not finding sufficient amount of clusters in less dense areas, which was proven by visualizing our findings in the tool QGIS, along with plotting graphs and histograms. 
 
-We conclude that the best parameters we got for our DBSCAN implementation were:
-
+\begin{table}[ht]
+	\caption{Final DBScan parameters used}
+	\centering 
+	\label{tab:table_final_dbscanparam}
 	\begin{tabular}{|L|L|L|}
 		\hline
 		\textbf{DBSCAN area version} & \textbf{eps} & \textbf{minPts} 
@@ -68,8 +70,9 @@ We conclude that the best parameters we got for our DBSCAN implementation were:
 		3  & 0.005  & 5
 		\\\hline
 	\end{tabular}
+\end{table}
 
-The reason for running with the same \textit{minPts} parameters with bigger \textit{eps} were lack of data points in lesser dense areas, resulting in the need of higher \textit{eps} but not \textit{minPts} for larger areas. Important to remember is that the parameter choice depends on the granuality and application, if we are interested in capturing smaller areas, such as U-bahn/S-bahn stops, we need different parameters than clustering bigger areas, such as big plazas or towns.
+We conclude that the best parameters we got for our DBSCAN implementation were the one shown at \autoref{tab:table_final_dbscanparam}. The reason for running with the same \textit{minPts} parameters with bigger \textit{eps} were lack of data points in lesser dense areas, resulting in the need of higher \textit{eps} but not \textit{minPts} for larger areas. Important to remember is that the parameter choice depends on the granuality and application, if we are interested in capturing smaller areas, such as U-bahn/S-bahn stops, we need different parameters than clustering bigger areas, such as big plazas or towns.
 
 \begin{figure}[!ht]
 	\centering
